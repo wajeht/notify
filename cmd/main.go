@@ -13,7 +13,7 @@ type Notification struct {
 	Message string `json:"message"`
 }
 
-func getHalthzHandler(w http.ResponseWriter, r *http.Request) {
+func getHealthzHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome to the notification service"))
 }
 
@@ -55,7 +55,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", getIndexHandler)
-	mux.HandleFunc("GET /healthz", getHalthzHandler)
+	mux.HandleFunc("GET /healthz", getHealthzHandler)
 	mux.HandleFunc("POST /", postNotificationHandler)
 
 	server := &http.Server{

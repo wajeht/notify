@@ -9,8 +9,9 @@ import (
 )
 
 type Notification struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
+	Type    string  `json:"type"`
+	Message string  `json:"message"`
+	Details *string `json:"details,omitempty"`
 }
 
 func getHealthzHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +41,7 @@ func postNotificationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if notification.Type != "discord" && notification.Type != "email" {
+	if notification.Type != "discord" && notification.Type != "email" && notification.Type != "sms" {
 		http.Error(w, "Invalid notification type", http.StatusBadRequest)
 		return
 	}

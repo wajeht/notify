@@ -1,9 +1,49 @@
-deploy:
-	@./deploy.sh
-
 push:
-	@npm run lint
-	@npm run format
+	@make test
+	@make lint
+	@make format
 	@git add -A
-	@curl -s https://commit.up.railway.app/ | sh
+	@curl -s https://commit.up.railway.app | sh
 	@git push --no-verify
+
+fix-git:
+	@git rm -r --cached .
+	@git add .
+	@git commit -m "Untrack files in .gitignore"
+
+test:
+	@docker compose -f docker-compose.dev.yml exec notify npm run test
+
+test-ete:
+	@docker compose -f docker-compose.dev.yml exec notify npm run test:ete
+
+test-w:
+	@docker compose -f docker-compose.dev.yml exec notify npm run test:watch
+
+format:
+	@docker compose -f docker-compose.dev.yml exec notify npm run format
+
+lint:
+	@docker compose -f docker-compose.dev.yml exec notify npm run lint
+
+deploy:
+	@bash ./deploy.sh
+
+up:
+	@docker compose -f docker-compose.dev.yml up
+
+up-d:
+	@docker compose -f docker-compose.dev.yml up -d
+
+log:
+	@docker compose -f docker-compose.dev.yml logs -f
+
+down:
+	@docker compose -f docker-compose.dev.yml down
+
+clean:
+	@rm -rf ./node_modules
+	@rm -rf ./dist
+	@docker compose -f docker-compose.dev.yml down --rmi all
+	@docker system prune -a --volumes -f
+	@docker volume ls -qf dangling=true | xargs -r docker volume rm

@@ -1,7 +1,7 @@
 {
   "name": "notify",
   "version": "0.0.1",
-  "description": "send notification to slack, discord, email, and sms",
+  "description": "send notification to discord, email, and sms",
   "main": "index.js",
   "scripts": {
     "start": "node --no-warnings ./dist/src/server.js",
@@ -9,7 +9,6 @@
     "build": "tsc"
   },
   "keywords": [
-    "slack",
     "discord",
     "sms",
     "email",

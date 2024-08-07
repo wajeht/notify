@@ -1,5 +1,5 @@
 # 🔔 Notify
-Send notification to slack, discord, email, and sms
+Send notification to discord, email, and sms
 
 # 📜 License
 

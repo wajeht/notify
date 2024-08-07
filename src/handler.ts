@@ -8,6 +8,7 @@ export function getHealthzHandler() {
 
 export function postNotificationHandler() {
 	return async (req: Request, res: Response) => {
-		res.json({ message: 'postNotificationHandler()' });
+		console.log(req.body);
+		res.json({ message: 'ok' });
 	};
 }

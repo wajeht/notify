@@ -40,9 +40,10 @@ services:
     container_name: postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: '${DB_DATABASE}'
-      POSTGRES_USER: '${DB_USERNAME}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - '${DB_PORT}:${DB_PORT}'
     networks:

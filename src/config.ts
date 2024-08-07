@@ -20,6 +20,14 @@ export const emailConfig = {
 	},
 } as const;
 
+export const databaseConfig = {
+	port: parseInt(process.env.DB_PORT || '5432'),
+	host: process.env.DB_HOST || 'postgres',
+	username: process.env.DB_USERNAME || 'username',
+	password: process.env.DB_PASSWORD || 'password',
+	database: process.env.DB_DATABASE || 'database',
+} as const;
+
 export const redisConfig = {
 	port: parseInt(process.env.REDIS_PORT || '6379'),
 	host: process.env.REDIS_HOST || 'redis',

@@ -12,7 +12,15 @@
 		"format:verbose": "prettier --write --cache .",
 		"format": "prettier --write --cache . > /dev/null",
 		"lint:check": "eslint .",
-		"lint": "eslint --fix --cache ."
+		"lint": "eslint --fix --cache .",
+		"migrate:make": "tsx ./node_modules/knex/bin/cli.js migrate:make --knexfile=./src/database/knexfile.ts",
+		"migrate:latest:prod": "knex migrate:latest --knexfile=./dist/src/database/knexfile.js",
+		"migrate:latest": "tsx ./node_modules/knex/bin/cli.js  migrate:latest --knexfile=./src/database/knexfile.ts",
+		"migrate:rollback": "tsx ./node_modules/knex/bin/cli.js  migrate:rollback --knexfile=./src/database/knexfile.ts",
+		"migrate:rollback:prod": "knex migrate:rollback --knexfile=./dist/src/database/knexfile.js",
+		"seed:make": "tsx ./node_modules/knex/bin/cli.js  seed:make --knexfile=./src/database/knexfile.ts",
+		"seed:run": "knex seed:run --knexfile=./src/database/knexfile.ts",
+		"seed:run:prod": "knex seed:run --knexfile=./dist/src/database/knexfile.js"
 	},
 	"keywords": [
 		"discord",
@@ -33,7 +41,9 @@
 		"express-rate-limit": "^7.4.0",
 		"helmet": "^7.1.0",
 		"ioredis": "^5.4.1",
+		"knex": "^3.1.0",
 		"nodemailer": "^6.9.14",
+		"pg": "^8.12.0",
 		"twilio": "^5.2.2"
 	},
 	"devDependencies": {

@@ -29,6 +29,9 @@ lint:
 deploy:
 	@./deploy.sh
 
+shell:
+	@docker compose -f docker-compose.dev.yml exec notify sh
+
 up:
 	@docker compose -f docker-compose.dev.yml up
 

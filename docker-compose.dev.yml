@@ -7,6 +7,7 @@ services:
       dockerfile: ./Dockerfile.dev
     depends_on:
       - redis
+      - postgres
     ports:
       - '${APP_PORT}:${APP_PORT}'
     volumes:
@@ -33,6 +34,26 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  postgres:
+    image: 'postgres:16-alpine'
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    networks:
+      - notify-network
+    volumes:
+      - 'postgres-data:/var/lib/postgresql/data'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME}']
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   # redis-commander:
   #   container_name: redis-commander
@@ -71,6 +92,8 @@ services:
 
 volumes:
   redis-data:
+    driver: local
+  postgres-data:
     driver: local
 
 networks:

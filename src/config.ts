@@ -20,6 +20,12 @@ export const emailConfig = {
 	},
 } as const;
 
+export const redisConfig = {
+	port: parseInt(process.env.REDIS_PORT || '6379'),
+	host: process.env.REDIS_HOST || 'redis',
+	password: process.env.REDIS_PASSWORD || '',
+} as const;
+
 export const smsConfig = {
 	accountSid: process.env.TWILIO_ACCOUNT_SID || '',
 	authToken: process.env.TWILIO_AUTH_TOKEN || '',

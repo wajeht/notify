@@ -6,7 +6,8 @@ dotenv.config({ path: path.resolve(path.join(process.cwd(), '.env')) });
 
 export const appConfig = {
   port: process.env.PORT as unknown as number || 80,
-  env: process.env.ENV as unknown as Env || 'development'
+  env: process.env.ENV as unknown as Env || 'development',
+  app_url: process.env.APP_URL as unknown as string
 } as const
 
 export const emailConfig ={

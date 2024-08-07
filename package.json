@@ -4,7 +4,8 @@
   "description": "send notification to slack, discord, email, and sms",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch --no-warnings --clear-screen=false ./src/server.ts"
+    "dev": "tsx watch --no-warnings --clear-screen=false ./src/server.ts",
+    "build": "tsc"
   },
   "keywords": [
     "slack",

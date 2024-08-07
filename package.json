@@ -1,7 +1,7 @@
 {
   "name": "notify",
   "version": "0.0.1",
-  "description": "notification microservice",
+  "description": "send notification to slack, discord, email, and sms",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch --no-warnings --clear-screen=false ./src/server.ts"

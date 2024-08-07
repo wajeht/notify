@@ -2,6 +2,7 @@ import { app } from './app';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
+import { db, redis } from './database/db';
 
 const server: Server = app.listen(appConfig.port);
 
@@ -37,8 +38,24 @@ server.on('error', (error: NodeJS.ErrnoException) => {
 function gracefulShutdown(signal: string): void {
 	console.info(`Received ${signal}, shutting down gracefully.`);
 
-	server.close(() => {
+	server.close(async () => {
 		console.info('HTTP server closed.');
+
+		try {
+			redis.quit();
+			console.info('Redis connection closed.');
+		} catch (error) {
+			console.error('Error closing Redis connection:', error);
+		}
+
+		try {
+			await db.destroy();
+			console.info('Database connection closed.');
+		} catch (error) {
+			console.error('Error closing database connection:', error);
+		}
+
+		console.info('All connections closed successfully.');
 		process.exit(0);
 	});
 

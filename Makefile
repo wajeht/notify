@@ -27,7 +27,7 @@ lint:
 	@docker compose -f docker-compose.dev.yml exec notify npm run lint
 
 deploy:
-	@bash ./deploy.sh
+	@./deploy.sh
 
 up:
 	@docker compose -f docker-compose.dev.yml up

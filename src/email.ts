@@ -16,10 +16,10 @@ interface SendMailOptions {
 const template = `<h1>hello world</h1>`;
 
 export async function send({
-	to = `${domain} <${emailConfig.emailAlias}>`,
+	to = `${domain} <${emailConfig.alias}>`,
 	subject,
 	html: template,
-	from = `${domain} <${emailConfig.emailAlias}>`,
+	from = `${domain} <${emailConfig.alias}>`,
 }: SendMailOptions): Promise<void> {
 	try {
 		await transporter.sendMail({ from, to, subject, html: template });

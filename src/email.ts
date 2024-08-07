@@ -4,7 +4,7 @@ import { emailConfig, appConfig } from './config';
 
 const transporter = nodemailer.createTransport(emailConfig);
 
-const domain = appConfig.app_url;
+const domain = appConfig.appUrl;
 
 interface SendMailOptions {
 	to?: string;
@@ -16,10 +16,10 @@ interface SendMailOptions {
 const template = `<h1>hello world</h1>`;
 
 export async function send({
-	to = `${domain} <${emailConfig.email_alias}>`,
+	to = `${domain} <${emailConfig.emailAlias}>`,
 	subject,
 	html: template,
-	from = `${domain} <${emailConfig.email_alias}>`,
+	from = `${domain} <${emailConfig.emailAlias}>`,
 }: SendMailOptions): Promise<void> {
 	try {
 		await transporter.sendMail({ from, to, subject, html: template });

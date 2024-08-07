@@ -32,6 +32,12 @@ deploy:
 shell:
 	@docker compose -f docker-compose.dev.yml exec notify sh
 
+db-migrate:
+	@docker compose -f docker-compose.dev.yml exec notify npm run migrate:latest
+
+db-seed:
+	@docker compose -f docker-compose.dev.yml exec notify npm run seed:run
+
 up:
 	@docker compose -f docker-compose.dev.yml up
 

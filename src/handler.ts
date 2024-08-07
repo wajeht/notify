@@ -1,13 +1,13 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 export function getHealthzHandler() {
-  return async (req: Request, res: Response) => {
-      res.json({ message: 'ok' });
-  }
+	return async (req: Request, res: Response) => {
+		res.json({ message: 'ok' });
+	};
 }
 
 export function postNotificationHandler() {
-  return async (req: Request, res: Response) => {
-      res.json({ message: 'postNotificationHandler()' });
-  }
+	return async (req: Request, res: Response) => {
+		res.json({ message: 'postNotificationHandler()' });
+	};
 }

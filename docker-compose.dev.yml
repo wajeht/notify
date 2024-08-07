@@ -1,0 +1,78 @@
+services:
+  notify:
+    container_name: notify
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    depends_on:
+      - redis
+    ports:
+      - '${PORT}:${PORT}'
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - notify-network
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  redis:
+    image: 'redis:7.2.5'
+    container_name: redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD} --port ${REDIS_PORT} --appendonly yes --replica-read-only no
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    networks:
+      - notify-network
+    volumes:
+      - 'redis-data:/data'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-commander:
+    container_name: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - '8081:8081'
+    networks:
+      - notify-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8081/']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mailhog:
+    container_name: mailhot
+    restart: unless-stopped
+    image: mailhog/mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+    networks:
+      - notify-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8025/']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  notify-network:
+    driver: bridge

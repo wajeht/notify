@@ -14,7 +14,7 @@
 		"format:verbose": "prettier --write --cache .",
 		"format": "prettier --write --cache . > /dev/null",
 		"lint:check": "eslint .",
-		"lint": "eslint --fix --cache .",
+		"lint": "eslint --fix --cache --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
 		"migrate:make": "tsx ./node_modules/knex/bin/cli.js migrate:make --knexfile=./src/db/knexfile.ts",
 		"migrate:latest:prod": "knex migrate:latest --knexfile=./dist/src/db/knexfile.js",
 		"migrate:latest": "tsx ./node_modules/knex/bin/cli.js  migrate:latest --knexfile=./src/db/knexfile.ts",

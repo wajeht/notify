@@ -1,9 +1,11 @@
+import ejs from 'ejs';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'node:path';
 import express from 'express';
 import { router } from './router';
 import compression from 'compression';
+import expressLayouts from 'express-ejs-layouts';
 import { errorMiddleware, notFoundMiddleware } from './middleware';
 
 const app = express();
@@ -27,6 +29,16 @@ app.use(cors());
 app.use(compression());
 
 app.use(express.static(path.resolve(path.join(process.cwd(), 'public')), { maxAge: '30d' }));
+
+app.engine('html', ejs.renderFile);
+
+app.set('view engine', 'html');
+
+app.set('views', path.resolve(path.join(process.cwd(), 'src', 'views', 'pages')));
+
+app.set('layout', path.resolve(path.join(process.cwd(), 'src', 'views', 'layouts', 'public.html')));
+
+app.use(expressLayouts);
 
 app.use(router);
 

@@ -1,12 +1,11 @@
 import express from 'express';
 import { catchAsyncErrorMiddleware } from './middleware';
-import { getHealthzHandler } from './api/app.handler';
-import { postNotificationHandler } from 'api/notification.handler';
+import { getHealthzHandler, postNotificationHandler } from 'handler';
 
 const router = express.Router();
 
-router.post('/', catchAsyncErrorMiddleware(postNotificationHandler()));
+router.post('/', catchAsyncErrorMiddleware(getHealthzHandler));
 
-router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler()));
+router.get('/healthz', catchAsyncErrorMiddleware(postNotificationHandler));
 
 export { router };

@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import { smsConfig } from '../config';
+import { smsConfig } from '../../config';
 
 const client = twilio(smsConfig.accountSid, smsConfig.authToken);
 

@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-import { emailConfig, appConfig } from '../config';
+import { emailConfig, appConfig } from '../../config';
 
 const transporter = nodemailer.createTransport(emailConfig);
 
@@ -15,7 +15,7 @@ interface SendMailOptions {
 
 const template = `<h1>hello world</h1>`;
 
-export async function send({
+export async function sendEmail({
 	to = `${domain} <${emailConfig.alias}>`,
 	subject,
 	html: template,

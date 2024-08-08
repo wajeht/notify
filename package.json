@@ -15,14 +15,14 @@
 		"format": "prettier --write --cache . > /dev/null",
 		"lint:check": "eslint .",
 		"lint": "eslint --fix --cache .",
-		"migrate:make": "tsx ./node_modules/knex/bin/cli.js migrate:make --knexfile=./src/database/knexfile.ts",
-		"migrate:latest:prod": "knex migrate:latest --knexfile=./dist/src/database/knexfile.js",
-		"migrate:latest": "tsx ./node_modules/knex/bin/cli.js  migrate:latest --knexfile=./src/database/knexfile.ts",
-		"migrate:rollback": "tsx ./node_modules/knex/bin/cli.js  migrate:rollback --knexfile=./src/database/knexfile.ts",
-		"migrate:rollback:prod": "knex migrate:rollback --knexfile=./dist/src/database/knexfile.js",
-		"seed:make": "tsx ./node_modules/knex/bin/cli.js seed:make --knexfile=./src/database/knexfile.ts",
-		"seed:run": "tsx ./node_modules/knex/bin/cli.js seed:run --knexfile=./src/database/knexfile.ts",
-		"seed:run:prod": "knex seed:run --knexfile=./dist/src/database/knexfile.js"
+		"migrate:make": "tsx ./node_modules/knex/bin/cli.js migrate:make --knexfile=./src/db/knexfile.ts",
+		"migrate:latest:prod": "knex migrate:latest --knexfile=./dist/src/db/knexfile.js",
+		"migrate:latest": "tsx ./node_modules/knex/bin/cli.js  migrate:latest --knexfile=./src/db/knexfile.ts",
+		"migrate:rollback": "tsx ./node_modules/knex/bin/cli.js  migrate:rollback --knexfile=./src/db/knexfile.ts",
+		"migrate:rollback:prod": "knex migrate:rollback --knexfile=./dist/src/db/knexfile.js",
+		"seed:make": "tsx ./node_modules/knex/bin/cli.js seed:make --knexfile=./src/db/knexfile.ts",
+		"seed:run": "tsx ./node_modules/knex/bin/cli.js seed:run --knexfile=./src/db/knexfile.ts",
+		"seed:run:prod": "knex seed:run --knexfile=./dist/src/db/knexfile.js"
 	},
 	"keywords": [
 		"discord",

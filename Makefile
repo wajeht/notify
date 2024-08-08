@@ -35,6 +35,9 @@ shell:
 db-migrate:
 	@docker compose -f docker-compose.dev.yml exec notify npm run migrate:latest
 
+db-rollback:
+	@docker compose -f docker-compose.dev.yml exec notify npm run migrate:rollback
+
 db-seed:
 	@docker compose -f docker-compose.dev.yml exec notify npm run seed:run
 

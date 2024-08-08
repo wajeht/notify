@@ -15,10 +15,12 @@ export async function up(knex: Knex): Promise<void> {
 			table.increments('id').primary();
 			table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE');
 			table.string('name').notNullable();
+			table.boolean('is_active').defaultTo(true);
 			table.timestamps(true, true);
 
 			table.index('user_id');
 			table.index('name');
+			table.index('is_active');
 		})
 		.createTable('channel_types', (table) => {
 			table.increments('id').primary();

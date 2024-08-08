@@ -1,0 +1,19 @@
+body {
+	max-width: 54ch;
+	margin: 0 auto;
+	padding: 1rem 20px;
+	color: #1e1e1e;
+	font-family:
+		Segoe UI,
+		system-ui,
+		-apple-system,
+		sans-serif;
+	font-size: clamp(1rem, -0.875rem + 8.333vw, 1.5rem);
+	line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.2;
+}

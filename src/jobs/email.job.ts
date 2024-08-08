@@ -1,5 +1,5 @@
 import { Queue, Worker } from 'bullmq';
-import { redis } from '../database/db';
+import { redis } from '../db/db';
 import { sendEmail } from './utils/email';
 
 const queueName = 'sendEmailQueue';

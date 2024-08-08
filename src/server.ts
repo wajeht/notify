@@ -2,7 +2,7 @@ import { app } from './app';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
-import { db, redis } from './database/db';
+import { db, redis } from './db/db';
 
 const server: Server = app.listen(appConfig.port);
 

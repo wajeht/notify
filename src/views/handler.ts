@@ -2,12 +2,6 @@ import { Request, Response } from 'express';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
-	const message = 'ok';
-
-	if (req.get('Content-Type') === 'application/json') {
-		return res.status(200).json({ message });
-	}
-
 	return res.setHeader('Content-Type', 'text/html').status(200).send('<p>ok</p>');
 }
 

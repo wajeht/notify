@@ -2,13 +2,13 @@ import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
-		return res.status(404).json({ message: 'not found' });
+		return res.status(404).render('not-found.html');
 	};
 }
 
 export function errorMiddleware() {
 	return async (error: Error, req: Request, res: Response, next: NextFunction) => {
-		return res.status(500).json({ message: 'internal server error' });
+		return res.status(500).render('error.html');
 	};
 }
 

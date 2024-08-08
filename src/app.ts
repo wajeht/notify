@@ -14,6 +14,8 @@ app.use(express.json({ limit: '1mb' }));
 
 app.use(express.urlencoded({ extended: true }));
 
+app.set('trust proxy', true);
+
 app.use(
 	helmet.contentSecurityPolicy({
 		directives: {

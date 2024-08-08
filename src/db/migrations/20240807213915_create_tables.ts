@@ -4,19 +4,12 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema
 		.createTable('users', (table) => {
 			table.increments('id').primary();
+			table.string('username').unique().notNullable();
 			table.string('email').unique().notNullable();
-			table.string('password').notNullable();
-			table.boolean('is_verified').defaultTo(false);
-			table.string('verification_token').nullable();
-			table.timestamp('verification_token_expires_at').nullable();
-			table.string('reset_password_token').nullable();
-			table.timestamp('reset_password_token_expires_at').nullable();
+			table.boolean('is_admin').defaultTo(false);
 			table.timestamps(true, true);
 
 			table.index('email');
-			table.index('is_verified');
-			table.index('verification_token');
-			table.index('reset_password_token');
 		})
 		.createTable('apps', (table) => {
 			table.increments('id').primary();

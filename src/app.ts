@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import path from 'node:path';
 import express from 'express';
-import { router } from './router';
+import { router } from './views/router';
 import compression from 'compression';
 import expressLayouts from 'express-ejs-layouts';
 import { errorMiddleware, notFoundMiddleware } from './middleware';

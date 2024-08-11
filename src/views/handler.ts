@@ -27,5 +27,7 @@ export function postNotificationHandler(req: Request, res: Response) {
 
 // GET /dashboard
 export function getDashboardPageHandler(req: Request, res: Response) {
-	return res.render('dashboard.html');
+	return res.render('dashboard.html', {
+		layout: '../layouts/dashboard.html',
+	});
 }

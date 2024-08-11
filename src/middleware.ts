@@ -1,14 +1,22 @@
+import { NotFoundError } from './error';
 import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
-		return res.status(404).render('not-found.html');
+		throw new NotFoundError();
 	};
 }
 
 export function errorMiddleware() {
-	return async (error: Error, req: Request, res: Response, next: NextFunction) => {
-		return res.status(500).render('error.html');
+	return async (
+		error: Error & { statusCode: number },
+		req: Request,
+		res: Response,
+		next: NextFunction,
+	) => {
+		return res.status(error.statusCode).render('error.html', {
+			message: error.message,
+		});
 	};
 }
 

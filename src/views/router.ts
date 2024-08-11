@@ -3,6 +3,7 @@ import {
 	postNotificationHandler,
 	getHomePageHandler,
 	getDashboardPageHandler,
+	getTermsOfServicePageHandler,
 } from './handler';
 
 import express from 'express';
@@ -14,6 +15,8 @@ const router = express.Router();
 router.get('/', catchAsyncErrorMiddleware(getHomePageHandler));
 
 router.post('/', catchAsyncErrorMiddleware(postNotificationHandler));
+
+router.get('/terms-of-service', catchAsyncErrorMiddleware(getTermsOfServicePageHandler));
 
 router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler));
 

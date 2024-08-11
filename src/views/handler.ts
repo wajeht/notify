@@ -5,6 +5,11 @@ export function getHealthzHandler(req: Request, res: Response) {
 	return res.setHeader('Content-Type', 'text/html').status(200).send('<p>ok</p>');
 }
 
+// GET /terms-of-service
+export function getTermsOfServicePageHandler(req: Request, res: Response) {
+	return res.render('terms-of-service.html');
+}
+
 // GET /
 export function getHomePageHandler(req: Request, res: Response) {
 	return res.render('home.html');

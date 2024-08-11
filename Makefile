@@ -3,7 +3,7 @@ push:
 	@make lint
 	@make format
 	@git add -A
-	@curl -s https://commit.up.railway.app | sh
+	@curl -s https://commit.jaw.dev | sh
 	@git push --no-verify
 
 fix-git:

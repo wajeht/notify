@@ -9,3 +9,11 @@ html {
 [v-cloak] {
 	display: none;
 }
+
+* {
+	font-family:
+		Segoe UI,
+		system-ui,
+		-apple-system,
+		sans-serif;
+}

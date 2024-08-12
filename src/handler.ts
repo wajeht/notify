@@ -63,6 +63,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 	return res.render('apps-id.html', {
 		app,
 		layout: '../layouts/app.html',
+		path: `/apps/${app.id}`,
 	});
 }
 
@@ -75,6 +76,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	return res.render('apps-id-channels.html', {
 		app,
 		layout: '../layouts/app.html',
+		path: `/apps/${app.id}/channels`,
 	});
 }
 
@@ -87,6 +89,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 	return res.render('apps-id-notifications.html', {
 		app,
 		layout: '../layouts/app.html',
+		path: `/apps/${app.id}/notifications`,
 	});
 }
 

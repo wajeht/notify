@@ -17,9 +17,9 @@
 
 						<aside>
 							<ul class="menu bg-base-100 rounded-lg p-5">
-								<li><a href="/apps/<%= app.id %>">App</a></li>
-								<li><a href="/apps/<%= app.id %>/channels">Channels</a></li>
-								<li><a href="/apps/<%= app.id %>/notifications">Notifications</a></li>
+									<li><a class="<%= path === `/apps/${app.id}` ? 'active' : '' %>" href="/apps/<%= app.id %>">App</a></li>
+									<li><a class="<%= /\/apps\/.*\/channels/.test(path) ? 'active' : '' %>" href="/apps/<%= app.id %>/channels">Channels</a></li>
+									<li><a class="<%= /\/apps\/.*\/notifications/.test(path) ? 'active' : '' %>" href="/apps/<%= app.id %>/notifications">Notifications</a></li>
 							</ul>
 						</aside>
 

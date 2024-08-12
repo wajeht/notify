@@ -72,7 +72,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 		.select('*')
 		.from('apps')
 		.where({ id: parseInt(req.params.id!) });
-	return res.render('apps-id.html', {
+	return res.render('apps-id-channels.html', {
 		app,
 		layout: '../layouts/app.html',
 	});
@@ -84,7 +84,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 		.select('*')
 		.from('apps')
 		.where({ id: parseInt(req.params.id!) });
-	return res.render('apps-id.html', {
+	return res.render('apps-id-notifications.html', {
 		app,
 		layout: '../layouts/app.html',
 	});

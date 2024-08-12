@@ -10,7 +10,7 @@
       <% if (apps.length) { %>
         <% apps.forEach(app => { %>
           <div class="p-5 border border-gray-100 rounded-md bg-base-100">
-            <h4><%= app.name %></h4>
+            <a class="link" href="/apps/<%= app.id %>"><h4><%= app.name %></h4></a>
           </div>
         <% }) %>
       <% } %>

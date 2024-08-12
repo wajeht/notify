@@ -54,6 +54,18 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 	});
 }
 
+// GET /apps/:id
+export async function getAppPageHandler(req: Request, res: Response) {
+	const [app] = await db
+		.select('*')
+		.from('apps')
+		.where({ id: parseInt(req.params.id!) });
+	return res.render('apps-id.html', {
+		app,
+		layout: '../layouts/auth.html',
+	});
+}
+
 // GET /apps/create
 export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 	return res.render('apps-create.html', {

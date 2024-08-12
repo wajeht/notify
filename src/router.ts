@@ -3,6 +3,7 @@ import {
 	postNotificationHandler,
 	getHomePageHandler,
 	getAppsPageHandler,
+	getAppPageHandler,
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
 	getProfilePageHandler,
@@ -27,6 +28,8 @@ router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler));
 router.get('/apps', catchAsyncErrorMiddleware(getAppsPageHandler));
 
 router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
+
+router.get('/apps/:id', catchAsyncErrorMiddleware(getAppPageHandler));
 
 router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
 

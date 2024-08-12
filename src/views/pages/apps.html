@@ -3,14 +3,14 @@
 
     <div class="flex justify-between items-center">
       <h2 class="mt-0">Apps</h2>
-      <button class="btn">Create a new app</button>
+      <a class="btn" href="/apps/create">Create a new app</a>
     </div>
 
     <div class="grid grid-cols-3 gap-5 mt-5">
       <% if (apps.length) { %>
         <% apps.forEach(app => { %>
           <div class="p-5 border border-gray-100 rounded-md">
-            <!-- App content here -->
+            <h4><%= app.name %></h4>
           </div>
         <% }) %>
       <% } %>

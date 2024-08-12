@@ -54,6 +54,13 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 	});
 }
 
+// GET /apps/create
+export async function getCreateNewAppPageHandler(req: Request, res: Response) {
+	return res.render('apps-create.html', {
+		layout: '../layouts/auth.html',
+	});
+}
+
 // GET /logout
 export function getLogoutHandler(req: Request, res: Response) {
 	return res.redirect('/');

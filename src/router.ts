@@ -7,6 +7,7 @@ import {
 	getSettingsPageHandler,
 	getProfilePageHandler,
 	getLogoutHandler,
+	getCreateNewAppPageHandler,
 } from './handler';
 
 import express from 'express';
@@ -24,6 +25,8 @@ router.get('/terms-of-service', catchAsyncErrorMiddleware(getTermsOfServicePageH
 router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler));
 
 router.get('/apps', catchAsyncErrorMiddleware(getAppsPageHandler));
+
+router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
 
 router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
 

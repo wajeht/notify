@@ -1,6 +1,6 @@
 import { Queue, Worker } from 'bullmq';
 import { redis } from '../db/db';
-import { sendEmail } from './channel/email';
+// import { sendEmail } from './channel/email';
 
 const queueName = 'sendEmailQueue';
 
@@ -11,7 +11,7 @@ export const sendEmailQueue = new Queue(queueName, {
 const processSendEmailJob = async (job: any) => {
 	try {
 		job.updateProgress(0);
-		await sendEmail({ tenant: job.data.tenant, coach: job.data.coach });
+		// await sendEmail({ tenant: job.data.tenant, coach: job.data.coach });
 		job.updateProgress(100);
 		console.info(`Email successfully sent for tenant: ${job.data.tenant}`);
 	} catch (error) {

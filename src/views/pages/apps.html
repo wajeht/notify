@@ -1,15 +1,15 @@
 <div class="p-10">
-  <div class="mx-auto max-w-6xl w-full prose">
+  <div class="mx-auto max-w-6xl w-full">
 
     <div class="flex justify-between items-center">
-      <h2 class="m-0">Apps</h2>
-      <a class="btn" href="/apps/create">Create a new app</a>
+      <h2 class="font-bold text-xl">Apps</h2>
+      <a class="link" href="/apps/create">Create a new app</a>
     </div>
 
     <div class="grid grid-cols-3 gap-5 mt-5">
       <% if (apps.length) { %>
         <% apps.forEach(app => { %>
-          <div class="p-5 border border-gray-100 rounded-md bg-base-100">
+          <div class="p-5 border border-gray-100 rounded-lg bg-base-100">
             <a class="link" href="/apps/<%= app.id %>"><h4><%= app.name %></h4></a>
           </div>
         <% }) %>

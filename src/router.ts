@@ -9,6 +9,8 @@ import {
 	getProfilePageHandler,
 	getLogoutHandler,
 	getCreateNewAppPageHandler,
+	getAppNotificationsPageHandler,
+	getAppChannelsPageHandler,
 } from './handler';
 
 import express from 'express';
@@ -30,6 +32,10 @@ router.get('/apps', catchAsyncErrorMiddleware(getAppsPageHandler));
 router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
 
 router.get('/apps/:id', catchAsyncErrorMiddleware(getAppPageHandler));
+
+router.get('/apps/:id/channels', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
+
+router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificationsPageHandler));
 
 router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
 

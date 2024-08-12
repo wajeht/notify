@@ -62,7 +62,31 @@ export async function getAppPageHandler(req: Request, res: Response) {
 		.where({ id: parseInt(req.params.id!) });
 	return res.render('apps-id.html', {
 		app,
-		layout: '../layouts/auth.html',
+		layout: '../layouts/app.html',
+	});
+}
+
+// GET /apps/:id/channels
+export async function getAppChannelsPageHandler(req: Request, res: Response) {
+	const [app] = await db
+		.select('*')
+		.from('apps')
+		.where({ id: parseInt(req.params.id!) });
+	return res.render('apps-id.html', {
+		app,
+		layout: '../layouts/app.html',
+	});
+}
+
+// GET /apps/:id/notifications
+export async function getAppNotificationsPageHandler(req: Request, res: Response) {
+	const [app] = await db
+		.select('*')
+		.from('apps')
+		.where({ id: parseInt(req.params.id!) });
+	return res.render('apps-id.html', {
+		app,
+		layout: '../layouts/app.html',
 	});
 }
 

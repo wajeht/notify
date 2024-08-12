@@ -9,7 +9,7 @@
     <div class="grid grid-cols-3 gap-5 mt-5">
       <% if (apps.length) { %>
         <% apps.forEach(app => { %>
-          <div class="card bg-base-100 card-bordered">
+          <div class="card bg-base-100 card-bordered shadow-xl">
             <div class="card-body">
               <a class="link" href="/apps/<%= app.id %>"><h4><%= app.name %></h4></a>
             </div>

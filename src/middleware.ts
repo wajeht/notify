@@ -15,6 +15,7 @@ export function errorMiddleware() {
 		next: NextFunction,
 	) => {
 		return res.status(error.statusCode).render('error.html', {
+			statusCode: error.statusCode,
 			message: error.message,
 		});
 	};

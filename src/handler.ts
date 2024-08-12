@@ -33,21 +33,21 @@ export function postNotificationHandler(req: Request, res: Response) {
 // GET /settings
 export function getSettingsPageHandler(req: Request, res: Response) {
 	return res.render('settings.html', {
-		layout: '../layouts/dashboard.html',
+		layout: '../layouts/auth.html',
 	});
 }
 
 // GET /profile
 export function getProfilePageHandler(req: Request, res: Response) {
 	return res.render('profile.html', {
-		layout: '../layouts/dashboard.html',
+		layout: '../layouts/auth.html',
 	});
 }
 
-// GET /dashboard
-export function getDashboardPageHandler(req: Request, res: Response) {
-	return res.render('dashboard.html', {
-		layout: '../layouts/dashboard.html',
+// GET /apps
+export function getAppsPageHandler(req: Request, res: Response) {
+	return res.render('apps.html', {
+		layout: '../layouts/auth.html',
 	});
 }
 

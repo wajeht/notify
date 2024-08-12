@@ -30,9 +30,28 @@ export function postNotificationHandler(req: Request, res: Response) {
 	});
 }
 
+// GET /settings
+export function getSettingsPageHandler(req: Request, res: Response) {
+	return res.render('settings.html', {
+		layout: '../layouts/dashboard.html',
+	});
+}
+
+// GET /profile
+export function getProfilePageHandler(req: Request, res: Response) {
+	return res.render('profile.html', {
+		layout: '../layouts/dashboard.html',
+	});
+}
+
 // GET /dashboard
 export function getDashboardPageHandler(req: Request, res: Response) {
 	return res.render('dashboard.html', {
 		layout: '../layouts/dashboard.html',
 	});
+}
+
+// GET /logout
+export function getLogoutHandler(req: Request, res: Response) {
+	return res.redirect('/');
 }

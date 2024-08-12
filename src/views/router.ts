@@ -4,6 +4,9 @@ import {
 	getHomePageHandler,
 	getDashboardPageHandler,
 	getTermsOfServicePageHandler,
+	getSettingsPageHandler,
+	getProfilePageHandler,
+	getLogoutHandler,
 } from './handler';
 
 import express from 'express';
@@ -21,5 +24,11 @@ router.get('/terms-of-service', catchAsyncErrorMiddleware(getTermsOfServicePageH
 router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler));
 
 router.get('/dashboard', catchAsyncErrorMiddleware(getDashboardPageHandler));
+
+router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
+
+router.get('/profile', catchAsyncErrorMiddleware(getProfilePageHandler));
+
+router.get('/logout', catchAsyncErrorMiddleware(getLogoutHandler));
 
 export { router };

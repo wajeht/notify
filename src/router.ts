@@ -11,7 +11,7 @@ import {
 
 import express from 'express';
 
-import { catchAsyncErrorMiddleware } from '../middleware';
+import { catchAsyncErrorMiddleware } from './middleware';
 
 const router = express.Router();
 

@@ -3,11 +3,11 @@
 	<!-- head -->
 	<%- include('../components/head.html') %>
 
-	<body class="flex min-h-screen flex-col overflow-auto max-w-full bg-gray-50">
+	<body class="flex min-h-screen flex-col overflow-auto max-w-full">
 		<!-- header -->
 		<%- include('../components/header.html') %>
 
-		<main class="flex-1 relative h-full">
+		<main class="flex-1 relative h-full bg-base-200">
 
 			<div class="p-10">
 				<div class="mx-auto max-w-6xl w-full ">
@@ -16,7 +16,7 @@
 					<div class="sm:grid sm:grid-cols-4 flex flex-col gap-5 mt-5">
 
 						<aside>
-							<ul class="menu bg-base-100 rounded-lg border border-gray-100">
+							<ul class="menu bg-base-100 rounded-lg p-5">
 								<li><a href="/apps/<%= app.id %>">App</a></li>
 								<li><a href="/apps/<%= app.id %>/channels">Channels</a></li>
 								<li><a href="/apps/<%= app.id %>/notifications">Notifications</a></li>

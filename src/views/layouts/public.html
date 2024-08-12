@@ -3,7 +3,14 @@
 	<!-- head -->
 	<%- include('../components/head.html') %>
 
-	<body class="flex min-h-screen flex-col overflow-auto max-w-full">
+	<script>
+  	document.addEventListener('DOMContentLoaded', function () {
+			var savedTheme = localStorage.getItem('theme') || 'light';
+			document.documentElement.setAttribute('data-theme', savedTheme);;
+  	});
+	</script>
+
+	<body class="flex min-h-screen flex-col overflow-auto max-w-full bg-base-200">
 		<%- body %>
 	</body>
 </html>

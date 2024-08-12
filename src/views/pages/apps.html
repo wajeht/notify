@@ -9,15 +9,19 @@
     <div class="grid grid-cols-3 gap-5 mt-5">
       <% if (apps.length) { %>
         <% apps.forEach(app => { %>
-          <div class="p-5 border border-gray-100 rounded-lg bg-base-100">
-            <a class="link" href="/apps/<%= app.id %>"><h4><%= app.name %></h4></a>
+          <div class="card bg-base-100 card-bordered">
+            <div class="card-body">
+              <a class="link" href="/apps/<%= app.id %>"><h4><%= app.name %></h4></a>
+            </div>
           </div>
         <% }) %>
       <% } %>
 
       <% if (!apps.length) { %>
-        <div class="p-5 border border-gray-100 rounded-md bg-base-100">
-          There are no apps currently
+        <div class="card bg-base-100">
+          <div class="card-body">
+            There are no apps currently
+          </div>
         </div>
       <% } %>
     </div>

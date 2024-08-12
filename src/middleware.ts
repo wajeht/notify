@@ -9,13 +9,13 @@ export function notFoundMiddleware() {
 
 export function errorMiddleware() {
 	return async (
-		error: Error & { statusCode: number },
+		error: Error & { statusCode?: number },
 		req: Request,
 		res: Response,
 		next: NextFunction,
 	) => {
-		return res.status(error.statusCode).render('error.html', {
-			statusCode: error.statusCode,
+		return res.status(error.statusCode || 500).render('error.html', {
+			statusCode: error.statusCode || 500,
 			message: error.message,
 		});
 	};

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { db } from './db/db';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -45,8 +46,10 @@ export function getProfilePageHandler(req: Request, res: Response) {
 }
 
 // GET /apps
-export function getAppsPageHandler(req: Request, res: Response) {
+export async function getAppsPageHandler(req: Request, res: Response) {
+	const apps = await db.select('*').from('apps');
 	return res.render('apps.html', {
+		apps,
 		layout: '../layouts/auth.html',
 	});
 }

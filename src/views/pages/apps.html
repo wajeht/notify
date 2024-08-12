@@ -6,8 +6,20 @@
       <button class="btn">Create a new app</button>
     </div>
 
-    <div>
+    <div class="grid grid-cols-3 gap-5 mt-5">
+      <% if (apps.length) { %>
+        <% apps.forEach(app => { %>
+          <div class="p-5 border border-gray-100 rounded-md">
+            <!-- App content here -->
+          </div>
+        <% }) %>
+      <% } %>
 
+      <% if (!apps.length) { %>
+        <div class="p-5 border border-gray-100 rounded-md">
+          There are no apps currently
+        </div>
+      <% } %>
     </div>
 
   </div>

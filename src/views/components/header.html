@@ -4,10 +4,13 @@
     <p>send notification to discord, email, and sms</p>
   </div>
 
-  <nav>
-    <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>;" href="/apps">Home</a>
-    <a style="font-weight: <%= path === '/profile' ? 'bold' : 'normal' %>;" href="/profile">Profile</a>
-    <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>;" href="/settings">Settings</a>
+  <nav style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>;" href="/apps">Apps</a>
+      <a style="font-weight: <%= path === '/profile' ? 'bold' : 'normal' %>;" href="/profile">Profile</a>
+      <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>;" href="/settings">Settings</a>
+    </div>
+
     <a href="/logout">Logout</a>
   </nav>
 </header>

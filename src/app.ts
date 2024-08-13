@@ -22,6 +22,7 @@ app.use(
 			...helmet.contentSecurityPolicy.getDefaultDirectives(),
 			'default-src': ["'self'", 'plausible.jaw.dev'],
 			'script-src': ["'self'", "'unsafe-inline'", 'plausible.jaw.dev'],
+			'script-src-attr': ["'unsafe-inline'"],
 		},
 	}),
 );

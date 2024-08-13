@@ -87,6 +87,19 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	});
 }
 
+// GET /apps/:id/channels/create
+export async function getNewAppChannelPageHandler(req: Request, res: Response) {
+	const [app] = await db
+		.select('*')
+		.from('apps')
+		.where({ id: parseInt(req.params.id!) });
+	return res.render('apps-id-channels-create.html', {
+		app,
+		layout: '../layouts/app.html',
+		path: `/apps/${app.id}/channels/create`,
+	});
+}
+
 // GET /apps/:id/notifications
 export async function getAppNotificationsPageHandler(req: Request, res: Response) {
 	const [app] = await db

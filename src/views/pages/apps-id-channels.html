@@ -1,4 +1,10 @@
-<div style="border-radius: 5px; border-style: dashed; padding: 10px;">
-  <h2>Channels</h2>
-  <pre><%= JSON.stringify(app, null, 2) %></pre>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+  <div style="display: flex; justify-content: space-between;">
+    <h2>Channels</h2>
+    <a href="/apps/<%= app.id %>/channels/create">Create a new channel</a>
+  </div>
+
+  <div style="border-radius: 5px; border-style: dashed; padding: 10px;">
+    <pre><%= JSON.stringify(app, null, 2) %></pre>
+  </div>
 </div>

@@ -1,0 +1,80 @@
+<script>
+  function showForm() {
+    const type = document.getElementById("channel_type").value;
+    document.getElementById("email_form").style.display = type === "email" ? "flex" : "none";
+    document.getElementById("discord_form").style.display = type === "discord" ? "block" : "none";
+    document.getElementById("sms_form").style.display = type === "sms" ? "flex" : "none";
+  }
+</script>
+
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+  <div>
+    <h2>Channels / New</h2>
+    <p>Create a new channel</p>
+  </div>
+
+  <form
+    style="border-style: dashed; border-radius: 5px; padding: 10px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
+    action="/apps/<%= app.id %>/channels" method="POST">
+
+    <div>
+      <label for="channel_type">Channel Type:</label>
+      <select id="channel_type" name="channel_type" required onchange="showForm()">
+        <option value="">Select a type</option>
+        <option value="email">Email</option>
+        <option value="discord">Discord</option>
+        <option value="sms">SMS</option>
+      </select>
+    </div>
+
+    <div id="email_form" style="display:none; flex-direction: column; gap: 10px;">
+      <div>
+        <label for="email_host">Email Host:</label>
+        <input type="text" id="email_host" name="email_host">
+      </div>
+      <div>
+        <label for="email_port">Email Port:</label>
+        <input type="number" id="email_port" name="email_port">
+      </div>
+      <div>
+        <label for="email_alias">Email Alias:</label>
+        <input type="text" id="email_alias" name="email_alias">
+      </div>
+      <div>
+        <label for="email_auth_email">Auth Email:</label>
+        <input type="email" id="email_auth_email" name="email_auth_email">
+      </div>
+      <div>
+        <label for="email_auth_pass">Auth Password:</label>
+        <input type="password" id="email_auth_pass" name="email_auth_pass">
+      </div>
+    </div>
+
+    <div id="discord_form" style="display:none;">
+      <label for="discord_webhook">Webhook URL:</label>
+      <input type="text" id="discord_webhook" name="webhook_url">
+    </div>
+
+    <div id="sms_form" style="display:none; flex-direction: column; gap: 10px;">
+      <div>
+        <label for="sms_account_sid">Twilio Account SID:</label>
+        <input type="text" id="sms_account_sid" name="twilio_account_sid">
+      </div>
+      <div>
+        <label for="sms_auth_token">Twilio Auth Token:</label>
+        <input type="text" id="sms_auth_token" name="twilio_auth_token">
+      </div>
+      <div>
+        <label for="sms_from_phone_number">Twilio From Phone Number:</label>
+        <input type="text" id="sms_from_phone_number" name="twilio_from_phone_number">
+      </div>
+      <div>
+        <label for="sms_phone_number">Twilio Phone Number:</label>
+        <input type="text" id="sms_phone_number" name="twilio_phone_number">
+      </div>
+    </div>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>

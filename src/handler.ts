@@ -8,12 +8,16 @@ export function getHealthzHandler(req: Request, res: Response) {
 
 // GET /terms-of-service
 export function getTermsOfServicePageHandler(req: Request, res: Response) {
-	return res.render('terms-of-service.html');
+	return res.render('terms-of-service.html', {
+		path: '/terms-of-service',
+	});
 }
 
 // GET /
 export function getHomePageHandler(req: Request, res: Response) {
-	return res.render('home.html');
+	return res.render('home.html', {
+		path: '/',
+	});
 }
 
 // POST /
@@ -34,6 +38,7 @@ export function postNotificationHandler(req: Request, res: Response) {
 // GET /settings
 export function getSettingsPageHandler(req: Request, res: Response) {
 	return res.render('settings.html', {
+		path: '/settings',
 		layout: '../layouts/auth.html',
 	});
 }
@@ -41,6 +46,7 @@ export function getSettingsPageHandler(req: Request, res: Response) {
 // GET /profile
 export function getProfilePageHandler(req: Request, res: Response) {
 	return res.render('profile.html', {
+		path: '/profile',
 		layout: '../layouts/auth.html',
 	});
 }
@@ -50,6 +56,7 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 	const apps = await db.select('*').from('apps');
 	return res.render('apps.html', {
 		apps,
+		path: '/apps',
 		layout: '../layouts/auth.html',
 	});
 }
@@ -97,6 +104,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 	return res.render('apps-create.html', {
 		layout: '../layouts/auth.html',
+		path: '/apps/create',
 	});
 }
 

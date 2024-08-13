@@ -1,25 +1,13 @@
-<header class="navbar p-10 sticky top-0 z-10 bg-base-300">
-  <div class="max-w-6xl mx-auto justify-between w-full items-center">
-    <div class="flex-1">
-      <a class="btn btn-ghost text-3xl font-extrabold" href="/">Notify</a>
-    </div>
-
-    <div class="flex-none flex gap-5">
-      <!-- theme -->
-		  <%- include('../components/theme.html') %>
-
-      <div class="dropdown dropdown-end">
-        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-          <div class="w-10 rounded-full">
-            <div class="h-full w-full"></div>
-          </div>
-        </div>
-        <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-          <li><a href="/profile" class="justify-between">Profile</a></li>
-          <li><a href="/settings">Settings</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-      </div>
-    </div>
+<header style="flex: 0;">
+  <div>
+    <h1><a href="/">Notify</a></h1>
+    <p>send notification to discord, email, and sms</p>
   </div>
+
+  <nav>
+    <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>;" href="/apps">Home</a>
+    <a style="font-weight: <%= path === '/profile' ? 'bold' : 'normal' %>;" href="/profile">Profile</a>
+    <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>;" href="/settings">Settings</a>
+    <a href="/logout">Logout</a>
+  </nav>
 </header>

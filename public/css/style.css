@@ -1,0 +1,57 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+body {
+	max-width: 70ch;
+	margin: 0 auto;
+	color: #1e1e1e;
+	font-family:
+		Segoe UI,
+		system-ui,
+		-apple-system,
+		sans-serif;
+	/* font-size: clamp(1rem, -0.875rem + 8.333vw, 1.5rem); */
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}

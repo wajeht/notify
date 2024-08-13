@@ -1,38 +1,28 @@
 <!doctype html>
 <html lang="en">
-	<!-- head -->
 	<%- include('../components/head.html') %>
 
-	<body class="flex min-h-screen flex-col overflow-auto max-w-full bg-base-200">
-		<!-- header -->
+	<body style="display: flex; flex-direction: column; gap: 10px; min-height: 100vh;">
 		<%- include('../components/header.html') %>
 
-		<main class="flex-1 relative h-full ">
+		<main style="flex: 1;">
+			<h2 >Apps / <%= app.id %></h2>
 
-			<div class="p-10">
-				<div class="mx-auto max-w-6xl w-full ">
-					<h2 class="font-medium text-2xl">Apps / <%= app.id %></h2>
-
-					<div class="sm:grid sm:grid-cols-4 flex flex-col gap-5 mt-5">
-
-						<aside>
-							<ul class="menu bg-base-100 rounded-lg p-5">
-									<li><a class="<%= path === `/apps/${app.id}` ? 'active' : '' %>" href="/apps/<%= app.id %>">App</a></li>
-									<li><a class="<%= /\/apps\/.*\/channels/.test(path) ? 'active' : '' %>" href="/apps/<%= app.id %>/channels">Channels</a></li>
-									<li><a class="<%= /\/apps\/.*\/notifications/.test(path) ? 'active' : '' %>" href="/apps/<%= app.id %>/notifications">Notifications</a></li>
-							</ul>
-						</aside>
-
-						<div class="col-span-3">
-							<%- body %>
-						</div>
+			<div style="display: grid; grid-template-columns: 20% 80%;">
+				<aside style="display: inline-block;">
+					<div style="display: flex; flex-direction: column; gap: 5px">
+						<a style="font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>;" href="/apps/<%= app.id %>">App</a>
+						<a style="font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>;" href="/apps/<%= app.id %>/channels">Channels</a>
+						<a style="font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>;" href="/apps/<%= app.id %>/notifications">Notifications</a>
 					</div>
+				</aside>
+
+				<div style="display: inline-block;">
+					<%- body %>
 				</div>
 			</div>
-
 		</main>
 
-		<!-- footer -->
 		<%- include('../components/footer.html') %>
 	</body>
 </html>

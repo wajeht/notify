@@ -1,16 +1,8 @@
 <!doctype html>
 <html lang="en">
-	<!-- head -->
 	<%- include('../components/head.html') %>
 
-	<script>
-  	document.addEventListener('DOMContentLoaded', function () {
-			var savedTheme = localStorage.getItem('theme') || 'light';
-			document.documentElement.setAttribute('data-theme', savedTheme);;
-  	});
-	</script>
-
-	<body class="flex min-h-screen flex-col overflow-auto max-w-full bg-base-200">
+	<body style="display: flex; justify-items: center; align-items: center; height: 100vh;">
 		<%- body %>
 	</body>
 </html>

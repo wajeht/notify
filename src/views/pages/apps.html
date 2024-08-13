@@ -1,30 +1,22 @@
-<div class="p-10">
-  <div class="mx-auto max-w-6xl w-full">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>Apps</h2>
+    <a href="/apps/create">Create a new App</a>
+  </div>
 
-    <div class="flex justify-between items-center">
-      <h2 class="font-medium text-2xl">Apps</h2>
-      <a class="link" href="/apps/create">Create a new app</a>
-    </div>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+    <% if (apps.length) { %>
+      <% apps.forEach(app => { %>
+        <article style="border-style: dashed; padding: 10px; border-radius: 5px;">
+          <a href="/apps/<%= app.id %>"><%= app.name %></a>
+        </article>
+      <% }) %>
+    <% } %>
 
-    <div class="grid grid-cols-3 gap-5 mt-5">
-      <% if (apps.length) { %>
-        <% apps.forEach(app => { %>
-          <div class="card bg-base-100 card-bordered shadow-xl">
-            <div class="card-body">
-              <a class="link" href="/apps/<%= app.id %>"><h4><%= app.name %></h4></a>
-            </div>
-          </div>
-        <% }) %>
-      <% } %>
-
-      <% if (!apps.length) { %>
-        <div class="card bg-base-100">
-          <div class="card-body">
-            There are no apps currently
-          </div>
-        </div>
-      <% } %>
-    </div>
-
+    <% if (!apps.length) { %>
+      <article style="border-style: dashed; padding: 10px; border-radius: 5px;">
+        <p>There are no apps currently</p>
+      </article>
+    <% } %>
   </div>
 </div>

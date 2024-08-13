@@ -108,6 +108,20 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 	});
 }
 
+// POST /apps
+export async function postCreateAppHandler(req: Request, res: Response) {
+	const { name, is_active } = req.body;
+
+	const [app] = await db('apps')
+		.insert({
+			name,
+			is_active: is_active === 'on',
+		})
+		.returning('*');
+
+	return res.redirect(`/apps/${app.id}`);
+}
+
 // GET /logout
 export function getLogoutHandler(req: Request, res: Response) {
 	return res.redirect('/');

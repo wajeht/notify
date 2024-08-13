@@ -3,6 +3,7 @@ import {
 	postNotificationHandler,
 	getHomePageHandler,
 	getAppsPageHandler,
+	postCreateAppHandler,
 	getAppPageHandler,
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
@@ -28,6 +29,8 @@ router.get('/terms-of-service', catchAsyncErrorMiddleware(getTermsOfServicePageH
 router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler));
 
 router.get('/apps', catchAsyncErrorMiddleware(getAppsPageHandler));
+
+router.post('/apps', catchAsyncErrorMiddleware(postCreateAppHandler));
 
 router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
 

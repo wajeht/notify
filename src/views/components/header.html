@@ -1,11 +1,11 @@
-<header style="flex: 0;">
+<header style="flex: 0; display: flex; flex-direction: column; gap: 10px;">
   <div>
     <h1><a href="/">Notify</a></h1>
     <p>send notification to discord, email, and sms</p>
   </div>
 
   <nav style="display: flex; justify-content: space-between; align-items: center;">
-    <div>
+    <div style="display: flex; align-items: center; gap: 10px;">
       <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>;" href="/apps">Apps</a>
       <a style="font-weight: <%= path === '/profile' ? 'bold' : 'normal' %>;" href="/profile">Profile</a>
       <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>;" href="/settings">Settings</a>

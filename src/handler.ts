@@ -76,10 +76,43 @@ export async function getAppPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
-	const [app] = await db
-		.select('*')
+	const app = await db
+		.select(
+			'apps.*',
+			db.raw(`
+			COALESCE(
+				json_agg(
+					json_build_object(
+						'id', app_channels.id,
+						'name', app_channels.name,
+						'app_id', app_channels.app_id,
+						'is_active', app_channels.is_active,
+						'channel_type', channel_types.name,
+						'config', CASE
+							WHEN channel_types.name = 'email' THEN
+								json_build_object('host', email_configs.host, 'port', email_configs.port, 'alias', email_configs.alias, 'auth_email', email_configs.auth_email)
+							WHEN channel_types.name = 'sms' THEN
+								json_build_object('account_sid', sms_configs.account_sid, 'from_phone_number', sms_configs.from_phone_number, 'phone_number', sms_configs.phone_number)
+							WHEN channel_types.name = 'discord' THEN
+								json_build_object('webhook_url', discord_configs.webhook_url)
+							ELSE NULL
+						END
+					)
+				) FILTER (WHERE app_channels.id IS NOT NULL),
+				'[]'
+			) as channels
+		`),
+		)
 		.from('apps')
-		.where({ id: parseInt(req.params.id!) });
+		.leftJoin('app_channels', 'apps.id', 'app_channels.app_id')
+		.leftJoin('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
+		.leftJoin('email_configs', 'app_channels.id', 'email_configs.app_channel_id')
+		.leftJoin('sms_configs', 'app_channels.id', 'sms_configs.app_channel_id')
+		.leftJoin('discord_configs', 'app_channels.id', 'discord_configs.app_channel_id')
+		.where('apps.id', req.params.id)
+		.groupBy('apps.id')
+		.first();
+
 	return res.render('apps-id-channels.html', {
 		app,
 		layout: '../layouts/app.html',

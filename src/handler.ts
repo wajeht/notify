@@ -40,7 +40,7 @@ export function postNotificationHandler(req: Request, res: Response) {
 export function getSettingsPageHandler(req: Request, res: Response) {
 	return res.render('settings.html', {
 		path: '/settings',
-		layout: '../layouts/auth.html',
+		layout: '../layouts/settings.html',
 	});
 }
 

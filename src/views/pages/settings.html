@@ -1,4 +1,44 @@
-<div>
-  <h2>Settings</h2>
-  <p>Settings</p>
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <h2 style="margin: 0;">Settings</h2>
+    <span>settings</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+    <form
+      style="border-style: dashed; border-radius: 5px; padding: 20px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
+      action="#" method="POST">
+
+      <div>
+        <h3>Account</h3>
+        <p>Manage your account details.</p>
+      </div>
+
+      <div>
+        <label for="name">Username:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+
+      <div>
+        <label for="name">Email:</label>
+        <input type="text" id="email" name="email" required>
+      </div>
+
+      <button type="submit">Update</button>
+    </form>
+
+    <form
+      style="border-style: dashed; border-radius: 5px; padding: 20px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
+      action="#" method="POST">
+
+      <div>
+        <h3>Danger Zone</h3>
+        <p>The following actions are destructive and cannot be reversed.</p>
+      </div>
+
+      <button type="submit">Delete my account</button>
+    </form>
+  </div>
+
 </div>

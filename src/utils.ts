@@ -1,10 +1,16 @@
 import path from 'node:path';
 import { db } from './db/db';
+import { appConfig } from './config';
 
 export async function runMigrations() {
 	try {
+		if (appConfig.env !== 'production') {
+			console.log('Cannot run auto database migration on non production');
+			return;
+		}
+
 		const config = {
-			directory: path.resolve(path.join(process.cwd(), 'src', 'db', 'migrations')),
+			directory: path.resolve(path.join(process.cwd(), 'dist', 'src', 'db', 'migrations')),
 		};
 
 		const version = await db.migrate.currentVersion();

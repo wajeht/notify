@@ -14,9 +14,9 @@
 			<div style="display: grid; grid-template-columns: 15% 85%; flex: 1;">
 				<aside style="display: inline-block; border-right: dashed; height: 100%;">
 					<div style="display: flex; flex-direction: column; gap: 10px">
-						<a style="font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>; text-decoration: <%= path === `/apps/${app.id}` ? 'underline' : 'none' %>;" href="/apps/<%= app.id %>">App</a>
-						<a style="font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>; text-decoration: <%= /\/apps\/.*\/channels/.test(path) ? 'underline' : 'none' %>;" href="/apps/<%= app.id %>/channels">Channels</a>
-						<a style="font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>; text-decoration: <%= /\/apps\/.*\/notifications/.test(path) ? 'underline' : 'none' %>;" href="/apps/<%= app.id %>/notifications">Notifications</a>
+						<a style="font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>; <%= path === `/apps/${app.id}` ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>">App</a>
+						<a style="font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/channels/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/channels">Channels</a>
+						<a style="font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/notifications/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/notifications">Notifications</a>
 					</div>
 				</aside>
 

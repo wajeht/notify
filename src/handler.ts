@@ -102,14 +102,23 @@ export async function getNewAppChannelPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id/notifications
 export async function getAppNotificationsPageHandler(req: Request, res: Response) {
-	const [app] = await db
-		.select('*')
+	const app = await db
+		.select(
+			'apps.*',
+			db.raw(
+				"COALESCE(json_agg(notifications.*) FILTER (WHERE notifications.id IS NOT NULL), '[]') as notifications",
+			),
+		)
 		.from('apps')
-		.where({ id: parseInt(req.params.id!) });
+		.leftJoin('notifications', 'apps.id', 'notifications.app_id')
+		.where('apps.id', req.params.id)
+		.groupBy('apps.id')
+		.first();
+
 	return res.render('apps-id-notifications.html', {
 		app,
 		layout: '../layouts/app.html',
-		path: `/apps/${app.id}/notifications`,
+		path: `/apps/${req.params.id}/notifications`,
 	});
 }
 

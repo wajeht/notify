@@ -1,4 +1,11 @@
-<div style="border-radius: 5px; border-style: dashed; padding: 10px;">
+<div style="display: flex; flex-direction: column; gap: 10px;">
   <h2>Notifications</h2>
-  <pre><%= JSON.stringify(app, null, 2) %></pre>
+
+  <% if (app.notifications.length) { %>
+    <% app.notifications.forEach(n => { %>
+      <div style="border-radius: 5px; border-style: dashed; padding: 10px;">
+        <pre><%= JSON.stringify(n, null, 2) %></pre>
+      </div>
+    <% }) %>
+  <% } %>
 </div>

@@ -4,6 +4,9 @@ import { Env } from './types';
 
 if (process.env.APP_ENV === 'production') {
 	dotenv.config({ path: path.resolve(path.join(process.cwd(), '..', '..', '..', '.env')) });
+	console.log('xxxxxxxxxxxxxx');
+	console.log(path.resolve(path.join(process.cwd(), '..', '..', '..', '.env')));
+	console.log('xxxxxxxxxxxxxx');
 } else {
 	dotenv.config({ path: path.resolve(path.join(process.cwd(), '.env')) });
 }

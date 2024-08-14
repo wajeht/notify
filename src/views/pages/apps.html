@@ -1,25 +1,43 @@
 <div style="display: flex; flex-direction: column; gap: 10px;">
+
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
       <h2>Apps</h2>
       <p>Your apps</p>
     </div>
+
     <a href="/apps/create">Create a new app</a>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+
     <% if (apps.length) { %>
       <% apps.forEach(app => { %>
-        <article style="border-style: dashed; padding: 10px; border-radius: 5px;">
-          <a href="/apps/<%= app.id %>"><%= app.name %></a>
+        <article style="border: dashed; padding: 10px; border-radius: 5px;">
+
+          <h3>
+            <a href="/apps/<%= app.id %>"><%= app.name %></a>
+          </h3>
+
+          <div>
+            <p><%= app.is_active ? 'Active' : 'Inactive' %></p>
+          </div>
+
+          <div>
+            <a href="/apps/<%= app.id %>/channels">Channels</a> |
+            <a href="/apps/<%= app.id %>/notifications">Notifications</a>
+          </div>
+
         </article>
       <% }) %>
     <% } %>
 
     <% if (!apps.length) { %>
-      <article style="border-style: dashed; padding: 10px; border-radius: 5px;">
+      <article style="border: dashed; padding: 10px; border-radius: 5px;">
         <p>There are no apps currently</p>
-      </article>
+      /article>
     <% } %>
+
   </div>
+
 </div>

@@ -1,11 +1,29 @@
 <div style="display: flex; flex-direction: column; gap: 10px;">
   <h2>Notifications</h2>
 
-  <% if (app.notifications.length) { %>
-    <% app.notifications.forEach(n => { %>
-      <div style="border-radius: 5px; border-style: dashed; padding: 10px;">
-        <pre><%= JSON.stringify(n, null, 2) %></pre>
+  <% app.notifications.forEach(n => { %>
+    <div style="border-radius: 5px; border: dashed; padding: 10px;">
+
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+
+        <p style="font-weight: bold;">
+          <%= new Date(n.created_at).toLocaleString() %>
+        </p>
+
+        <p><%= n.message %></p>
+
       </div>
-    <% }) %>
+
+      <details>
+        <summary style="cursor: pointer;">Details</summary>
+        <pre style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; white-space: pre-wrap; word-break: break-word;"><%= JSON.stringify(n, null, 2) %></pre>
+      </details>
+    </div>
+  <% }) %>
+
+  <% if (!app.notifications.length) { %>
+    <div style="border-radius: 5px; border: dashed; padding: 10px;">
+      <p>There are no notifications currently</p>
+    </div>
   <% } %>
 </div>

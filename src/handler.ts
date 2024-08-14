@@ -66,7 +66,18 @@ export async function getJobsPageHandler(req: Request, res: Response) {
 
 // GET /apps
 export async function getAppsPageHandler(req: Request, res: Response) {
-	const apps = await db.select('*').from('apps');
+	const apps = await db
+		.select(
+			'apps.*',
+			db.raw(
+				'(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id) as channel_count',
+			),
+			db.raw(
+				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
+			),
+		)
+		.from('apps');
+
 	return res.render('apps.html', {
 		apps,
 		path: '/apps',

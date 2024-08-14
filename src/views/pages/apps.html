@@ -1,4 +1,4 @@
-<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
@@ -9,11 +9,11 @@
     <a href="/apps/create">Create a new app</a>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
     <% if (apps.length) { %>
       <% apps.forEach(app => { %>
-        <article style="border: dashed; padding: 10px; border-radius: 5px;">
+        <article style="border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px;">
 
           <h3>
             <a href="/apps/<%= app.id %>"><%= app.name %></a>
@@ -33,7 +33,7 @@
     <% } %>
 
     <% if (!apps.length) { %>
-      <article style="border: dashed; padding: 10px; border-radius: 5px;">
+      <article style="border: dashed; padding: 20px; border-radius: 5px;">
         <p>There are no apps currently</p>
       /article>
     <% } %>

@@ -1,10 +1,10 @@
-<div style="display: flex; flex-direction: column; gap: 10px; max-width: 100%;">
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
   <h2>Notifications</h2>
 
   <% app.notifications.forEach(n => { %>
-    <div style="border-radius: 5px; border: dashed; padding: 10px;">
+    <div style="border-radius: 5px; border: dashed; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
 
-      <div style="display: flex; align-items: baseline; gap: 10px;">
+      <div style="display: flex; align-items: baseline; gap: 20px;">
 
         <p style="font-weight: bold;">
           <%= new Date(n.created_at).toLocaleString() %>
@@ -22,7 +22,7 @@
   <% }) %>
 
   <% if (!app.notifications.length) { %>
-    <div style="border-radius: 5px; border: dashed; padding: 10px; max-width: fit-content;">
+    <div style="border-radius: 5px; border: dashed; padding: 20px; max-width: fit-content;">
       <p>There are no notifications currently</p>
     </div>
   <% } %>

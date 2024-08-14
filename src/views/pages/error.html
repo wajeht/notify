@@ -1,9 +1,13 @@
-<div>
-  <h1>
-    <%= statusCode %>
-  </h1>
+<div style="display: flex; flex-direction: column; gap: 20px; width: fit-content; margin: 0 auto;">
 
-  <p>
-    <%= message %>
-  </p>
+  <div style="display: flex; gap: 20px; align-items: center;">
+    <h1 style="margin: 0; padding-right: 40px; border-right: dashed;">
+      <%= statusCode %>
+    </h1>
+
+    <p style="margin: 0; padding-left: 20px;">
+      <%= message %>
+    </p>
+  </div>
+
 </div>

@@ -1,22 +1,22 @@
-<div style="display: flex; flex-direction: column; gap: 10px; max-width: 100%;">
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
 
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
     <h2 style="margin: 0;">Channels</h2>
     <a href="/apps/<%= app.id %>/channels/create" style="white-space: nowrap;">Create a new channel</a>
   </div>
 
-  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
     <% if (app.channels.length) { %>
       <% app.channels.forEach(c => { %>
-        <article style="border-style: dashed; padding: 10px; border-radius: 5px;">
+        <article style="border-style: dashed; padding: 20px; border-radius: 5px;">
           <pre><%= JSON.stringify(c, null, 2) %></pre>
         </article>
       <% }) %>
     <% } %>
 
     <% if (!app.channels.length) { %>
-      <article style="border-style: dashed; padding: 10px; border-radius: 5px; max-width: 100%;">
+      <article style="border-style: dashed; padding: 20px; border-radius: 5px; max-width: 100%;">
         <p>There are no channels currently</p>
       </article>
     <% } %>

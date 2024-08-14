@@ -6,12 +6,7 @@ const developmentEnvironmentOnly = appConfig.env === 'development';
 
 const knexConfig: Knex.Config = {
 	client: 'pg',
-	connection: {
-		host: databaseConfig.host,
-		user: databaseConfig.username,
-		password: databaseConfig.password,
-		database: databaseConfig.database,
-	},
+	connection: `postgresql://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}/${databaseConfig.database}`,
 	migrations: {
 		extension: 'ts',
 		tableName: 'knex_migrations',

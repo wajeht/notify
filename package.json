@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"prepare": "husky",
-		"start": "npm run build && npm run db:prepare:prod && node --no-warnings ./dist/src/server.js",
-		"dev": "npm run db:prepare:dev && tsx watch --no-warnings --clear-screen=false ./src/server.ts",
+		"start": "export APP_ENV=production && npm run build && npm run db:prepare:prod && node --no-warnings ./dist/src/server.js",
+		"dev": "export APP_ENV=development && npm run db:prepare:dev && tsx watch --no-warnings --clear-screen=false ./src/server.ts",
 		"build:server": "tsc",
 		"build": "npm run build:server",
 		"test": "echo 'not yet'",

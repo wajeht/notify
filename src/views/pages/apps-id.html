@@ -2,11 +2,14 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-    <h2 style="margin: 0;">App</h2>
-    <p>App details</p>
+      <h2 style="margin: 0;">App</h2>
+      <p>App details</p>
     </div>
 
-    <a href="/apps/<%= app.id %>/edit">Edit</a>
+    <div style="display: flex; gap: 20px;">
+      <a href="/apps/<%= app.id %>/edit">Edit</a>
+      <a href="/apps/<%= app.id %>/edit">Delete</a>
+    </div>
   </div>
 
   <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; width: fit-content; max-width: 100%;">

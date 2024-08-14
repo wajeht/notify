@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from './db/db';
+import { NotFoundError } from 'error';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -80,6 +81,26 @@ export async function getAppPageHandler(req: Request, res: Response) {
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}`,
 	});
+}
+
+// POST /apps/:id
+export async function postAppUpdateHandler(req: Request, res: Response) {
+	const { name, method } = req.body;
+
+	const id = parseInt(req.params.id!);
+
+	const is_active = req.body.is_active === 'on' ? true : false;
+
+	if (method === 'patch') {
+		await db('apps').where({ id }).update({
+			is_active,
+			name,
+			updated_at: db.fn.now(),
+		});
+		return res.redirect(`/apps/${id}`);
+	}
+
+	throw new NotFoundError();
 }
 
 // GET /apps/:id/edit

@@ -1,11 +1,12 @@
 <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+
   <div>
     <h2>App / Edit</h2>
     <p>Edit app</p>
   </div>
 
   <form
-    style=" border-style: dashed; border-radius: 5px; padding: 20px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
+    style="border-style: dashed; border-radius: 5px; padding: 20px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
     action="/apps/<%= app.id %>" method="POST">
 
     <input type="hidden" id="method" name="method" value="patch">
@@ -17,7 +18,7 @@
 
     <div>
       <label for="is_active">Active:</label>
-      <input type="checkbox" id="is_active" name="is_active">
+      <input type="checkbox" id="is_active" name="is_active" <%= app.is_active ? 'checked' : '' %>>
     </div>
 
     <button type="submit">Update</button>

@@ -45,16 +45,20 @@ export function getSettingsPageHandler(req: Request, res: Response) {
 }
 
 // GET /notifications
-export function getNotificationsPageHandler(req: Request, res: Response) {
+export async function getNotificationsPageHandler(req: Request, res: Response) {
+	const notifications = await db.select('*').from('notifications').orderBy('created_at', 'desc');
 	return res.render('notifications.html', {
+		notifications,
 		path: '/notifications',
 		layout: '../layouts/auth.html',
 	});
 }
 
 // GET /jobs
-export function getJobsPageHandler(req: Request, res: Response) {
+export async function getJobsPageHandler(req: Request, res: Response) {
+	const jobs = await db.select('*').from('jobs').orderBy('created_at', 'desc');
 	return res.render('jobs.html', {
+		jobs,
 		path: '/jobs',
 		layout: '../layouts/auth.html',
 	});

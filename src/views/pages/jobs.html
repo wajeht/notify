@@ -1,4 +1,69 @@
-<div>
-  <h2>Jobs</h2>
-  <p>jobs</p>
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h2>Jobs</h2>
+      <p>All jobs</p>
+    </div>
+
+    <a href="#">Run all failed jobs</a>
+  </div>
+
+  <% jobs.forEach(job => { %>
+    <div style="border-radius: 5px; border: dashed; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0;">Job ID: <%= job.id %></h3>
+
+        <span style="font-weight: bold; color: <%= job.status === 'pending' ? 'orange' : job.status === 'completed' ? 'green' : 'red' %>;">
+          <%= job.status.toUpperCase() %>
+        </span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px;">
+        <strong>Notification ID:</strong>
+        <span><%= job.notification_id %></span>
+        <strong>App Channel ID:</strong>
+        <span><%= job.app_channel_id %></span>
+        <strong>Attempts:</strong>
+        <span><%= job.attempts %></span>
+        <strong>Created:</strong>
+        <span><%= new Date(job.created_at).toLocaleString() %></span>
+        <strong>Updated:</strong>
+        <span><%= new Date(job.updated_at).toLocaleString() %></span>
+        <strong>Processed:</strong>
+        <span><%= job.processed_at ? new Date(job.processed_at).toLocaleString() : 'Not processed yet' %></span>
+      </div>
+
+      <% if (job.error_message) { %>
+        <div>
+          <strong>Error Message:</strong>
+          <p style="color: red; margin: 5px 0;"><%= job.error_message %></p>
+        </div>
+      <% } %>
+
+      <% if (job.result && job.result.length) { %>
+        <div>
+          <strong>Result:</strong>
+          <ul style="margin: 5px 0;">
+            <% job.result.forEach(item => { %>
+              <li><%= item %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <details>
+        <summary>Raw Details</summary>
+        <pre style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto;"><%= JSON.stringify(job, null, 2) %></pre>
+      </details>
+
+    </div>
+  <% }) %>
+
+  <% if (!jobs.length) { %>
+    <div style="border-radius: 5px; border: dashed; padding: 20px; max-width: fit-content;">
+      <p>There are no jobs currently</p>
+    </div>
+  <% } %>
 </div>

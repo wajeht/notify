@@ -82,6 +82,19 @@ export async function getAppPageHandler(req: Request, res: Response) {
 	});
 }
 
+// GET /apps/:id/edit
+export async function getAppEditPageHandler(req: Request, res: Response) {
+	const [app] = await db
+		.select('*')
+		.from('apps')
+		.where({ id: parseInt(req.params.id!) });
+	return res.render('apps-id-edit.html', {
+		app,
+		layout: '../layouts/app.html',
+		path: `/apps/${app.id}`,
+	});
+}
+
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	const app = await db

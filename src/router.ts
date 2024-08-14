@@ -4,6 +4,7 @@ import {
 	getHomePageHandler,
 	getAppsPageHandler,
 	getJobsPageHandler,
+	getAppEditPageHandler,
 	getNotificationsPageHandler,
 	postCreateAppHandler,
 	getNewAppChannelPageHandler,
@@ -37,6 +38,8 @@ router.post('/apps', catchAsyncErrorMiddleware(postCreateAppHandler));
 router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
 
 router.get('/apps/:id', catchAsyncErrorMiddleware(getAppPageHandler));
+
+router.get('/apps/:id/edit', catchAsyncErrorMiddleware(getAppEditPageHandler));
 
 router.get('/apps/:id/channels', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
 

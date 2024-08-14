@@ -76,7 +76,8 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
 			),
 		)
-		.from('apps');
+		.from('apps')
+		.orderBy('apps.created_at', 'desc');
 
 	return res.render('apps.html', {
 		apps,

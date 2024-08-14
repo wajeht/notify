@@ -43,10 +43,18 @@ export function getSettingsPageHandler(req: Request, res: Response) {
 	});
 }
 
-// GET /profile
-export function getProfilePageHandler(req: Request, res: Response) {
-	return res.render('profile.html', {
-		path: '/profile',
+// GET /notifications
+export function getNotificationsPageHandler(req: Request, res: Response) {
+	return res.render('settings.html', {
+		path: '/notifications',
+		layout: '../layouts/auth.html',
+	});
+}
+
+// GET /jobs
+export function getJobsPageHandler(req: Request, res: Response) {
+	return res.render('jobs.html', {
+		path: '/jobs',
 		layout: '../layouts/auth.html',
 	});
 }

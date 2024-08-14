@@ -6,14 +6,13 @@
 
   <nav style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 10px;">
-      <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>;" href="/apps">Apps</a>
-      <a style="font-weight: <%= path === '/jobs' ? 'bold' : 'normal' %>;" href="/jobs">Jobs</a>
-      <a style="font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>;" href="/notifications">Notifications</a>
+      <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/apps' ? 'underline' : 'none' %>;" href="/apps">Apps</a>
+      <a style="font-weight: <%= path === '/jobs' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/jobs' ? 'underline' : 'none' %>;" href="/jobs">Jobs</a>
+      <a style="font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'underline' : 'none' %>;" href="/notifications">Notifications</a>
     </div>
 
     <div style="display: flex; align-items: center; gap: 10px;">
-      <a style="font-weight: <%= path === '/profile' ? 'bold' : 'normal' %>;" href="/profile">Profile</a>
-      <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>;" href="/settings">Settings</a>
+      <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/settings' ? 'underline' : 'none' %>;" href="/settings">Settings</a>
       <a href="/logout">Logout</a>
     </div>
   </nav>

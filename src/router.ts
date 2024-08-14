@@ -3,12 +3,13 @@ import {
 	postNotificationHandler,
 	getHomePageHandler,
 	getAppsPageHandler,
+	getJobsPageHandler,
+	getNotificationsPageHandler,
 	postCreateAppHandler,
 	getNewAppChannelPageHandler,
 	getAppPageHandler,
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
-	getProfilePageHandler,
 	getLogoutHandler,
 	getCreateNewAppPageHandler,
 	getAppNotificationsPageHandler,
@@ -45,7 +46,9 @@ router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificati
 
 router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
 
-router.get('/profile', catchAsyncErrorMiddleware(getProfilePageHandler));
+router.get('/jobs', catchAsyncErrorMiddleware(getJobsPageHandler));
+
+router.get('/notifications', catchAsyncErrorMiddleware(getNotificationsPageHandler));
 
 router.get('/logout', catchAsyncErrorMiddleware(getLogoutHandler));
 

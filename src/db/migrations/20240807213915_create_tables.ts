@@ -15,6 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.increments('id').primary();
 			table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE');
 			table.string('name').notNullable();
+			table.string('description').nullable();
 			table.boolean('is_active').defaultTo(true);
 			table.timestamps(true, true);
 

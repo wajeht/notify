@@ -45,7 +45,7 @@ export function getSettingsPageHandler(req: Request, res: Response) {
 
 // GET /notifications
 export function getNotificationsPageHandler(req: Request, res: Response) {
-	return res.render('settings.html', {
+	return res.render('notifications.html', {
 		path: '/notifications',
 		layout: '../layouts/auth.html',
 	});

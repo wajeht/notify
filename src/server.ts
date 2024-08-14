@@ -3,14 +3,19 @@ import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
 import { db, redis } from './db/db';
+import { runMigrations } from './utils';
 
 const server: Server = app.listen(appConfig.port);
 
-server.on('listening', () => {
+server.on('listening', async () => {
 	const addr: string | AddressInfo | null = server.address();
 	const bind: string =
 		typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
 	console.info(`Server is listening on ${bind}`);
+
+	if (appConfig.env === 'production') {
+		await runMigrations();
+	}
 });
 
 server.on('error', (error: NodeJS.ErrnoException) => {

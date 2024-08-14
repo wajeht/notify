@@ -193,7 +193,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 		.select(
 			'apps.*',
 			db.raw(
-				"COALESCE(json_agg(notifications.*) FILTER (WHERE notifications.id IS NOT NULL), '[]') as notifications",
+				"COALESCE(json_agg(notifications.* ORDER BY notifications.created_at DESC) FILTER (WHERE notifications.id IS NOT NULL), '[]') as notifications",
 			),
 		)
 		.from('apps')

@@ -9,8 +9,6 @@
     style="border-style: dashed; border-radius: 5px; padding: 20px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
     action="/apps/<%= app.id %>" method="POST">
 
-    <input type="hidden" id="method" name="method" value="patch">
-
     <div>
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" value="<%= app.name %>" required>

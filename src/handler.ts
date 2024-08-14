@@ -85,22 +85,19 @@ export async function getAppPageHandler(req: Request, res: Response) {
 
 // POST /apps/:id
 export async function postAppUpdateHandler(req: Request, res: Response) {
-	const { name, method } = req.body;
+	const { name } = req.body;
 
 	const id = parseInt(req.params.id!);
 
 	const is_active = req.body.is_active === 'on' ? true : false;
 
-	if (method === 'patch') {
-		await db('apps').where({ id }).update({
-			is_active,
-			name,
-			updated_at: db.fn.now(),
-		});
-		return res.redirect(`/apps/${id}`);
-	}
+	await db('apps').where({ id }).update({
+		is_active,
+		name,
+		updated_at: db.fn.now(),
+	});
 
-	throw new NotFoundError();
+	return res.redirect(`/apps/${id}`);
 }
 
 // GET /apps/:id/edit

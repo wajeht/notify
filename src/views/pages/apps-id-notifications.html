@@ -1,4 +1,4 @@
-<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; flex-direction: column; gap: 10px; max-width: 100%;">
   <h2>Notifications</h2>
 
   <% app.notifications.forEach(n => { %>
@@ -22,7 +22,7 @@
   <% }) %>
 
   <% if (!app.notifications.length) { %>
-    <div style="border-radius: 5px; border: dashed; padding: 10px;">
+    <div style="border-radius: 5px; border: dashed; padding: 10px; max-width: fit-content;">
       <p>There are no notifications currently</p>
     </div>
   <% } %>

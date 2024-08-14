@@ -1,4 +1,21 @@
-<div style="border-radius: 5px; border-style: dashed; padding: 10px;">
-  <h2>App</h2>
-  <pre><%= JSON.stringify(app, null, 2) %></pre>
+<div style="display: flex; flex-direction: column; gap: 10px; max-width: 100%;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="margin: 0;">App</h2>
+    <a href="/apps/<%= app.id %>/edit">Edit</a>
+  </div>
+
+  <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px; border: dashed; padding: 10px; border-radius: 5px; width: fit-content; max-width: 100%;">
+    <div><strong>ID:</strong></div>
+    <div><%= app.id %></div>
+    <div><strong>Name:</strong></div>
+    <div><%= app.name %></div>
+    <div><strong>Status:</strong></div>
+    <div><%= app.is_active ? 'Active' : 'Inactive' %></div>
+    <div><strong>Created:</strong></div>
+    <div><%= new Date(app.created_at).toLocaleString() %></div>
+    <div><strong>Updated:</strong></div>
+    <div><%= new Date(app.updated_at).toLocaleString() %></div>
+  </div>
+
 </div>

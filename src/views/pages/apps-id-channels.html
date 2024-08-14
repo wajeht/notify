@@ -10,7 +10,7 @@
     <% if (app.channels.length) { %>
       <% app.channels.forEach(c => { %>
         <article style="border-style: dashed; padding: 10px; border-radius: 5px;">
-          <pre style="white-space: pre-wrap; word-break: break-word;"><%= JSON.stringify(c, null, 2) %></pre>
+          <pre><%= JSON.stringify(c, null, 2) %></pre>
         </article>
       <% }) %>
     <% } %>

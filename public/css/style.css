@@ -9,15 +9,14 @@
 }
 
 body {
-	max-width: 100ch;
-	margin: 0 auto;
+	padding: 1em 2rem;
 	color: #1e1e1e;
 	font-family:
 		Segoe UI,
 		system-ui,
 		-apple-system,
 		sans-serif;
-	/* font-size: clamp(1rem, -0.875rem + 8.333vw, 1.5rem); */
+	font-size: clamp(1rem, 0.95rem + 0.25vw, 1.25rem);
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
 }
@@ -44,8 +43,21 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+pre {
 	overflow-wrap: break-word;
+}
+
+details {
+	cursor: pointer;
+}
+
+pre {
+	overflow-wrap: break-word;
+	white-space: pre-wrap;
+	background-color: #f8f9fa;
+	padding: 10px;
+	border-radius: 5px;
 }
 
 a {

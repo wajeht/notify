@@ -17,6 +17,10 @@ const knexConfig: Knex.Config = {
 	pool: {
 		min: 2,
 		max: 10,
+		afterCreate: (conn: any, done: (err: Error | null, conn: any) => void) => {
+			console.info('New database connection established');
+			done(null, conn);
+		},
 	},
 };
 

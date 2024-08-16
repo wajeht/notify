@@ -15,7 +15,7 @@
       <% apps.forEach(app => { %>
         <article style="border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px;">
 
-          <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px; justify-content: space-between;">
             <h3>
               <a href="/apps/<%= app.id %>"><%= app.name %></a>
             </h3>
@@ -23,9 +23,8 @@
             <span style="
                   display: inline-block;
                   padding: 0px 5px;
-                  font-size: 0.75rem;
                   border-radius: 5px;
-                  <%= app.is_active ? 'color: red; border: 1px solid red;' : 'color: green; border: 1px solid green;' %>"
+                  <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
             >
               <%= app.is_active ? 'Active' : 'Inactive' %>
             </span>

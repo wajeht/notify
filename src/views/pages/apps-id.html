@@ -25,14 +25,14 @@
         width: fit-content;
         padding: 0px 5px;
         border-radius: 5px;
-        <%= app.is_active ? 'color: red; border: 1px solid red;' : 'color: green; border: 1px solid green;' %>"
+        <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
     >
       <%= app.is_active ? 'Active' : 'Inactive' %>
     </div>
 
     <% if(app.url) { %>
       <div><strong>Url:</strong></div>
-      <a href="<%= app.url %>"><%= app.url %></a>
+      <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer"><%= app.url %> ↗</a>
     <% } %>
 
     <% if(app.description) { %>

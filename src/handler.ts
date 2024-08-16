@@ -136,31 +136,53 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 		.select(
 			'apps.*',
 			db.raw(`
-      COALESCE(
-        json_agg(
-          json_build_object(
-            'id', app_channels.id,
-            'name', app_channels.name,
-            'app_id', app_channels.app_id,
-            'is_active', app_channels.is_active,
-            'channel_type', channel_types.name,
-            'created_at', app_channels.created_at,
-            'updated_at', app_channels.updated_at,
-            'config', CASE
-              WHEN channel_types.name = 'email' THEN
-                json_build_object('host', email_configs.host, 'port', email_configs.port, 'alias', email_configs.alias, 'auth_email', email_configs.auth_email)
-              WHEN channel_types.name = 'sms' THEN
-                json_build_object('account_sid', sms_configs.account_sid, 'from_phone_number', sms_configs.from_phone_number, 'phone_number', sms_configs.phone_number)
-              WHEN channel_types.name = 'discord' THEN
-                json_build_object('webhook_url', discord_configs.webhook_url)
-              ELSE NULL
-            END
-          )
-          ORDER BY app_channels.created_at DESC
-        ) FILTER (WHERE app_channels.id IS NOT NULL),
-        '[]'
-      ) as channels
-    `),
+    COALESCE(
+      json_agg(
+        json_build_object(
+          'id', app_channels.id,
+          'app_id', app_channels.app_id,
+          'channel_type', channel_types.name,
+          'config', CASE
+            WHEN channel_types.name = 'email' THEN
+              json_build_object(
+                'id', email_configs.id,
+                'name', email_configs.name,
+                'is_active', email_configs.is_active,
+                'host', email_configs.host,
+                'port', email_configs.port,
+                'alias', email_configs.alias,
+                'auth_email', email_configs.auth_email,
+                'created_at', email_configs.created_at,
+                'updated_at', email_configs.updated_at
+              )
+            WHEN channel_types.name = 'sms' THEN
+              json_build_object(
+                'id', sms_configs.id,
+                'name', sms_configs.name,
+                'is_active', sms_configs.is_active,
+                'account_sid', sms_configs.account_sid,
+                'from_phone_number', sms_configs.from_phone_number,
+                'phone_number', sms_configs.phone_number,
+                'created_at', sms_configs.created_at,
+                'updated_at', sms_configs.updated_at
+              )
+            WHEN channel_types.name = 'discord' THEN
+              json_build_object(
+                'id', discord_configs.id,
+                'name', discord_configs.name,
+                'is_active', discord_configs.is_active,
+                'webhook_url', discord_configs.webhook_url,
+                'created_at', discord_configs.created_at,
+                'updated_at', discord_configs.updated_at
+              )
+            ELSE NULL
+          END
+        )
+        ORDER BY app_channels.created_at DESC
+      ) FILTER (WHERE app_channels.id IS NOT NULL),
+      '[]'
+    ) as channels
+  `),
 		)
 		.from('apps')
 		.leftJoin('app_channels', 'apps.id', 'app_channels.app_id')
@@ -207,14 +229,14 @@ export async function postCreateAppDiscordChannelConfigHandler(req: Request, res
 		.insert({
 			app_id: id,
 			channel_type_id: channel_type.id,
-			name,
-			is_active: is_active === 'on',
 		})
 		.returning('*');
 
 	await db('discord_configs').insert({
 		app_channel_id: app_channel.id,
 		webhook_url: webhook_url,
+		name,
+		is_active: is_active === 'on',
 	});
 
 	return res.redirect(`/apps/${id}/channels`);

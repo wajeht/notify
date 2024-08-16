@@ -57,6 +57,42 @@ export async function cleanDatabase() {
 	}
 }
 
+export async function runFreshMigration() {
+	try {
+		if (appConfig.env !== 'production') {
+			console.log('Cannot run fresh migration on non-production environment');
+			return;
+		}
+
+		const config = {
+			directory: path.resolve(path.join(process.cwd(), 'dist', 'src', 'db', 'migrations')),
+		};
+
+		console.log('Rolling back all migrations...');
+		await db.migrate.rollback(config, true);
+		console.log('All migrations have been rolled back.');
+
+		console.log('Running fresh migrations...');
+		const [batchNo, migrations] = await db.migrate.latest(config);
+
+		if (migrations.length === 0) {
+			console.log('No migrations were run. Database schema is up to date.');
+		} else {
+			const migrationList = migrations
+				.map((migration: any) => migration.split('_')[1].split('.')[0])
+				.join(', ');
+			console.log(`Fresh migrations completed for ${migrationList} schema`);
+			console.log(`Batch ${batchNo} run: ${migrations.length} migrations`);
+		}
+
+		const currentVersion = await db.migrate.currentVersion();
+		console.log(`Current database version: ${currentVersion}`);
+	} catch (error) {
+		console.error('Error running fresh migration:', error);
+		throw error;
+	}
+}
+
 export async function runMigrations() {
 	try {
 		if (appConfig.env !== 'production') {

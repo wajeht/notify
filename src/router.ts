@@ -14,6 +14,7 @@ import {
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
 	postCleanDatabaseHandler,
+	postMigrateDatabaseHandler,
 	getLogoutHandler,
 	getCreateNewAppPageHandler,
 	getAppNotificationsPageHandler,
@@ -57,6 +58,8 @@ router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
 router.post('/settings/clean-database', catchAsyncErrorMiddleware(postCleanDatabaseHandler));
 
 router.post('/settings/seed-database', catchAsyncErrorMiddleware(postSeedDatabaseHandler));
+
+router.post('/settings/migrate-database', catchAsyncErrorMiddleware(postMigrateDatabaseHandler));
 
 router.get('/jobs', catchAsyncErrorMiddleware(getJobsPageHandler));
 

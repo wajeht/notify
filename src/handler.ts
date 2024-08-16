@@ -1,6 +1,6 @@
 import { db } from './db/db';
 import { Request, Response } from 'express';
-import { cleanDatabase, seedDatabase } from './utils';
+import { cleanDatabase, runFreshMigration, runMigrations, seedDatabase } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -223,6 +223,12 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 // POST /settings/clean-database
 export async function postCleanDatabaseHandler(req: Request, res: Response) {
 	await cleanDatabase();
+	return res.redirect('back');
+}
+
+// POST /settings/migrate-database
+export async function postMigrateDatabaseHandler(req: Request, res: Response) {
+	await runFreshMigration();
 	return res.redirect('back');
 }
 

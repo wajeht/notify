@@ -67,3 +67,25 @@ a {
 a:hover {
 	text-decoration: underline;
 }
+
+dialog {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 5px;
+	margin: 0;
+}
+
+.no-style-btn {
+	background: none;
+	border: none;
+	color: #0000ee;
+	text-decoration: none;
+	cursor: pointer;
+	padding: 0;
+	font: inherit;
+}
+.no-style-btn:hover {
+	text-decoration: underline;
+}

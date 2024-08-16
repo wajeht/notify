@@ -6,10 +6,10 @@
   </div>
 
   <form
-    style="border-style: dashed; border-radius: 5px; padding: 20px; width: fit-content; display: flex; flex-direction: column; gap: 10px;"
+    style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 10px;"
     action="/apps/<%= app.id %>" method="POST">
 
-    <div>
+    <div style="display: flex; flex-direction: column; gap: 5px;">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" value="<%= app.name %>" required>
     </div>
@@ -17,6 +17,16 @@
     <div>
       <label for="is_active">Active:</label>
       <input type="checkbox" id="is_active" name="is_active" <%= app.is_active ? 'checked' : '' %>>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+      <label for="url">Url:</label>
+      <input type="url" id="url" name="url" value="<%= app.url %>" required>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+      <label for="description">Description:</label>
+      <textarea name="description" id="description"><%= app.description %></textarea>
     </div>
 
     <button type="submit">Update</button>

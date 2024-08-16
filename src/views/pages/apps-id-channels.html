@@ -13,6 +13,9 @@
           <div><strong>ID:</strong></div>
           <div><%= channel.id %></div>
 
+          <div><strong>Name:</strong></div>
+          <div><%= channel.config.name %></div>
+
           <div><strong>Type:</strong></div>
           <div><%= channel.channel_type %></div>
 
@@ -23,16 +26,16 @@
               width: fit-content;
               padding: 0px 5px;
               border-radius: 5px;
-              <%= channel.is_active ? 'color: green; border: 1px solid green;' : 'color: red; border: 1px solid red;' %>"
+              <%= channel.config.is_active ? 'color: green; border: 1px solid green;' : 'color: red; border: 1px solid red;' %>"
           >
-            <%= channel.is_active ? 'Active' : 'Inactive' %>
+            <%= channel.config.is_active ? 'Active' : 'Inactive' %>
           </div>
 
           <div><strong>Created:</strong></div>
-          <div><%= new Date(channel.created_at).toLocaleString() %></div>
+          <div><%= new Date(channel.config.created_at).toLocaleString() %></div>
 
           <div><strong>Updated:</strong></div>
-          <div><%= new Date(channel.updated_at).toLocaleString() %></div>
+          <div><%= new Date(channel.config.updated_at).toLocaleString() %></div>
 
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
             <details style="position: relative;">

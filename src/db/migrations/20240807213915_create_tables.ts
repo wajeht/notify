@@ -44,7 +44,6 @@ export async function up(knex: Knex): Promise<void> {
 
 			table.index('app_id');
 			table.index('channel_type_id');
-			table.unique(['app_id']);
 		})
 		.createTable('email_configs', (table) => {
 			table.increments('id').primary();
@@ -61,6 +60,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('alias').notNullable();
 			table.string('auth_email').notNullable();
 			table.string('auth_pass').notNullable();
+			table.timestamps(true, true);
 
 			table.index('host');
 			table.index('auth_email');
@@ -79,6 +79,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('auth_token').notNullable();
 			table.string('from_phone_number').notNullable();
 			table.string('phone_number').notNullable();
+			table.timestamps(true, true);
 
 			table.index('account_sid');
 			table.index('from_phone_number');
@@ -95,6 +96,8 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('name').notNullable();
 			table.boolean('is_active').defaultTo(true);
 			table.string('webhook_url').notNullable();
+			table.timestamps(true, true);
+
 			table.index('webhook_url');
 		})
 		.createTable('notifications', (table) => {

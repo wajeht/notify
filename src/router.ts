@@ -18,7 +18,7 @@ import {
 	getAppChannelsPageHandler,
 	postCreateAppDiscordChannelConfigHandler,
 	postCreateAppSMSChannelConfigHandler,
-	postCreateAppEmailChannelConfigHandler
+	postCreateAppEmailChannelConfigHandler,
 } from './handler';
 
 import express from 'express';
@@ -49,11 +49,20 @@ router.post('/apps/:id', catchAsyncErrorMiddleware(postAppUpdateHandler));
 
 router.get('/apps/:id/channels', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
 
-router.post('/apps/:id/channels/discord', catchAsyncErrorMiddleware(postCreateAppDiscordChannelConfigHandler));
+router.post(
+	'/apps/:id/channels/discord',
+	catchAsyncErrorMiddleware(postCreateAppDiscordChannelConfigHandler),
+);
 
-router.post('/apps/:id/channels/sms', catchAsyncErrorMiddleware(postCreateAppSMSChannelConfigHandler));
+router.post(
+	'/apps/:id/channels/sms',
+	catchAsyncErrorMiddleware(postCreateAppSMSChannelConfigHandler),
+);
 
-router.post('/apps/:id/channels/email', catchAsyncErrorMiddleware(postCreateAppEmailChannelConfigHandler));
+router.post(
+	'/apps/:id/channels/email',
+	catchAsyncErrorMiddleware(postCreateAppEmailChannelConfigHandler),
+);
 
 router.get('/apps/:id/channels/create', catchAsyncErrorMiddleware(getNewAppChannelPageHandler));
 

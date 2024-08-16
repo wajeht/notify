@@ -23,38 +23,30 @@
       <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px;">
         <strong>Notification ID:</strong>
         <span><%= job.notification_id %></span>
+
         <strong>App Channel ID:</strong>
         <span><%= job.app_channel_id %></span>
+
         <strong>Attempts:</strong>
         <span><%= job.attempts %></span>
+
         <strong>Created:</strong>
         <span><%= new Date(job.created_at).toLocaleString() %></span>
+
         <strong>Updated:</strong>
         <span><%= new Date(job.updated_at).toLocaleString() %></span>
+
         <strong>Processed:</strong>
         <span><%= job.processed_at ? new Date(job.processed_at).toLocaleString() : 'Not processed yet' %></span>
+
+        <% if (job.error_message) { %>
+          <strong>Error Message:</strong>
+          <span style="color: red;"><%= job.error_message %></span>
+        <% } %>
       </div>
 
-      <% if (job.error_message) { %>
-        <div>
-          <strong>Error Message:</strong>
-          <p style="color: red; margin: 5px 0;"><%= job.error_message %></p>
-        </div>
-      <% } %>
-
-      <% if (job.result && job.result.length) { %>
-        <div>
-          <strong>Result:</strong>
-          <ul style="margin: 5px 0;">
-            <% job.result.forEach(item => { %>
-              <li><%= item %></li>
-            <% }) %>
-          </ul>
-        </div>
-      <% } %>
-
       <details>
-        <summary>Raw Details</summary>
+        <summary>Details</summary>
         <pre><%= JSON.stringify(job, null, 2) %></pre>
       </details>
 

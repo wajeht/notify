@@ -1,6 +1,5 @@
 import { db } from './db/db';
 import { Request, Response } from 'express';
-import { cleanDatabase, runFreshMigration, seedDatabase } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -220,24 +219,6 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 		layout: '../layouts/auth.html',
 		path: '/apps/create',
 	});
-}
-
-// POST /settings/clean-database
-export async function postCleanDatabaseHandler(req: Request, res: Response) {
-	await cleanDatabase();
-	return res.redirect('back');
-}
-
-// POST /settings/migrate-database
-export async function postMigrateDatabaseHandler(req: Request, res: Response) {
-	await runFreshMigration(true);
-	return res.redirect('back');
-}
-
-// POST /settings/seed-database
-export async function postSeedDatabaseHandler(req: Request, res: Response) {
-	await seedDatabase(true);
-	return res.redirect('back');
 }
 
 // POST /apps

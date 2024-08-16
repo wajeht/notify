@@ -13,10 +13,13 @@
   </div>
 
   <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; width: 32.5%;">
+
     <div><strong>ID:</strong></div>
     <div><%= app.id %></div>
+
     <div><strong>Name:</strong></div>
     <div><%= app.name %></div>
+
     <div><strong>Status:</strong></div>
     <div
       style="
@@ -27,12 +30,16 @@
     >
       <%= app.is_active ? 'Active' : 'Inactive' %>
     </div>
+
     <div><strong>Url:</strong></div>
     <a href="<%= app.url %>"><%= app.url %></a>
+
     <div><strong>Description:</strong></div>
     <div><%= app.description %></div>
+
     <div><strong>Created:</strong></div>
     <div><%= new Date(app.created_at).toLocaleString() %></div>
+
     <div><strong>Updated:</strong></div>
     <div><%= new Date(app.updated_at).toLocaleString() %></div>
   </div>

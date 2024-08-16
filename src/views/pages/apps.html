@@ -33,13 +33,10 @@
           </div>
 
           <div>
-            <% if (app.description.match(/^(https?:\/\/|www\.)/i)) { %>
-              <a href="<%= app.description %>" target="_blank" rel="noopener noreferrer">
-                <%= app.description %> ↗
-              </a>
-            <% } else { %>
-              <p><%= app.description %></p>
-            <% } %>
+            <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer">
+              <%= app.url %> ↗
+            </a>
+            <p><%= app.description %></p>
           </div>
 
           <div style="display: flex; gap: 20px; align-items: center;">

@@ -27,6 +27,11 @@
 
     <form id="email_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/email" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="name">Config Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="email_host">Email Host:</label>
         <input type="text" id="email_host" name="email_host" required>
       </div>
@@ -51,19 +56,39 @@
         <input type="password" id="email_auth_pass" name="email_auth_pass" required>
       </div>
 
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" id="is_active" name="is_active">
+        <label for="is_active">Active</label>
+      </div>
+
       <button type="submit">Submit</button>
     </form>
 
     <form id="discord_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/discord" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="discord_webhook">Webhook URL:</label>
-        <input type="text" id="discord_webhook" name="webhook_url" required>
+        <label for="name">Config Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="webhook_url">Webhook URL:</label>
+        <input type="url" id="webhook_url" name="webhook_url" required>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" id="is_active" name="is_active">
+        <label for="is_active">Active</label>
       </div>
 
       <button type="submit">Submit</button>
     </form>
 
     <form id="sms_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/sms" method="POST">
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="name">Config Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="sms_account_sid">Twilio Account SID:</label>
         <input type="text" id="sms_account_sid" name="twilio_account_sid" required>
@@ -82,6 +107,11 @@
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="sms_phone_number">Twilio Phone Number:</label>
         <input type="text" id="sms_phone_number" name="twilio_phone_number" required>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <input type="checkbox" id="is_active" name="is_active">
+        <label for="is_active">Active</label>
       </div>
 
       <button type="submit">Submit</button>

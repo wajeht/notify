@@ -50,13 +50,13 @@ export async function up(knex: Knex): Promise<void> {
 			table.unique(['app_id', 'name']);
 		})
 		.createTable('email_configs', (table) => {
+			table.increments('id').primary();
 			table
 				.integer('app_channel_id')
 				.unsigned()
 				.references('id')
 				.inTable('app_channels')
-				.onDelete('CASCADE')
-				.primary();
+				.onDelete('CASCADE');
 			table.string('host').notNullable();
 			table.integer('port').notNullable();
 			table.string('alias').notNullable();
@@ -67,13 +67,13 @@ export async function up(knex: Knex): Promise<void> {
 			table.index('auth_email');
 		})
 		.createTable('sms_configs', (table) => {
+			table.increments('id').primary();
 			table
 				.integer('app_channel_id')
 				.unsigned()
 				.references('id')
 				.inTable('app_channels')
-				.onDelete('CASCADE')
-				.primary();
+				.onDelete('CASCADE');
 			table.string('account_sid').notNullable();
 			table.string('auth_token').notNullable();
 			table.string('from_phone_number').notNullable();
@@ -84,13 +84,13 @@ export async function up(knex: Knex): Promise<void> {
 			table.index('phone_number');
 		})
 		.createTable('discord_configs', (table) => {
+			table.increments('id').primary();
 			table
 				.integer('app_channel_id')
 				.unsigned()
 				.references('id')
 				.inTable('app_channels')
-				.onDelete('CASCADE')
-				.primary();
+				.onDelete('CASCADE');
 			table.string('webhook_url').notNullable();
 			table.index('webhook_url');
 		})

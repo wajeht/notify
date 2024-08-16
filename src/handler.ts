@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from './db/db';
-import { NotFoundError } from 'error';
-import { cleanDatabase } from 'utils';
+import { cleanDatabase } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {

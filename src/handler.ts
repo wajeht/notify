@@ -191,6 +191,24 @@ export async function getNewAppChannelPageHandler(req: Request, res: Response) {
 	});
 }
 
+// POST /apps/:id/channels/discord
+export async function postCreateAppDiscordChannelConfigHandler(req: Request, res: Response) {
+	const { id } = req.params;
+	return res.redirect(`/apps/${id}/channels`);
+}
+
+// POST /apps/:id/channels/sms
+export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Response) {
+	const { id } = req.params;
+	return res.redirect(`/apps/${id}/sms`);
+}
+
+// POST /apps/:id/channels/email
+export async function postCreateAppEmailChannelConfigHandler(req: Request, res: Response) {
+	const { id } = req.params;
+	return res.redirect(`/apps/${id}/email`);
+}
+
 // GET /apps/:id/notifications
 export async function getAppNotificationsPageHandler(req: Request, res: Response) {
 	const app = await db

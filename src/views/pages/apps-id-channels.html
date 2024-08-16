@@ -8,10 +8,71 @@
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
     <% if (app.channels.length) { %>
-      <% app.channels.forEach(c => { %>
-        <article style="border-style: dashed; padding: 20px; border-radius: 5px;">
-          <pre><%= JSON.stringify(c, null, 2) %></pre>
-        </article>
+      <% app.channels.forEach(channel => { %>
+        <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px;">
+          <div><strong>ID:</strong></div>
+          <div><%= channel.id %></div>
+
+          <div><strong>Type:</strong></div>
+          <div><%= channel.channel_type %></div>
+
+          <div><strong>Status:</strong></div>
+          <div
+            style="
+              height: fit-content;
+              width: fit-content;
+              padding: 0px 5px;
+              border-radius: 5px;
+              <%= channel.is_active ? 'color: green; border: 1px solid green;' : 'color: red; border: 1px solid red;' %>"
+          >
+            <%= channel.is_active ? 'Active' : 'Inactive' %>
+          </div>
+
+          <div><strong>Created:</strong></div>
+          <div><%= new Date(channel.created_at).toLocaleString() %></div>
+
+          <div><strong>Updated:</strong></div>
+          <div><%= new Date(channel.updated_at).toLocaleString() %></div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <details style="position: relative;">
+              <summary>View</summary>
+              <div style="position: absolute; top: 100%; left: 0; z-index: 1; border: dashed; padding: 10px; background-color: white; border-radius: 5px;">
+                <% if (channel.channel_type === 'email') { %>
+                  <div><strong>Email Host:</strong></div>
+                  <div><%= channel.config.host %></div>
+
+                  <div><strong>Email Port:</strong></div>
+                  <div><%= channel.config.port %></div>
+
+                  <div><strong>Email Alias:</strong></div>
+                  <div><%= channel.config.alias %></div>
+
+                  <div><strong>Email Auth:</strong></div>
+                  <div><%= channel.config.auth_email %></div>
+                <% } %>
+
+                <% if (channel.channel_type === 'discord') { %>
+                    <div><strong>Webhook URL:</strong></div>
+                    <div><%= channel.config.webhook_url %></div>
+                <% } %>
+
+                <% if (channel.channel_type === 'sms') { %>
+                    <div><strong>Phone Number:</strong></div>
+                    <div><%= channel.config.phone_number %></div>
+
+                    <div><strong>From Phone Number:</strong></div>
+                    <div><%= channel.config.from_phone_number %></div>
+
+                    <div><strong>Account SID:</strong></div>
+                    <div><%= channel.config.account_sid %></div>
+                <% } %>
+              </div>
+            </details>
+            <a href="#">Edit</a>
+          </div>
+
+        </div>
       <% }) %>
     <% } %>
 

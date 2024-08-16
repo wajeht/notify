@@ -145,6 +145,8 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 						'app_id', app_channels.app_id,
 						'is_active', app_channels.is_active,
 						'channel_type', channel_types.name,
+						'created_at', app_channels.created_at,
+						'updated_at', app_channels.updated_at,
 						'config', CASE
 							WHEN channel_types.name = 'email' THEN
 								json_build_object('host', email_configs.host, 'port', email_configs.port, 'alias', email_configs.alias, 'auth_email', email_configs.auth_email)

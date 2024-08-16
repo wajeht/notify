@@ -31,11 +31,15 @@
       <%= app.is_active ? 'Active' : 'Inactive' %>
     </div>
 
-    <div><strong>Url:</strong></div>
-    <a href="<%= app.url %>"><%= app.url %></a>
+    <% if(app.url) { %>
+      <div><strong>Url:</strong></div>
+      <a href="<%= app.url %>"><%= app.url %></a>
+    <% } %>
 
-    <div><strong>Description:</strong></div>
-    <div><%= app.description %></div>
+    <% if(app.description) { %>
+      <div><strong>Description:</strong></div>
+      <div><%= app.description %></div>
+    <% } %>
 
     <div><strong>Created:</strong></div>
     <div><%= new Date(app.created_at).toLocaleString() %></div>

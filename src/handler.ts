@@ -98,6 +98,12 @@ export async function getAppPageHandler(req: Request, res: Response) {
 	});
 }
 
+// POST /apps/:id/delete
+export async function postDeleteAppHandler(req: Request, res: Response) {
+	await db('apps').where({ id: req.params.id }).del();
+	return res.redirect('/apps');
+}
+
 // POST /apps/:id
 export async function postAppUpdateHandler(req: Request, res: Response) {
 	const { name, url, description } = req.body;

@@ -19,6 +19,7 @@ import {
 	postCreateAppDiscordChannelConfigHandler,
 	postCreateAppSMSChannelConfigHandler,
 	postCreateAppEmailChannelConfigHandler,
+	postDeleteAppHandler,
 } from './handler';
 
 import express from 'express';
@@ -42,6 +43,8 @@ router.post('/apps', catchAsyncErrorMiddleware(postCreateAppHandler));
 router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
 
 router.get('/apps/:id', catchAsyncErrorMiddleware(getAppPageHandler));
+
+router.post('/apps/:id/delete', catchAsyncErrorMiddleware(postDeleteAppHandler));
 
 router.get('/apps/:id/edit', catchAsyncErrorMiddleware(getAppEditPageHandler));
 

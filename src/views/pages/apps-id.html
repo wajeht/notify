@@ -18,7 +18,15 @@
     <div><strong>Name:</strong></div>
     <div><%= app.name %></div>
     <div><strong>Status:</strong></div>
-    <div><%= app.is_active ? 'Active' : 'Inactive' %></div>
+    <div
+      style="
+        width: fit-content;
+        padding: 0px 5px;
+        border-radius: 5px;
+        <%= app.is_active ? 'color: red; border: 1px solid red;' : 'color: green; border: 1px solid green;' %>"
+    >
+      <%= app.is_active ? 'Active' : 'Inactive' %>
+    </div>
     <div><strong>Url:</strong></div>
     <a href="<%= app.url %>"><%= app.url %></a>
     <div><strong>Description:</strong></div>

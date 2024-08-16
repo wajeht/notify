@@ -57,12 +57,12 @@ export async function cleanDatabase() {
 	}
 }
 
-export async function runFreshMigration(force: boolean = false) {
+export async function runFreshMigration() {
 	try {
-		// if (appConfig.env === 'production' && !force) {
-		// 	console.log('Cannot run fresh migration on production environment without force flag');
-		// 	return;
-		// }
+		if (appConfig.env === 'production') {
+			console.log('Cannot run fresh migration on production environment');
+			return;
+		}
 
 		const config = {
 			directory: path.resolve(path.join(process.cwd(), 'dist', 'src', 'db', 'migrations')),
@@ -93,26 +93,29 @@ export async function runFreshMigration(force: boolean = false) {
 }
 
 async function dropAllTables() {
-	const tables = await db.raw(`
-        SELECT tablename FROM pg_tables
-        WHERE schemaname = current_schema()
-        AND tablename != 'knex_migrations'
-        AND tablename != 'knex_migrations_lock'
-    `);
+	try {
+		await db.raw("SET session_replication_role = 'replica';");
 
-	await db.raw('SET session_replication_role = replica');
+		const tables = await db.raw(`
+					SELECT tablename FROM pg_tables
+					WHERE schemaname = current_schema()
+					AND tablename != 'knex_migrations'
+					AND tablename != 'knex_migrations_lock'
+			`);
 
-	for (const row of tables.rows) {
-		const tableName = row.tablename;
-		try {
-			await db.schema.dropTableIfExists(tableName);
+		for (const row of tables.rows) {
+			const tableName = row.tablename;
+			await db.raw(`DROP TABLE IF EXISTS "${tableName}" CASCADE`);
 			console.log(`Dropped table: ${tableName}`);
-		} catch (error) {
-			console.warn(`Failed to drop table ${tableName}:`, error);
 		}
-	}
 
-	await db.raw('SET session_replication_role = DEFAULT');
+		console.log('All tables have been dropped.');
+
+		await db.raw("SET session_replication_role = 'origin';");
+	} catch (error) {
+		console.error('Error dropping tables:', error);
+		throw error;
+	}
 }
 
 export async function runMigrations() {

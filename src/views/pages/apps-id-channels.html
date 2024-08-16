@@ -79,7 +79,7 @@
             <dialog id="delete-channels-<%= channel.config.id %>-modal">
               <h2>Confirm Deletion</h2>
               <p>Are you sure you want to delete this channel?</p>
-              <form method="POST" action="/apps/<%= app.id %>/channels/<%= channel.config?.id %>/delete">
+              <form method="POST" action="/apps/<%= app.id %>/channels/<%= channel.id %>/delete">
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
                   <button type="button" onclick="this.closest('dialog').close()">Cancel</button>
                   <button type="submit">Delete</button>

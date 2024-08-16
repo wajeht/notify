@@ -136,6 +136,15 @@ export async function getAppEditPageHandler(req: Request, res: Response) {
 	});
 }
 
+// POST '/apps/:aid/channels/:cid/delete'
+export async function postDeleteAppChannelHandler(req: Request, res: Response) {
+	const { aid, cid } = req.params;
+
+	await db('app_channels').where({ id: cid }).del();
+
+	return res.redirect(`/apps/${aid}/channels`);
+}
+
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	const app = await db

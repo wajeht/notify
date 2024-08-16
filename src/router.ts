@@ -20,6 +20,7 @@ import {
 	postCreateAppSMSChannelConfigHandler,
 	postCreateAppEmailChannelConfigHandler,
 	postDeleteAppHandler,
+	postDeleteAppChannelHandler,
 } from './handler';
 
 import express from 'express';
@@ -65,6 +66,11 @@ router.post(
 router.post(
 	'/apps/:id/channels/email',
 	catchAsyncErrorMiddleware(postCreateAppEmailChannelConfigHandler),
+);
+
+router.post(
+	'/apps/:aid/channels/:cid/delete',
+	catchAsyncErrorMiddleware(postDeleteAppChannelHandler),
 );
 
 router.get('/apps/:id/channels/create', catchAsyncErrorMiddleware(getNewAppChannelPageHandler));

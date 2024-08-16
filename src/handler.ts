@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
 import { db } from './db/db';
-import { cleanDatabase } from './utils';
+import { Request, Response } from 'express';
+import { cleanDatabase, seedDatabase } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -223,6 +223,12 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 // POST /settings/clean-database
 export async function postCleanDatabaseHandler(req: Request, res: Response) {
 	await cleanDatabase();
+	return res.redirect('back');
+}
+
+// POST /settings/seed-database
+export async function postSeedDatabaseHandler(req: Request, res: Response) {
+	await seedDatabase();
 	return res.redirect('back');
 }
 

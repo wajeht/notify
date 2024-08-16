@@ -6,6 +6,7 @@ import {
 	getJobsPageHandler,
 	getAppEditPageHandler,
 	postAppUpdateHandler,
+	postSeedDatabaseHandler,
 	getNotificationsPageHandler,
 	postCreateAppHandler,
 	getNewAppChannelPageHandler,
@@ -54,6 +55,8 @@ router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificati
 router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
 
 router.post('/settings/clean-database', catchAsyncErrorMiddleware(postCleanDatabaseHandler));
+
+router.post('/settings/seed-database', catchAsyncErrorMiddleware(postSeedDatabaseHandler));
 
 router.get('/jobs', catchAsyncErrorMiddleware(getJobsPageHandler));
 

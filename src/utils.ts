@@ -2,6 +2,33 @@ import path from 'node:path';
 import { db } from './db/db';
 import { appConfig } from './config';
 
+export async function seedDatabase() {
+	try {
+		if (appConfig.env === 'production') {
+			console.log('Cannot run database seeding in production environment');
+			return;
+		}
+
+		console.log('Starting database seeding...');
+
+		const config = {
+			directory: path.resolve(path.join(process.cwd(), 'dist', 'src', 'db', 'seeds')),
+		};
+
+		const [seedFiles] = await db.seed.run(config);
+
+		if (seedFiles.length === 0) {
+			console.log('No seed files found or all seeds have already been run');
+		} else {
+			const seedList = seedFiles.map((seedFile: string) => path.basename(seedFile)).join(', ');
+			console.log(`Database seeding completed for: ${seedList}`);
+		}
+	} catch (error) {
+		console.error('Error seeding database:', error);
+		throw error;
+	}
+}
+
 export async function cleanDatabase() {
 	try {
 		// Get all table names in the current schema

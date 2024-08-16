@@ -4,24 +4,29 @@ import { appConfig } from './config';
 
 export async function cleanDatabase() {
 	try {
-		await db.raw('SET FOREIGN_KEY_CHECKS = 0');
+		// Get all table names in the current schema
+		const tables = await db.raw(`
+      SELECT tablename FROM pg_tables
+      WHERE schemaname = current_schema()
+    `);
+		const tableNames = tables.rows.map((row: any) => row.tablename);
 
-		const tables = await db.raw('SHOW TABLES');
-		const tableNames = tables[0].map((table: any) => Object.values(table)[0]);
+		// Disable triggers
+		await db.raw('SET session_replication_role = replica');
 
+		// Truncate all tables
 		for (const tableName of tableNames) {
-			await db(tableName).truncate();
+			await db.raw(`TRUNCATE TABLE "${tableName}" CASCADE`);
 			console.log(`Table ${tableName} truncated`);
 		}
-
-		await db.raw('SET FOREIGN_KEY_CHECKS = 1');
 
 		console.log('All tables have been cleaned');
 	} catch (error) {
 		console.error('Error cleaning database:', error);
 		throw error;
 	} finally {
-		// await db.destroy();
+		// Re-enable triggers
+		await db.raw('SET session_replication_role = DEFAULT');
 	}
 }
 

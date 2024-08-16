@@ -4,7 +4,9 @@
 		"daisyui",
 		"healthz",
 		"knexfile",
+		"schemaname",
 		"Signin",
+		"tablename",
 		"tailwindcss",
 		"tseslint",
 		"wajeht"

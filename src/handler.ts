@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from './db/db';
 import { NotFoundError } from 'error';
+import { cleanDatabase } from 'utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -218,6 +219,12 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 		layout: '../layouts/auth.html',
 		path: '/apps/create',
 	});
+}
+
+// POST /settings/clean-database
+export async function postCleanDatabaseHandler(req: Request, res: Response) {
+	await cleanDatabase();
+	return res.redirect('back');
 }
 
 // POST /apps

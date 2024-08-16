@@ -12,6 +12,7 @@ import {
 	getAppPageHandler,
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
+	postCleanDatabaseHandler,
 	getLogoutHandler,
 	getCreateNewAppPageHandler,
 	getAppNotificationsPageHandler,
@@ -51,6 +52,8 @@ router.get('/apps/:id/channels/create', catchAsyncErrorMiddleware(getNewAppChann
 router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificationsPageHandler));
 
 router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
+
+router.post('/settings/clean-database', catchAsyncErrorMiddleware(postCleanDatabaseHandler));
 
 router.get('/jobs', catchAsyncErrorMiddleware(getJobsPageHandler));
 

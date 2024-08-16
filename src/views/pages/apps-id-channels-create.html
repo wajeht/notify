@@ -1,23 +1,20 @@
 <script>
   function showForm() {
     const type = document.getElementById("channel_type").value;
-    document.getElementById("email_form").style.display = type === "email" ? "flex" : "none";
+    document.getElementById("email_form").style.display = type === "email" ? "block" : "none";
     document.getElementById("discord_form").style.display = type === "discord" ? "block" : "none";
-    document.getElementById("sms_form").style.display = type === "sms" ? "flex" : "none";
+    document.getElementById("sms_form").style.display = type === "sms" ? "block" : "none";
   }
 </script>
 
-
 <div style="display: flex; flex-direction: column; gap: 20px;">
+
   <div>
     <h2>Channels / New</h2>
     <p>Create a new channel</p>
   </div>
 
-  <form
-    style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 20px;"
-    action="/apps/<%= app.id %>/channels" method="POST">
-
+  <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 20px;">
     <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
       <label for="channel_type" style="flex: 1;">Channel Type:</label>
       <select id="channel_type" name="channel_type" required onchange="showForm()" style="flex: 2;">
@@ -28,7 +25,7 @@
       </select>
     </div>
 
-    <div id="email_form" style="display:none; flex-direction: column; gap: 10px;">
+    <form id="email_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/email" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="email_host">Email Host:</label>
         <input type="text" id="email_host" name="email_host" required>
@@ -49,16 +46,18 @@
         <label for="email_auth_pass">Auth Password:</label>
         <input type="password" id="email_auth_pass" name="email_auth_pass" required>
       </div>
-    </div>
+      <button type="submit">Submit Email Channel</button>
+    </form>
 
-    <div id="discord_form" style="display:none;">
+    <form id="discord_form" style="display:none;" action="/apps/<%= app.id %>/channels/discord" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="discord_webhook">Webhook URL:</label>
         <input type="text" id="discord_webhook" name="webhook_url" required>
       </div>
-    </div>
+      <button type="submit">Submit Discord Channel</button>
+    </form>
 
-    <div id="sms_form" style="display:none; flex-direction: column; gap: 10px;">
+    <form id="sms_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/sms" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="sms_account_sid">Twilio Account SID:</label>
         <input type="text" id="sms_account_sid" name="twilio_account_sid" required>
@@ -75,8 +74,8 @@
         <label for="sms_phone_number">Twilio Phone Number:</label>
         <input type="text" id="sms_phone_number" name="twilio_phone_number" required>
       </div>
-    </div>
+      <button type="submit">Submit SMS Channel</button>
+    </form>
 
-    <button type="submit">Submit</button>
-  </form>
+  </div>
 </div>

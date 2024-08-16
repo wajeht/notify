@@ -46,6 +46,12 @@ router.post('/apps/:id', catchAsyncErrorMiddleware(postAppUpdateHandler));
 
 router.get('/apps/:id/channels', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
 
+router.post('/apps/:id/channels/discord', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
+
+router.post('/apps/:id/channels/sms', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
+
+router.post('/apps/:id/channels/email', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
+
 router.get('/apps/:id/channels/create', catchAsyncErrorMiddleware(getNewAppChannelPageHandler));
 
 router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificationsPageHandler));

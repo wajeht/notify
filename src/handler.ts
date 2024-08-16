@@ -245,13 +245,56 @@ export async function postCreateAppDiscordChannelConfigHandler(req: Request, res
 // POST /apps/:id/channels/sms
 export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Response) {
 	const { id } = req.params;
-	return res.redirect(`/apps/${id}/sms`);
+	const { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
+
+	const channel_type = await db.select('id').from('channel_types').where({ name: 'sms' }).first();
+
+	const [app_channel] = await db('app_channels')
+		.insert({
+			app_id: id,
+			channel_type_id: channel_type.id,
+		})
+		.returning('*');
+
+	await db('sms_configs').insert({
+		app_channel_id: app_channel.id,
+		name,
+		account_sid,
+		auth_token,
+		from_phone_number,
+		phone_number,
+		is_active: is_active === 'on',
+	});
+
+	return res.redirect(`/apps/${id}/channels`);
 }
 
 // POST /apps/:id/channels/email
 export async function postCreateAppEmailChannelConfigHandler(req: Request, res: Response) {
 	const { id } = req.params;
-	return res.redirect(`/apps/${id}/email`);
+	const { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+
+	const channel_type = await db.select('id').from('channel_types').where({ name: 'email' }).first();
+
+	const [app_channel] = await db('app_channels')
+		.insert({
+			app_id: id,
+			channel_type_id: channel_type.id,
+		})
+		.returning('*');
+
+	await db('email_configs').insert({
+		app_channel_id: app_channel.id,
+		name,
+		host,
+		port,
+		alias,
+		auth_email,
+		auth_pass,
+		is_active: is_active === 'on',
+	});
+
+	return res.redirect(`/apps/${id}/channels`);
 }
 
 // GET /apps/:id/notifications

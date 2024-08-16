@@ -101,7 +101,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 
 // POST /apps/:id
 export async function postAppUpdateHandler(req: Request, res: Response) {
-	const { name } = req.body;
+	const { name, url, description } = req.body;
 
 	const id = parseInt(req.params.id!);
 
@@ -110,6 +110,8 @@ export async function postAppUpdateHandler(req: Request, res: Response) {
 	await db('apps').where({ id }).update({
 		is_active,
 		name,
+		url,
+		description,
 		updated_at: db.fn.now(),
 	});
 
@@ -220,11 +222,13 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 
 // POST /apps
 export async function postCreateAppHandler(req: Request, res: Response) {
-	const { name, is_active } = req.body;
+	const { name, is_active, description, url } = req.body;
 
 	const [app] = await db('apps')
 		.insert({
 			name,
+			url,
+			description,
 			is_active: is_active === 'on',
 		})
 		.returning('*');

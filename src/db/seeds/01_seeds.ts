@@ -40,7 +40,8 @@ export async function seed(knex: Knex): Promise<void> {
 		.map(() => ({
 			user_id: faker.helpers.arrayElement(userIds).id,
 			name: faker.company.name(),
-			description: faker.internet.url(),
+			url: faker.internet.url(),
+			description: faker.lorem.sentences(1),
 			is_active: faker.datatype.boolean(),
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),

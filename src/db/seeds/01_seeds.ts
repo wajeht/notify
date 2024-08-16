@@ -61,8 +61,6 @@ export async function seed(knex: Knex): Promise<void> {
 		channelTypeIds.map((channelType) => ({
 			app_id: app.id,
 			channel_type_id: channelType.id,
-			name: `${app.id}-${channelType.name}`,
-			is_active: faker.datatype.boolean(),
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),
 		})),
@@ -80,10 +78,12 @@ export async function seed(knex: Knex): Promise<void> {
 			channelTypeIds.filter((ct) => ct.name === 'email').map((ct) => ct.id),
 		);
 	const emailConfigs = emailChannels.map((channel) => ({
+		name: `email-${channel.id}`,
 		app_channel_id: channel.id,
 		host: faker.internet.domainName(),
 		port: faker.number.int({ min: 1, max: 65535 }),
 		alias: faker.internet.userName(),
+		is_active: faker.datatype.boolean(),
 		auth_email: faker.internet.email(),
 		auth_pass: faker.internet.password(),
 	}));
@@ -100,9 +100,11 @@ export async function seed(knex: Knex): Promise<void> {
 			channelTypeIds.filter((ct) => ct.name === 'sms').map((ct) => ct.id),
 		);
 	const smsConfigs = smsChannels.map((channel) => ({
+		name: `sms-${channel.id}`,
 		app_channel_id: channel.id,
 		account_sid: faker.string.alphanumeric(34),
 		auth_token: faker.string.alphanumeric(32),
+		is_active: faker.datatype.boolean(),
 		from_phone_number: faker.phone.number(),
 		phone_number: faker.phone.number(),
 	}));
@@ -119,7 +121,9 @@ export async function seed(knex: Knex): Promise<void> {
 			channelTypeIds.filter((ct) => ct.name === 'discord').map((ct) => ct.id),
 		);
 	const discordConfigs = discordChannels.map((channel) => ({
+		name: `discord-${channel.id}`,
 		app_channel_id: channel.id,
+		is_active: faker.datatype.boolean(),
 		webhook_url: faker.internet.url(),
 	}));
 	await knex('discord_configs').insert(discordConfigs);

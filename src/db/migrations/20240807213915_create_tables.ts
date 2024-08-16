@@ -40,14 +40,11 @@ export async function up(knex: Knex): Promise<void> {
 				.references('id')
 				.inTable('channel_types')
 				.onDelete('CASCADE');
-			table.string('name').notNullable();
-			table.boolean('is_active').defaultTo(true);
 			table.timestamps(true, true);
 
 			table.index('app_id');
 			table.index('channel_type_id');
-			table.index('is_active');
-			table.unique(['app_id', 'name']);
+			table.unique(['app_id']);
 		})
 		.createTable('email_configs', (table) => {
 			table.increments('id').primary();
@@ -57,6 +54,8 @@ export async function up(knex: Knex): Promise<void> {
 				.references('id')
 				.inTable('app_channels')
 				.onDelete('CASCADE');
+			table.string('name').notNullable();
+			table.boolean('is_active').defaultTo(true);
 			table.string('host').notNullable();
 			table.integer('port').notNullable();
 			table.string('alias').notNullable();
@@ -74,6 +73,8 @@ export async function up(knex: Knex): Promise<void> {
 				.references('id')
 				.inTable('app_channels')
 				.onDelete('CASCADE');
+			table.string('name').notNullable();
+			table.boolean('is_active').defaultTo(true);
 			table.string('account_sid').notNullable();
 			table.string('auth_token').notNullable();
 			table.string('from_phone_number').notNullable();
@@ -91,6 +92,8 @@ export async function up(knex: Knex): Promise<void> {
 				.references('id')
 				.inTable('app_channels')
 				.onDelete('CASCADE');
+			table.string('name').notNullable();
+			table.boolean('is_active').defaultTo(true);
 			table.string('webhook_url').notNullable();
 			table.index('webhook_url');
 		})

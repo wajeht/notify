@@ -7,8 +7,7 @@
     </div>
 
     <div style="display: flex; gap: 20px;">
-      <a href="/apps/<%= app.id %>/edit">Edit</a>
-      <a href="/apps/<%= app.id %>/edit">Delete</a>
+      <a href="#">Run test notification</a>
     </div>
   </div>
 
@@ -46,6 +45,11 @@
 
     <div><strong>Updated:</strong></div>
     <div><%= new Date(app.updated_at).toLocaleString() %></div>
+
+    <div style="display: flex; gap: 20px;">
+      <a href="/apps/<%= app.id %>/edit">Edit</a>
+      <a href="/apps/<%= app.id %>/edit">Delete</a>
+    </div>
   </div>
 
 </div>

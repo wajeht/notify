@@ -1,6 +1,6 @@
 import { db } from './db/db';
 import { Request, Response } from 'express';
-import { cleanDatabase, runFreshMigration, runMigrations, seedDatabase } from './utils';
+import { cleanDatabase, runFreshMigration, seedDatabase } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {

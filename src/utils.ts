@@ -2,9 +2,9 @@ import path from 'node:path';
 import { db } from './db/db';
 import { appConfig } from './config';
 
-export async function seedDatabase() {
+export async function seedDatabase(force: boolean = false) {
 	try {
-		if (appConfig.env === 'production') {
+		if (appConfig.env === 'production' && !force) {
 			console.log('Cannot run database seeding in production environment');
 			return;
 		}
@@ -57,9 +57,9 @@ export async function cleanDatabase() {
 	}
 }
 
-export async function runFreshMigration() {
+export async function runFreshMigration(force: boolean = false) {
 	try {
-		if (appConfig.env === 'production') {
+		if (appConfig.env === 'production' && !force) {
 			console.log('Cannot run fresh migration on production environment');
 			return;
 		}

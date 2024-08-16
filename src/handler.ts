@@ -228,13 +228,13 @@ export async function postCleanDatabaseHandler(req: Request, res: Response) {
 
 // POST /settings/migrate-database
 export async function postMigrateDatabaseHandler(req: Request, res: Response) {
-	await runFreshMigration();
+	await runFreshMigration(true);
 	return res.redirect('back');
 }
 
 // POST /settings/seed-database
 export async function postSeedDatabaseHandler(req: Request, res: Response) {
-	await seedDatabase();
+	await seedDatabase(true);
 	return res.redirect('back');
 }
 

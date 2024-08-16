@@ -32,12 +32,17 @@
 
           </div>
 
-          <div>
-            <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer">
-              <%= app.url %> ↗
-            </a>
-            <p><%= app.description %></p>
-          </div>
+          <% if (app.description || app.url) { %>
+            <div>
+              <% if (app.url) { %>
+                <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer"><%= app.url %> ↗</a>
+              <% } %>
+
+              <% if (app.description) { %>
+                <p><%= app.description %></p>
+              <% } %>
+            </div>
+          <% } %>
 
           <div style="display: flex; gap: 20px; align-items: center;">
             <a href="/apps/<%= app.id %>/channels">Channels (<%= app.channel_count %>)</a>

@@ -2,6 +2,29 @@ import path from 'node:path';
 import { db } from './db/db';
 import { appConfig } from './config';
 
+export async function cleanDatabase() {
+	try {
+		await db.raw('SET FOREIGN_KEY_CHECKS = 0');
+
+		const tables = await db.raw('SHOW TABLES');
+		const tableNames = tables[0].map((table: any) => Object.values(table)[0]);
+
+		for (const tableName of tableNames) {
+			await db(tableName).truncate();
+			console.log(`Table ${tableName} truncated`);
+		}
+
+		await db.raw('SET FOREIGN_KEY_CHECKS = 1');
+
+		console.log('All tables have been cleaned');
+	} catch (error) {
+		console.error('Error cleaning database:', error);
+		throw error;
+	} finally {
+		// await db.destroy();
+	}
+}
+
 export async function runMigrations() {
 	try {
 		if (appConfig.env !== 'production') {

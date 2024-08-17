@@ -52,4 +52,5 @@ export const oauthConfig = {
 export const sessionConfig = {
 	store_prefix: process.env.SESSION_STORE_PREFIX || '',
 	secret: process.env.SESSION_SECRET || '',
+	domain: process.env.SESSION_DOMAIN,
 } as const;

@@ -24,21 +24,21 @@ app.use(express.json({ limit: '1mb' }));
 
 app.use(express.urlencoded({ extended: true }));
 
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 app.use(
 	session({
 		secret: sessionConfig.secret,
-		resave: true,
-		saveUninitialized: true,
+		resave: false,
+		saveUninitialized: false,
 		store: redisStore,
 		proxy: appConfig.env === 'production',
 		cookie: {
 			path: '/',
 			domain: sessionConfig.domain,
-			maxAge: 1000 * 60 * 24, // 24 hours
+			maxAge: 1000 * 60 * 60 * 24, // 24 hours
 			httpOnly: appConfig.env === 'production',
-			// sameSite: appConfig.env === 'production' ? 'none' : 'lax',
+			sameSite: appConfig.env === 'production' ? 'none' : 'lax',
 			secure: appConfig.env === 'production',
 		},
 	}),

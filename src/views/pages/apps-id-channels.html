@@ -57,6 +57,9 @@
 
                   <div><strong>Email Auth:</strong></div>
                   <div><%= channel.config.auth_email %></div>
+
+                  <div><strong>Email Auth Pass:</strong></div>
+                  <div><%= channel.config.auth_pass %></div>
                 <% } %>
 
                 <% if (channel.channel_type === 'discord') { %>
@@ -73,6 +76,9 @@
 
                     <div><strong>Account SID:</strong></div>
                     <div><%= channel.config.account_sid %></div>
+
+                    <div><strong>Auth Token:</strong></div>
+                    <div><%= channel.config.auth_token %></div>
                 <% } %>
               </div>
             </details>

@@ -266,6 +266,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
                 'port', email_configs.port,
                 'alias', email_configs.alias,
                 'auth_email', email_configs.auth_email,
+                'auth_pass', email_configs.auth_pass,
                 'created_at', email_configs.created_at,
                 'updated_at', email_configs.updated_at
               )
@@ -275,6 +276,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
                 'name', sms_configs.name,
                 'is_active', sms_configs.is_active,
                 'account_sid', sms_configs.account_sid,
+                'auth_token', sms_configs.auth_token,
                 'from_phone_number', sms_configs.from_phone_number,
                 'phone_number', sms_configs.phone_number,
                 'created_at', sms_configs.created_at,

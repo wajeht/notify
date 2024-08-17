@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
-		throw new NotFoundError();
+		next(new NotFoundError());
 	};
 }
 

@@ -1,6 +1,6 @@
 # 🔔 Notify
 
-Send notification to discord, email, and sms
+web 2.0 style notification systems for discord, email, and sms
 
 # 📜 License
 

@@ -28,27 +28,27 @@
     <form id="email_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/email" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="name">Config Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" placeholder="alert email" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="host">Email Host:</label>
-        <input type="text" id="host" name="host" required>
+        <input type="text" id="host" name="host" placeholder="smtp.gmail.com" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="port">Email Port:</label>
-        <input type="number" id="port" name="port" required>
+        <input type="number" id="port" name="port" placeholder="587" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="alias">Email Alias:</label>
-        <input type="email" id="alias" name="alias" required>
+        <input type="email" id="alias" name="alias" placeholder="noreply@jaw.dev" required>
       </div>
       <div style="display: flex; flex-direction: column; gap: 5px;">
 
         <label for="auth_email">Auth Email:</label>
-        <input type="email" id="auth_email" name="auth_email" required>
+        <input type="email" id="auth_email" name="auth_email" placeholder="mailL@jaw.dev" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -67,12 +67,12 @@
     <form id="discord_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/discord" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="name">Config Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" placeholder="bot channel" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="webhook_url">Webhook URL:</label>
-        <input type="url" id="webhook_url" name="webhook_url" required>
+        <input type="url" id="webhook_url" name="webhook_url" placeholder="https://discord.com/api/webhooks/69" required>
       </div>
 
       <div style="display: flex; align-items: center; gap: 5px;">
@@ -86,17 +86,17 @@
     <form id="sms_form" style="display:none; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/sms" method="POST">
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="name">Config Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" placeholder="twilio phone" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="account_sid">Twilio Account SID:</label>
-        <input type="text" id="account_sid" name="account_sid" required>
+        <input type="text" id="account_sid" name="account_sid" placeholder="123456" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <label for="auth_token">Twilio Auth Token:</label>
-        <input type="text" id="auth_token" name="auth_token" required>
+        <input type="text" id="auth_token" name="auth_token" placeholder="123455abcd" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">

@@ -10,7 +10,7 @@ import expressLayouts from 'express-ejs-layouts';
 import { errorMiddleware, notFoundMiddleware } from './middleware';
 import { appConfig, sessionConfig } from './config';
 import RedisStore from 'connect-redis';
-import { redis } from './db/db';
+import { redis } from './db/redis';
 
 const app = express();
 

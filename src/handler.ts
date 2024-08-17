@@ -186,7 +186,22 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/sms'
 export async function postUpdateAppChannelSMSHandler(req: Request, res: Response) {
-	const { id, cid, cfid } = req.params;
+	const { id, cfid } = req.params;
+
+	const { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
+
+	await db('sms_configs')
+		.where({ id: cfid })
+		.update({
+			name,
+			account_sid,
+			auth_token,
+			from_phone_number,
+			phone_number,
+			is_active: is_active === 'on',
+			updated_at: db.fn.now(),
+		});
+
 	res.redirect(`/apps/${id}/channels`);
 }
 
@@ -209,7 +224,23 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/email'
 export async function postUpdateAppChannelEmailHandler(req: Request, res: Response) {
-	const { id, cid, cfid } = req.params;
+	const { id, cfid } = req.params;
+
+	const { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+
+	await db('email_configs')
+		.where({ id: cfid })
+		.update({
+			name,
+			host,
+			port,
+			alias,
+			auth_email,
+			auth_pass,
+			is_active: is_active === 'on',
+			updated_at: db.fn.now(),
+		});
+
 	res.redirect(`/apps/${id}/channels`);
 }
 

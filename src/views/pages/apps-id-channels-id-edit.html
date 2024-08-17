@@ -72,27 +72,27 @@
       <form id="sms_form" style="display:flex; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= config.id %>/sms" method="POST">
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="name">Config Name:</label>
-          <input type="text" id="name" name="name" value="<%= config.name %>"  required>
+          <input type="text" id="name" name="name" value="<%= config.name %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="account_sid">Twilio Account SID:</label>
-          <input type="text" id="account_sid" name="account_sid" value="<%= config.account_sid %>"  required>
+          <input type="text" id="account_sid" name="account_sid" value="<%= config.account_sid %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="auth_token">Twilio Auth Token:</label>
-          <input type="text" id="auth_token" name="auth_token" value="<%= config.auth_token %>"  required>
+          <input type="text" id="auth_token" name="auth_token" value="<%= config.auth_token %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="from_phone_number">Twilio From Phone Number:</label>
-          <input type="text" id="from_phone_number" name="from_phone_number" value="<%= config.from_phone_number %>"  required>
+          <input type="text" id="from_phone_number" name="from_phone_number" value="<%= config.from_phone_number %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="phone_number">Twilio Phone Number:</label>
-          <input type="text" id="phone_number" name="phone_number" value="<%= config.phone_number %>"  required>
+          <input type="text" id="phone_number" name="phone_number" value="<%= config.phone_number %>" required>
         </div>
 
         <div style="display: flex; align-items: center; gap: 5px;">

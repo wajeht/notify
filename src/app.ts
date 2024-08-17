@@ -34,9 +34,11 @@ app.use(
 		store: redisStore,
 		proxy: appConfig.env === 'production',
 		cookie: {
+			path: '/',
+			domain: sessionConfig.domain,
 			maxAge: 1000 * 60 * 24, // 24 hours
 			httpOnly: appConfig.env === 'production',
-			sameSite: appConfig.env === 'production' ? 'none' : 'lax',
+			sameSite: appConfig.env === 'production' ? 'lax' : 'none',
 			secure: appConfig.env === 'production',
 		},
 	}),

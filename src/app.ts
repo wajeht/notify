@@ -10,7 +10,7 @@ import expressLayouts from 'express-ejs-layouts';
 import { errorMiddleware, notFoundMiddleware } from './middleware';
 import { appConfig, sessionConfig } from './config';
 import RedisStore from 'connect-redis';
-import { redis } from 'db/db';
+import { redis } from './db/db';
 
 const app = express();
 
@@ -35,10 +35,9 @@ app.use(
 		proxy: appConfig.env === 'production',
 		cookie: {
 			path: '/',
-			domain: sessionConfig.domain,
 			maxAge: 1000 * 60 * 60 * 24, // 24 hours
 			httpOnly: appConfig.env === 'production',
-			sameSite: appConfig.env === 'production' ? 'none' : 'lax',
+			sameSite: appConfig.env === 'production' ? 'lax' : 'none',
 			secure: appConfig.env === 'production',
 		},
 	}),

@@ -17,3 +17,12 @@ export type GithubUserEmail = {
 export type GitHubOauthToken = {
 	access_token: string;
 };
+
+export type User = {
+	id: number;
+	username: string;
+	email: string;
+	is_admin: boolean;
+	created_at: string;
+	updated_at: string;
+};

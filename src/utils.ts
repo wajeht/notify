@@ -3,7 +3,7 @@ import axios from 'axios';
 import path from 'node:path';
 import { db } from './db/db';
 import { appConfig, oauthConfig } from './config';
-import { Email, GitHubOauthToken, GitHubUser } from './types';
+import { GithubUserEmail, GitHubOauthToken } from './types';
 
 export async function runMigrations() {
 	try {
@@ -69,9 +69,9 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
 	}
 }
 
-export async function getGithubUserEmails(access_token: string): Promise<Email[]> {
+export async function getGithubUserEmails(access_token: string): Promise<GithubUserEmail[]> {
 	try {
-		const { data } = await axios.get<Email[]>('https://api.github.com/user/emails', {
+		const { data } = await axios.get<GithubUserEmail[]>('https://api.github.com/user/emails', {
 			headers: {
 				Authorization: `Bearer ${access_token}`,
 			},

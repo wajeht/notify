@@ -2,7 +2,7 @@ import { UnauthorizedError } from './error';
 import { oauthConfig } from './config';
 import { db } from './db/db';
 import { Request, Response } from 'express';
-import { getGithubOauthToken, getGithubUserEmails } from 'utils';
+import { getGithubOauthToken, getGithubUserEmails } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {

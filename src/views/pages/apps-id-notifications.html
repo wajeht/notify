@@ -15,9 +15,23 @@
       </div>
 
       <details>
-        <summary>Details</summary>
+        <summary>
+          <span>Details</span>
+          <button class="no-style-btn" style="padding-left: 5px;" onclick="document.getElementById(`delete-notifications-<%= n.id %>-modal`).showModal()">Delete</button>
+          <dialog id="delete-notifications-<%= n.id %>-modal">
+            <h2>Confirm Deletion</h2>
+            <p>Are you sure you want to delete this channel?</p>
+            <form method="POST" action="/apps/<%= app.id %>/notifications/<%= n.id %>/delete">
+              <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="button" onclick="this.closest('dialog').close()">Cancel</button>
+                <button type="submit">Delete</button>
+              </div>
+            </form>
+          </dialog>
+        </summary>
         <pre><%= JSON.stringify(n, null, 2) %></pre>
       </details>
+
     </div>
   <% }) %>
 

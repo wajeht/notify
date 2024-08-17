@@ -5,10 +5,10 @@ import { db } from './db/db';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken } from './types';
 
-export async function runMigrations() {
+export async function runMigrations(force: boolean = false) {
 	try {
-		if (appConfig.env !== 'production') {
-			console.log('Cannot run auto database migration on non production');
+		if (appConfig.env !== 'production' && force !== true) {
+			console.log('cannot run auto database migration on non production');
 			return;
 		}
 
@@ -16,16 +16,20 @@ export async function runMigrations() {
 			directory: path.resolve(path.join(process.cwd(), 'dist', 'src', 'db', 'migrations')),
 		};
 
+		if (appConfig.env !== 'production') {
+			config.directory = path.resolve(path.join(process.cwd(), 'src', 'db', 'migrations'));
+		}
+
 		const version = await db.migrate.currentVersion();
 
-		console.log(`Current database version ${version}`);
+		console.log(`current database version ${version}`);
 
-		console.log(`Checking for database upgrades`);
+		console.log(`checking for database upgrades`);
 
 		const [batchNo, migrations] = await db.migrate.latest(config);
 
 		if (migrations.length === 0) {
-			console.log('Database upgrade not required');
+			console.log('database upgrade not required');
 			return;
 		}
 
@@ -33,11 +37,11 @@ export async function runMigrations() {
 			.map((migration: any) => migration.split('_')[1].split('.')[0])
 			.join(', ');
 
-		console.log(`Database upgrades completed for ${migrationList} schema`);
+		console.log(`database upgrades completed for ${migrationList} schema`);
 
-		console.log(`Batch ${batchNo} run: ${migrations.length} migrations`);
+		console.log(`batch ${batchNo} run: ${migrations.length} migrations`);
 	} catch (error) {
-		console.error('Error running migrations:', error);
+		console.error('error running migrations', error);
 		throw error;
 	}
 }
@@ -64,7 +68,7 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
 
 		return decoded;
 	} catch (error: any) {
-		console.error('failed to fetch Github Oauth Tokens', error);
+		console.error('failed to fetch github oauth tokens', error);
 		throw error;
 	}
 }
@@ -79,7 +83,7 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
 
 		return data;
 	} catch (error: any) {
-		console.error('failed to fetch Github User emails', error);
+		console.error('failed to fetch github user emails', error);
 		throw error;
 	}
 }

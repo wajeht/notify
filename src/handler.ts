@@ -184,6 +184,24 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 	});
 }
 
+// POST '/apps/:aid/channels/:cid/configs/:cfid/sms'
+export async function postUpdateAppChannelSMSHandler(req: Request, res: Response) {
+	const { id, cid, cfid } = req.params;
+	res.redirect(`/apps/${id}/channels`);
+}
+
+// POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
+export async function postUpdateAppChannelDiscordHandler(req: Request, res: Response) {
+	const { id, cid, cfid } = req.params;
+	res.redirect(`/apps/${id}/channels`);
+}
+
+// POST '/apps/:aid/channels/:cid/configs/:cfid/email'
+export async function postUpdateAppChannelEmailHandler(req: Request, res: Response) {
+	const { id, cid, cfid } = req.params;
+	res.redirect(`/apps/${id}/channels`);
+}
+
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	const app = await db

@@ -7,7 +7,7 @@
 
   <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 20px;">
     <% if (channel.channel_type_name === 'email') { %>
-      <form id="email_form" style="display:flex; flex-direction: column; gap: 10px;" action="#" method="POST">
+      <form id="email_form" style="display:flex; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= config.id %>/email" method="POST">
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="name">Config Name:</label>
           <input type="text" id="name" name="name" value="<%= config.name %>"  required>
@@ -48,7 +48,7 @@
     <% } %>
 
     <% if (channel.channel_type_name === 'discord') { %>
-      <form id="discord_form" style="display:flex; flex-direction: column; gap: 10px;" action="#" method="POST">
+      <form id="discord_form" style="display:flex; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= config.id %>/discord" method="POST">
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="name">Config Name:</label>
           <input type="text" id="name" name="name" value="<%= config.name %>" required>
@@ -69,7 +69,7 @@
     <% } %>
 
     <% if (channel.channel_type_name === 'sms') { %>
-      <form id="sms_form" style="display:flex; flex-direction: column; gap: 10px;" action="#" method="POST">
+      <form id="sms_form" style="display:flex; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= config.id %>/sms" method="POST">
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="name">Config Name:</label>
           <input type="text" id="name" name="name" value="<%= config.name %>"  required>

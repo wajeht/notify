@@ -1,7 +1,7 @@
 {
 	"name": "notify",
 	"version": "0.0.1",
-	"description": "send notification to discord, email, and sms",
+	"description": "web 2.0 style notification systems for discord, email, and sms",
 	"main": "index.js",
 	"scripts": {
 		"prepare": "husky",

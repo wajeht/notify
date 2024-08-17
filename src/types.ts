@@ -7,7 +7,7 @@ export interface GitHubUser {
 	email: string;
 }
 
-export type Email = {
+export type GithubUserEmail = {
 	email: string;
 	primary: boolean;
 	verified: boolean;

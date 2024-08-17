@@ -38,7 +38,7 @@ app.use(
 			domain: sessionConfig.domain,
 			maxAge: 1000 * 60 * 24, // 24 hours
 			httpOnly: appConfig.env === 'production',
-			sameSite: appConfig.env === 'production' ? 'lax' : 'none',
+			// sameSite: appConfig.env === 'production' ? 'none' : 'lax',
 			secure: appConfig.env === 'production',
 		},
 	}),

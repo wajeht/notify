@@ -1,5 +1,12 @@
 <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
-  <h2>Notifications</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <div>
+      <h2 style="margin: 0;">Notifications</h2>
+      <p>Notifications</p>
+    </div>
+
+    <a href="#" style="white-space: nowrap;">Mark all as read</a>
+  </div>
 
   <% app.notifications.forEach(n => { %>
     <div style="border-radius: 5px; border: dashed; padding: 20px; display: flex; flex-direction: column; gap: 10px;">

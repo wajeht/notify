@@ -1,6 +1,8 @@
+import { UnauthorizedError } from './error';
 import { oauthConfig } from './config';
 import { db } from './db/db';
 import { Request, Response } from 'express';
+import { getGithubOauthToken, getGithubUser, getGithubUserEmails } from 'utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -470,13 +472,35 @@ export async function getGithub(req: Request, res: Response) {
 	const rootUrl = 'https://github.com/login/oauth/authorize';
 
 	const qs = new URLSearchParams({
-		redirect_uri: oauthConfig.github.redirect_url,
+		redirect_uri: oauthConfig.github.redirect_uri,
 		client_id: oauthConfig.github.client_id,
 		scope: 'user:email',
 	});
 
-	return `${rootUrl}?${qs.toString()}`;
+	return res.redirect(`${rootUrl}?${qs.toString()}`);
 }
 
 // GET /oauth/github/redirect
-export async function getGithubRedirect(req: Request, res: Response) {}
+export async function getGithubRedirect(req: Request, res: Response) {
+	const code = req.query.code as string;
+
+	if (!code) {
+		throw new UnauthorizedError('Something went wrong while authenticating with github');
+	}
+
+	const { access_token } = await getGithubOauthToken({ code });
+
+	const emails = await getGithubUserEmails({ access_token });
+
+	const email = emails.filter((email) => email.primary && email.verified)[0]?.email;
+
+	const foundUser = await db.select('*').from('users').where({ email }).first();
+
+	if (!foundUser) {
+		// create a user
+	}
+
+	// add it to session
+
+	res.redirect('/apps');
+}

@@ -43,7 +43,8 @@ export const smsConfig = {
 
 export const oauthConfig = {
 	github: {
-		redirect_url: process.env.GITHUB_REDIRECT_URL || '',
+		redirect_uri: process.env.GITHUB_REDIRECT_URI || '',
 		client_id: process.env.GITHUB_CLIENT_ID || '',
+		client_secret: process.env.GITHUB_CLIENT_SECRET || '',
 	},
 } as const;

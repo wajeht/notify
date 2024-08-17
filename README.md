@@ -27,6 +27,7 @@ web 2.0 style notification systems for discord, email, and sms
 - [ ] validations on all routes
 - [ ] rbac on all handlers
 - [ ] search on apps page
+- [ ] tests
 
 # 📑 Docs
 

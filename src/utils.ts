@@ -1,6 +1,9 @@
+import qs from 'qs';
+import axios from 'axios';
 import path from 'node:path';
 import { db } from './db/db';
-import { appConfig } from './config';
+import { appConfig, oauthConfig } from './config';
+import { Email, GitHubOauthToken, GitHubUser } from './types';
 
 export async function runMigrations() {
 	try {
@@ -35,6 +38,71 @@ export async function runMigrations() {
 		console.log(`Batch ${batchNo} run: ${migrations.length} migrations`);
 	} catch (error) {
 		console.error('Error running migrations:', error);
+		throw error;
+	}
+}
+
+export async function getGithubOauthToken({ code }: { code: string }): Promise<GitHubOauthToken> {
+	const rootUrl = 'https://github.com/login/oauth/access_token';
+
+	const options = {
+		client_id: oauthConfig.github.client_id,
+		client_secret: oauthConfig.github.client_secret,
+		code,
+	};
+
+	const queryString = qs.stringify(options);
+
+	try {
+		const { data } = await axios.post(`${rootUrl}?${queryString}`, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+		});
+
+		const decoded = qs.parse(data) as GitHubOauthToken;
+
+		return decoded;
+	} catch (error: any) {
+		console.error('failed to fetch Github Oauth Tokens', error);
+		throw error;
+	}
+}
+
+export async function getGithubUserEmails({
+	access_token,
+}: {
+	access_token: string;
+}): Promise<Email[]> {
+	try {
+		const { data } = await axios.get<Email[]>('https://api.github.com/user/emails', {
+			headers: {
+				Authorization: `Bearer ${access_token}`,
+			},
+		});
+
+		return data;
+	} catch (error: any) {
+		console.error('failed to fetch Github User emails', error);
+		throw error;
+	}
+}
+
+export async function getGithubUser({
+	access_token,
+}: {
+	access_token: string;
+}): Promise<GitHubUser> {
+	try {
+		const { data } = await axios.get<GitHubUser>('https://api.github.com/user', {
+			headers: {
+				Authorization: `Bearer ${access_token}`,
+			},
+		});
+
+		return data;
+	} catch (error: any) {
+		console.error('failed to fetch Github User info', error);
 		throw error;
 	}
 }

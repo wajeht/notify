@@ -145,6 +145,15 @@ export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 	return res.redirect(`/apps/${aid}/channels`);
 }
 
+// POST '/apps/:id/notifications/:nid/delete'
+export async function postDeleteAppNotificationHandler(req: Request, res: Response) {
+	const { id, nid } = req.params;
+
+	await db('notifications').where({ id: nid }).del();
+
+	return res.redirect(`/apps/${id}/notifications`);
+}
+
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	const app = await db

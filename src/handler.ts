@@ -192,7 +192,18 @@ export async function postUpdateAppChannelSMSHandler(req: Request, res: Response
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
 export async function postUpdateAppChannelDiscordHandler(req: Request, res: Response) {
-	const { id, cid, cfid } = req.params;
+	const { id, cfid } = req.params;
+	const { name, is_active, webhook_url } = req.body;
+
+	await db('discord_configs')
+		.where({ id: cfid })
+		.update({
+			webhook_url: webhook_url,
+			name,
+			is_active: is_active === 'on',
+			updated_at: db.fn.now(),
+		});
+
 	res.redirect(`/apps/${id}/channels`);
 }
 

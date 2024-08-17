@@ -48,3 +48,8 @@ export const oauthConfig = {
 		client_secret: process.env.GITHUB_CLIENT_SECRET || '',
 	},
 } as const;
+
+export const sessionConfig = {
+	store_prefix: process.env.SESSION_STORE_PREFIX || '',
+	secret: process.env.SESSION_SECRET || '',
+} as const;

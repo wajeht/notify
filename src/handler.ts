@@ -464,11 +464,32 @@ export async function postCreateAppHandler(req: Request, res: Response) {
 
 // GET /logout
 export function getLogoutHandler(req: Request, res: Response) {
+	if (req.session && req.session?.user) {
+		req.session.user = undefined;
+		req.session.destroy((error) => {
+			if (error) {
+				throw new Error(error);
+			}
+		});
+	}
+
 	return res.redirect('/');
+}
+
+export function getLoginHandler(req: Request, res: Response) {
+	if (req.session?.user) {
+		return res.redirect('back');
+	}
+
+	return res.redirect('/oauth/github');
 }
 
 // GET /oauth/github
 export async function getGithub(req: Request, res: Response) {
+	if (req.session?.user) {
+		return res.redirect('back');
+	}
+
 	const rootUrl = 'https://github.com/login/oauth/authorize';
 
 	const qs = new URLSearchParams({
@@ -494,13 +515,19 @@ export async function getGithubRedirect(req: Request, res: Response) {
 
 	const email = emails.filter((email) => email.primary && email.verified)[0]?.email;
 
-	const foundUser = await db.select('*').from('users').where({ email }).first();
+	let foundUser = await db.select('*').from('users').where({ email }).first();
 
 	if (!foundUser) {
-		// create a user
+		[foundUser] = await db('users')
+			.insert({
+				username: email?.split('@')[0],
+				email,
+			})
+			.returning('*');
 	}
 
-	// add it to session
+	req.session.user = foundUser;
+	req.session.save();
 
 	res.redirect('/apps');
 }

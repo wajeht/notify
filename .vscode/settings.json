@@ -5,6 +5,7 @@
 		"daisyui",
 		"healthz",
 		"knexfile",
+		"resave",
 		"schemaname",
 		"Signin",
 		"tablename",

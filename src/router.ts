@@ -1,5 +1,5 @@
 import express from 'express';
-import { catchAsyncErrorMiddleware } from './middleware';
+import { authenticationMiddleware, catchAsyncErrorMiddleware } from './middleware';
 import {
 	getHealthzHandler,
 	postNotificationHandler,
@@ -30,6 +30,7 @@ import {
 	getJobsPageHandler,
 	getGithub,
 	getGithubRedirect,
+	getLoginHandler,
 } from './handler';
 
 const router = express.Router();
@@ -40,80 +41,123 @@ router.get('/healthz', catchAsyncErrorMiddleware(getHealthzHandler));
 
 router.get('/terms-of-service', catchAsyncErrorMiddleware(getTermsOfServicePageHandler));
 
-router.get('/settings', catchAsyncErrorMiddleware(getSettingsPageHandler));
-
 router.get('/logout', catchAsyncErrorMiddleware(getLogoutHandler));
 
 router.post('/', catchAsyncErrorMiddleware(postNotificationHandler));
 
-router.get('/notifications', catchAsyncErrorMiddleware(getNotificationsPageHandler));
+router.get(
+	'/settings',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getSettingsPageHandler),
+);
 
-router.get('/apps', catchAsyncErrorMiddleware(getAppsPageHandler));
+router.get(
+	'/notifications',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getNotificationsPageHandler),
+);
 
-router.post('/apps', catchAsyncErrorMiddleware(postCreateAppHandler));
+router.get('/apps', authenticationMiddleware, catchAsyncErrorMiddleware(getAppsPageHandler));
 
-router.get('/apps/create', catchAsyncErrorMiddleware(getCreateNewAppPageHandler));
+router.post('/apps', authenticationMiddleware, catchAsyncErrorMiddleware(postCreateAppHandler));
 
-router.get('/apps/:id', catchAsyncErrorMiddleware(getAppPageHandler));
+router.get(
+	'/apps/create',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getCreateNewAppPageHandler),
+);
 
-router.get('/apps/:id/edit', catchAsyncErrorMiddleware(getAppEditPageHandler));
+router.get('/apps/:id', authenticationMiddleware, catchAsyncErrorMiddleware(getAppPageHandler));
 
-router.post('/apps/:id', catchAsyncErrorMiddleware(postAppUpdateHandler));
+router.get(
+	'/apps/:id/edit',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getAppEditPageHandler),
+);
 
-router.post('/apps/:id/delete', catchAsyncErrorMiddleware(postDeleteAppHandler));
+router.post('/apps/:id', authenticationMiddleware, catchAsyncErrorMiddleware(postAppUpdateHandler));
 
-router.get('/apps/:id/channels', catchAsyncErrorMiddleware(getAppChannelsPageHandler));
+router.post(
+	'/apps/:id/delete',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(postDeleteAppHandler),
+);
 
-router.get('/apps/:id/channels/create', catchAsyncErrorMiddleware(getNewAppChannelPageHandler));
+router.get(
+	'/apps/:id/channels',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getAppChannelsPageHandler),
+);
+
+router.get(
+	'/apps/:id/channels/create',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getNewAppChannelPageHandler),
+);
 
 router.post(
 	'/apps/:id/channels/discord',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppDiscordChannelConfigHandler),
 );
 
 router.post(
 	'/apps/:id/channels/sms',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppSMSChannelConfigHandler),
 );
 
 router.post(
 	'/apps/:id/channels/email',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppEmailChannelConfigHandler),
 );
 
 router.post(
 	'/apps/:aid/channels/:cid/delete',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postDeleteAppChannelHandler),
 );
 
 router.get(
 	'/apps/:id/channels/:cid/configs/:cfid/edit',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(getAppChannelEditPageHandler),
 );
 
 router.post(
 	'/apps/:id/channels/:cid/configs/:cfid/sms',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postUpdateAppChannelSMSHandler),
 );
 
 router.post(
 	'/apps/:id/channels/:cid/configs/:cfid/discord',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postUpdateAppChannelDiscordHandler),
 );
 
 router.post(
 	'/apps/:id/channels/:cid/configs/:cfid/email',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postUpdateAppChannelEmailHandler),
 );
 
-router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificationsPageHandler));
+router.get(
+	'/apps/:id/notifications',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(getAppNotificationsPageHandler),
+);
 
 router.post(
 	'/apps/:id/notifications/:nid/delete',
+	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postDeleteAppNotificationHandler),
 );
 
-router.get('/jobs', catchAsyncErrorMiddleware(getJobsPageHandler));
+router.get('/jobs', authenticationMiddleware, catchAsyncErrorMiddleware(getJobsPageHandler));
+
+router.get('/login', catchAsyncErrorMiddleware(getLoginHandler));
 
 router.get('/oauth/github', catchAsyncErrorMiddleware(getGithub));
 

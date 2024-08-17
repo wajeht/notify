@@ -2,7 +2,7 @@ import { UnauthorizedError } from './error';
 import { oauthConfig } from './config';
 import { db } from './db/db';
 import { Request, Response } from 'express';
-import { getGithubOauthToken, getGithubUser, getGithubUserEmails } from 'utils';
+import { getGithubOauthToken, getGithubUserEmails } from 'utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -488,9 +488,9 @@ export async function getGithubRedirect(req: Request, res: Response) {
 		throw new UnauthorizedError('Something went wrong while authenticating with github');
 	}
 
-	const { access_token } = await getGithubOauthToken({ code });
+	const { access_token } = await getGithubOauthToken(code);
 
-	const emails = await getGithubUserEmails({ access_token });
+	const emails = await getGithubUserEmails(access_token);
 
 	const email = emails.filter((email) => email.primary && email.verified)[0]?.email;
 

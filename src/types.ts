@@ -1,5 +1,11 @@
 export type Env = 'production' | 'development' | 'testing';
 
+declare module 'express-session' {
+	interface SessionData {
+		user?: User;
+	}
+}
+
 export interface GitHubUser {
 	login: string;
 	avatar_url: string;

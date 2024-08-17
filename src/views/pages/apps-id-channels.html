@@ -72,7 +72,7 @@
                 <% } %>
               </div>
             </details>
-            <a href="#">Edit</a>
+            <a href="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= channel.config.id %>/edit">Edit</a>
 
             <button class="no-style-btn" onclick="document.getElementById(`delete-channels-<%= channel.config.id %>-modal`).showModal()">Delete</button>
             <dialog id="delete-channels-<%= channel.config.id %>-modal">

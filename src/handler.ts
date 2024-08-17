@@ -154,6 +154,36 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 	return res.redirect(`/apps/${id}/notifications`);
 }
 
+// GET '/apps/:aid/channels/:cid/configs/:cfid/edit'
+export async function getAppChannelEditPageHandler(req: Request, res: Response) {
+	const { id, cid, cfid } = req.params;
+
+	const [app] = await db
+		.select('*')
+		.from('apps')
+		.where({ id: parseInt(req.params.id!) });
+
+	const channel = await db('app_channels')
+		.select('app_channels.*', 'channel_types.name as channel_type_name')
+		.leftJoin('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
+		.where({ 'app_channels.id': cid, 'app_channels.app_id': id })
+		.first();
+
+	const config = await db
+		.select('*')
+		.from(`${channel.channel_type_name}_configs`)
+		.where({ id: cfid })
+		.first();
+
+	return res.render('apps-id-channels-id-edit.html', {
+		app,
+		channel,
+		config,
+		layout: '../layouts/app.html',
+		path: `/apps/${id}/channels/${cid}/edit`,
+	});
+}
+
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	const app = await db

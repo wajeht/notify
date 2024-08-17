@@ -22,6 +22,7 @@ import {
 	postDeleteAppHandler,
 	postDeleteAppChannelHandler,
 	postDeleteAppNotificationHandler,
+	getAppChannelEditPageHandler,
 } from './handler';
 
 import express from 'express';
@@ -75,6 +76,11 @@ router.post(
 );
 
 router.get('/apps/:id/channels/create', catchAsyncErrorMiddleware(getNewAppChannelPageHandler));
+
+router.get(
+	'/apps/:id/channels/:cid/configs/:cfid/edit',
+	catchAsyncErrorMiddleware(getAppChannelEditPageHandler),
+);
 
 router.get('/apps/:id/notifications', catchAsyncErrorMiddleware(getAppNotificationsPageHandler));
 

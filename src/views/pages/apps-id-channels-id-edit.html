@@ -1,0 +1,108 @@
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <div>
+    <h2>Channels / Edit</h2>
+    <p>Edit <%= channel.channel_type_name %> channel</p>
+  </div>
+
+  <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 20px;">
+    <% if (channel.channel_type_name === 'email') { %>
+      <form id="email_form" style="display:flex; flex-direction: column; gap: 10px;" action="#" method="POST">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="name">Config Name:</label>
+          <input type="text" id="name" name="name" value="<%= config.name %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="host">Email Host:</label>
+          <input type="text" id="host" name="host" value="<%= config.host %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="port">Email Port:</label>
+          <input type="number" id="port" name="port" value="<%= config.port %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="alias">Email Alias:</label>
+          <input type="email" id="alias" name="alias" value="<%= config.alias %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="auth_email">Auth Email:</label>
+          <input type="email" id="auth_email" name="auth_email" value="<%= config.auth_email %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="auth_pass">Auth Password:</label>
+          <input type="password" id="auth_pass" name="auth_pass" value="<%= config.auth_pass %>"  required>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="checkbox" id="is_active_email"  name="is_active" <%= app.is_active ? 'checked' : '' %> required>
+          <label for="is_active_email">Active</label>
+        </div>
+
+        <button type="submit">Update</button>
+      </form>
+    <% } %>
+
+    <% if (channel.channel_type_name === 'discord') { %>
+      <form id="discord_form" style="display:flex; flex-direction: column; gap: 10px;" action="#" method="POST">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="name">Config Name:</label>
+          <input type="text" id="name" name="name" value="<%= config.name %>" required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="webhook_url">Webhook URL:</label>
+          <input type="url" id="webhook_url" name="webhook_url" value="<%= config.webhook_url %>" required>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="checkbox" id="is_active_discord" name="is_active" <%= app.is_active ? 'checked' : '' %> required>
+          <label for="is_active_discord">Active</label>
+        </div>
+
+        <button type="submit">Update</button>
+      </form>
+    <% } %>
+
+    <% if (channel.channel_type_name === 'sms') { %>
+      <form id="sms_form" style="display:flex; flex-direction: column; gap: 10px;" action="#" method="POST">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="name">Config Name:</label>
+          <input type="text" id="name" name="name" value="<%= config.name %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="account_sid">Twilio Account SID:</label>
+          <input type="text" id="account_sid" name="account_sid" value="<%= config.account_sid %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="auth_token">Twilio Auth Token:</label>
+          <input type="text" id="auth_token" name="auth_token" value="<%= config.auth_token %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="from_phone_number">Twilio From Phone Number:</label>
+          <input type="text" id="from_phone_number" name="from_phone_number" value="<%= config.from_phone_number %>"  required>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+          <label for="phone_number">Twilio Phone Number:</label>
+          <input type="text" id="phone_number" name="phone_number" value="<%= config.phone_number %>"  required>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <input type="checkbox" id="is_active_sms"  name="is_active" <%= app.is_active ? 'checked' : '' %> required>
+          <label for="is_active_sms">Active</label>
+        </div>
+
+        <button type="submit">Update</button>
+      </form>
+    <% } %>
+
+  </div>
+</div>

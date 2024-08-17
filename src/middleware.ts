@@ -7,6 +7,18 @@ export function notFoundMiddleware() {
 	};
 }
 
+export async function authenticationMiddleware(req: Request, res: Response, next: NextFunction) {
+	try {
+		if (!req.session?.user) {
+			return res.redirect('/login');
+		}
+
+		next();
+	} catch (error) {
+		next(error);
+	}
+}
+
 export function errorMiddleware() {
 	return async (
 		error: Error & { statusCode?: number },

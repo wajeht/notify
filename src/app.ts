@@ -2,19 +2,45 @@ import ejs from 'ejs';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'node:path';
+import session from 'express-session';
 import express from 'express';
 import { router } from './router';
 import compression from 'compression';
 import expressLayouts from 'express-ejs-layouts';
 import { errorMiddleware, notFoundMiddleware } from './middleware';
+import { appConfig, sessionConfig } from './config';
+import RedisStore from 'connect-redis';
+import { redis } from 'db/db';
 
 const app = express();
+
+const redisStore = new RedisStore({
+	client: redis,
+	prefix: sessionConfig.store_prefix,
+	disableTouch: true,
+});
 
 app.use(express.json({ limit: '1mb' }));
 
 app.use(express.urlencoded({ extended: true }));
 
 app.set('trust proxy', true);
+
+app.use(
+	session({
+		secret: sessionConfig.secret,
+		resave: true,
+		saveUninitialized: true,
+		store: redisStore,
+		proxy: appConfig.env === 'production',
+		cookie: {
+			maxAge: 1000 * 60 * 24, // 24 hours
+			httpOnly: appConfig.env === 'production',
+			sameSite: appConfig.env === 'production' ? 'none' : 'lax',
+			secure: appConfig.env === 'production',
+		},
+	}),
+);
 
 app.use(
 	helmet.contentSecurityPolicy({

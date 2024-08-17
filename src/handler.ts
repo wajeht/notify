@@ -1,3 +1,4 @@
+import { oauthConfig } from './config';
 import { db } from './db/db';
 import { Request, Response } from 'express';
 
@@ -463,3 +464,19 @@ export async function postCreateAppHandler(req: Request, res: Response) {
 export function getLogoutHandler(req: Request, res: Response) {
 	return res.redirect('/');
 }
+
+// GET /oauth/github
+export async function getGithub(req: Request, res: Response) {
+	const rootUrl = 'https://github.com/login/oauth/authorize';
+
+	const qs = new URLSearchParams({
+		redirect_uri: oauthConfig.github.redirect_url,
+		client_id: oauthConfig.github.client_id,
+		scope: 'user:email',
+	});
+
+	return `${rootUrl}?${qs.toString()}`;
+}
+
+// GET /oauth/github/redirect
+export async function getGithubRedirect(req: Request, res: Response) {}

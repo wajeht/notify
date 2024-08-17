@@ -40,3 +40,10 @@ export const smsConfig = {
 	fromPhoneNumber: process.env.TWILIO_FROM_PHONE_NUMBER || '',
 	toPhoneNumber: process.env.TWILIO_TO_PHONE_NUMBER || '',
 } as const;
+
+export const oauthConfig = {
+	github: {
+		redirect_url: process.env.GITHUB_REDIRECT_URL || '',
+		client_id: process.env.GITHUB_CLIENT_ID || '',
+	},
+} as const;

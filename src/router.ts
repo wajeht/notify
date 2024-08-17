@@ -28,6 +28,8 @@ import {
 	getAppNotificationsPageHandler,
 	postDeleteAppNotificationHandler,
 	getJobsPageHandler,
+	getGithub,
+	getGithubRedirect,
 } from './handler';
 
 const router = express.Router();
@@ -112,5 +114,9 @@ router.post(
 );
 
 router.get('/jobs', catchAsyncErrorMiddleware(getJobsPageHandler));
+
+router.get('/oauth/github', catchAsyncErrorMiddleware(getGithub));
+
+router.get('/oauth/github/redirect', catchAsyncErrorMiddleware(getGithubRedirect));
 
 export { router };

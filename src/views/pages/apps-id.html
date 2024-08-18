@@ -67,7 +67,7 @@
     <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: inherit;">
       <div style="overflow-x: scroll;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div><strong>API Key</strong></div>
+          <div style="display: flex; align-items: center; gap: 5px;"><strong>API Key</strong><% if (app.api_key_version > 0) { %> <small style="color: #bbb;">(v<%= app.api_key_version %>)</small> <% } %></div>
           <form action="/apps/<%= app.id %>/create-api-key" method="post">
             <button type="submit" class="no-style-btn">Generate</button>
           </form>

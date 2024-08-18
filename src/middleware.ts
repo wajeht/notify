@@ -33,7 +33,8 @@ export const validateRequestMiddleware = (schemas: any) => {
 				return acc;
 			}, {});
 
-			req.flash('error', Object.values(reshapedErrors));
+			// Note: is this a good idea? maybe we jus disable a toast since we already all errors state.input?
+			// req.flash('error', Object.values(reshapedErrors));
 			req.session.errors = reshapedErrors;
 
 			return res.redirect('back');

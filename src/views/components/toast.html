@@ -1,0 +1,95 @@
+<script>
+    function createToast(message) {
+        // Remove any existing toast and background
+        const existingToast = document.getElementById('toast');
+        const existingBackground = document.getElementById('toast-background');
+        if (existingToast) existingToast.remove();
+        if (existingBackground) existingBackground.remove();
+
+        // Create dimmed background
+        const background = document.createElement('div');
+        background.id = 'toast-background';
+        background.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.150);
+            // backdrop-filter: blur(5px);
+            z-index: 19;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        document.body.appendChild(background);
+
+        // Create new toast element
+        const toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = `
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            border: 1px dashed;
+            color: black;
+            padding: 20px;
+            border-radius: 5px;
+            transition: top 0.5s ease;
+            z-index: 20;
+            min-width: 200px;
+            max-width: 400px;
+            width: 80%;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            box-sizing: border-box;
+        `;
+        toast.textContent = decodeURIComponent(message);
+
+        // Add click event to dismiss toast
+        toast.onclick = function() {
+            dismissToast(toast, background);
+        };
+
+        // Add toast to body
+        document.body.appendChild(toast);
+
+        // Animate toast and background
+        setTimeout(() => {
+            toast.style.top = '20px';
+            background.style.opacity = '1';
+        }, 100);
+
+        // Set timeout to hide toast
+        setTimeout(() => {
+            dismissToast(toast, background);
+        }, 5000); // 5 sec
+    }
+
+    function dismissToast(toast, background) {
+        toast.style.top = '-100px';
+        background.style.opacity = '0';
+        setTimeout(() => {
+            toast.remove();
+            background.remove();
+        }, 500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const alertMessage = urlParams.get('alert');
+        if (alertMessage) {
+            createToast(alertMessage);
+            urlParams.delete('alert');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            history.replaceState({}, document.title, newUrl);
+        }
+    });
+
+    // For EJS flash messages
+    if (typeof flashMessages !== 'undefined' && flashMessages.alert) {
+        createToast(flashMessages.alert);
+    }
+</script>

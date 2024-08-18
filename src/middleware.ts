@@ -26,7 +26,7 @@ export async function apiKeyAuthenticationMiddleware(
 			return res.status(401).json({ message: 'invalid api key' });
 		}
 
-		req.app = {
+		req.decodedApp = {
 			id: result.apiKey,
 			userId: result.userId,
 		};

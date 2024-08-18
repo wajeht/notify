@@ -133,14 +133,23 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 
 	const app = await db('apps').where({ id }).first();
 
+	if (!app) return null;
+
+	const newKeyVersion = (app.api_key_version || 0) + 1;
+
 	const payload = {
 		appId: app.id,
 		userId: app.user_id,
+		apiKeyVersion: newKeyVersion,
 	};
 
 	const apiKey = jwt.sign(payload, appConfig.apiKeySecret, { expiresIn: '1y' });
 
-	await db('apps').where({ id }).update({ api_key: apiKey, api_key_created_at: db.fn.now() });
+	await db('apps').where({ id }).update({
+		api_key: apiKey,
+		api_key_version: newKeyVersion,
+		api_key_created_at: db.fn.now(),
+	});
 
 	return res.redirect(`/apps/${id}`);
 }

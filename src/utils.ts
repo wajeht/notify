@@ -96,10 +96,16 @@ export async function verifyApiKey(
 		const decoded = jwt.verify(apiKey, appConfig.apiKeySecret) as {
 			appId: string;
 			userId: string;
+			apiKeyVersion: number;
 		};
 
 		const app = await db('apps')
-			.where({ id: decoded.appId, api_key: apiKey, is_active: true })
+			.where({
+				id: decoded.appId,
+				api_key: apiKey,
+				is_active: true,
+				api_key_version: decoded.apiKeyVersion,
+			})
 			.first();
 
 		if (!app) return null;

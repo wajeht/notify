@@ -20,6 +20,8 @@ export async function up(knex: Knex): Promise<void> {
 			table.boolean('is_active').defaultTo(true);
 			table.string('api_key').unique().nullable();
 			table.timestamp('api_key_created_at').nullable();
+			table.integer('api_key_version').defaultTo(1).notNullable();
+
 			table.timestamps(true, true);
 
 			table.index('api_key');

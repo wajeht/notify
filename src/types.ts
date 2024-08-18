@@ -6,14 +6,19 @@ declare module 'express-session' {
 	}
 }
 
-declare module 'express' {
-	export interface Request {
-		app: {
-			id: string;
-			userId: string;
-		};
+declare global {
+	// eslint-disable-next-line @typescript-eslint/no-namespace
+	namespace Express {
+		interface Request {
+			decodedApp?: DecodedApp;
+		}
 	}
 }
+
+export type DecodedApp = {
+	id: string;
+	userId: string;
+};
 
 export interface GitHubUser {
 	login: string;

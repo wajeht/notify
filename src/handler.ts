@@ -113,13 +113,6 @@ export async function postDeleteAppHandler(req: Request, res: Response) {
 
 // POST /apps/:id
 export async function postAppUpdateHandler(req: Request, res: Response, next: NextFunction) {
-	validateRequestMiddleware([
-		body('name').notEmpty().withMessage('Name is required').trim(),
-		body('url').isURL().withMessage('Valid URL is required').trim(),
-		body('description').optional().isString().withMessage('Description must be a string').trim(),
-		body('is_active').toBoolean(),
-	])(req, res, next);
-
 	const { name, url, description } = req.body;
 
 	const id = parseInt(req.params.id!);

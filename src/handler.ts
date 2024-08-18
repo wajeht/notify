@@ -4,6 +4,7 @@ import { db } from './db/db';
 import { Request, Response } from 'express';
 import { getGithubOauthToken, getGithubUserEmails } from './utils';
 import jwt from 'jsonwebtoken';
+import { ApiKeyPayload } from 'types';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -137,7 +138,7 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 
 	const newKeyVersion = (app.api_key_version || 0) + 1;
 
-	const payload = {
+	const payload: ApiKeyPayload = {
 		appId: app.id,
 		userId: app.user_id,
 		apiKeyVersion: newKeyVersion,

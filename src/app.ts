@@ -7,7 +7,7 @@ import express from 'express';
 import { router } from './router';
 import compression from 'compression';
 import expressLayouts from 'express-ejs-layouts';
-import { errorMiddleware, notFoundMiddleware } from './middleware';
+import { appVariablesMiddleware, errorMiddleware, notFoundMiddleware } from './middleware';
 import { appConfig, sessionConfig } from './config';
 import RedisStore from 'connect-redis';
 import { redis } from './db/redis';
@@ -70,6 +70,8 @@ app.set('views', path.resolve(path.join(process.cwd(), 'src', 'views', 'pages'))
 app.set('layout', path.resolve(path.join(process.cwd(), 'src', 'views', 'layouts', 'public.html')));
 
 app.use(expressLayouts);
+
+app.use(appVariablesMiddleware);
 
 app.use(router);
 

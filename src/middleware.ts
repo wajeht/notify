@@ -19,6 +19,23 @@ export async function authenticationMiddleware(req: Request, res: Response, next
 	}
 }
 
+export async function appVariablesMiddleware(req: Request, res: Response, next: NextFunction) {
+	try {
+		const user = req.session?.user;
+
+		if (user) {
+			res.locals.state = {
+				user: user,
+				copyRightYear: new Date().getFullYear(),
+			};
+		}
+
+		next();
+	} catch (error) {
+		next(error);
+	}
+}
+
 export function errorMiddleware() {
 	return async (
 		error: Error & { statusCode?: number },

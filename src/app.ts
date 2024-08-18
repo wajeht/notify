@@ -35,9 +35,10 @@ app.use(
 		proxy: appConfig.env === 'production',
 		cookie: {
 			path: '/',
+			domain: `.${sessionConfig.domain}`,
 			maxAge: 1000 * 60 * 60 * 24, // 24 hours
 			httpOnly: appConfig.env === 'production',
-			sameSite: appConfig.env === 'production',
+			sameSite: 'lax',
 			secure: appConfig.env === 'production',
 		},
 	}),

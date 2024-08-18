@@ -19,7 +19,7 @@ export async function authenticationMiddleware(req: Request, res: Response, next
 	}
 }
 
-export async function appVariablesMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function appLocalStateMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		const user = req.session?.user;
 

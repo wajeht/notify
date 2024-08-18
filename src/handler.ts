@@ -5,8 +5,6 @@ import { UnauthorizedError } from './error';
 import { NextFunction, Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { getGithubOauthToken, getGithubUserEmails } from './utils';
-import { validateRequestMiddleware } from './middleware';
-import { body } from 'express-validator';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {

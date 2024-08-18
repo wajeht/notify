@@ -9,6 +9,7 @@ export const appConfig = {
 	env: (process.env.APP_ENV as Env) || 'development',
 	appUrl: process.env.APP_URL || '',
 	adminEmail: process.env.APP_ADMIN_EMAIL || '',
+	apiKeySecret: process.env.APP_API_KEY_SECRET || 'notify',
 } as const;
 
 export const emailConfig = {

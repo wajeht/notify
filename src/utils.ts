@@ -2,6 +2,7 @@ import qs from 'qs';
 import axios from 'axios';
 import path from 'node:path';
 import { db } from './db/db';
+import jwt from 'jsonwebtoken';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken } from './types';
 
@@ -85,5 +86,27 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
 	} catch (error: any) {
 		console.error('failed to fetch github user emails', error);
 		throw error;
+	}
+}
+
+export async function verifyApiKey(
+	apiKey: string,
+): Promise<{ apiKey: string; userId: string } | null> {
+	try {
+		const decoded = jwt.verify(apiKey, appConfig.apiKeySecret) as {
+			appId: string;
+			userId: string;
+		};
+
+		const app = await db('apps')
+			.where({ id: decoded.appId, api_key: apiKey, is_active: true })
+			.first();
+
+		if (!app) return null;
+
+		return { apiKey: decoded.appId, userId: decoded.userId };
+	} catch (error) {
+		console.error('invalid api key:', error);
+		return null;
 	}
 }

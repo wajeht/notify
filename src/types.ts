@@ -6,6 +6,15 @@ declare module 'express-session' {
 	}
 }
 
+declare module 'express' {
+	export interface Request {
+		app: {
+			id: string;
+			userId: string;
+		};
+	}
+}
+
 export interface GitHubUser {
 	login: string;
 	avatar_url: string;

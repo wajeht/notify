@@ -64,14 +64,16 @@
       </div>
     </div>
 
-    <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
-      <div>
+    <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: inherit;">
+      <div style="overflow-x: scroll;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <div><strong>API Key</strong></div>
-          <button class="no-style-btn">Generate</button>
+          <form action="/apps/<%= app.id %>/create-api-key" method="post">
+            <button type="submit" class="no-style-btn">Generate</button>
+          </form>
         </div>
 
-        <pre style="width: fit-content;"><span>click to generate api key</span></pre>
+        <pre><% if (!app.api_key) { %>click to generate api key<% } else { %><%= app.api_key %><% } %></pre>
       </div>
 
       <div>

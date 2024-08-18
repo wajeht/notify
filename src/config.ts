@@ -8,6 +8,7 @@ export const appConfig = {
 	port: parseInt(process.env.APP_PORT || '80', 10),
 	env: (process.env.APP_ENV as Env) || 'development',
 	appUrl: process.env.APP_URL || '',
+	adminEmail: process.env.APP_ADMIN_EMAIL || '',
 } as const;
 
 export const emailConfig = {

@@ -1,5 +1,5 @@
 import { UnauthorizedError } from './error';
-import { oauthConfig } from './config';
+import { appConfig, oauthConfig } from './config';
 import { db } from './db/db';
 import { Request, Response } from 'express';
 import { getGithubOauthToken, getGithubUserEmails } from './utils';
@@ -522,6 +522,7 @@ export async function getGithubRedirect(req: Request, res: Response) {
 			.insert({
 				username: email?.split('@')[0],
 				email,
+				is_admin: appConfig.adminEmail === email,
 			})
 			.returning('*');
 	}

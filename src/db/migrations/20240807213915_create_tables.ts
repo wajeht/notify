@@ -7,9 +7,11 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('username').unique().notNullable();
 			table.string('email').unique().notNullable();
 			table.boolean('is_admin').defaultTo(false);
+			table.string('api_key').unique().nullable();
 			table.timestamps(true, true);
 
 			table.index('email');
+			table.index('api_key');
 		})
 		.createTable('apps', (table) => {
 			table.increments('id').primary();

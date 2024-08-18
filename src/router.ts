@@ -1,5 +1,9 @@
 import express from 'express';
-import { authenticationMiddleware, catchAsyncErrorMiddleware } from './middleware';
+import {
+	apiKeyAuthenticationMiddleware,
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware,
+} from './middleware';
 import {
 	getHealthzHandler,
 	postNotificationHandler,
@@ -31,6 +35,7 @@ import {
 	getGithub,
 	getGithubRedirect,
 	getLoginHandler,
+	postCreateAppApiKeyHandler,
 } from './handler';
 
 const router = express.Router();
@@ -43,7 +48,11 @@ router.get('/terms-of-service', catchAsyncErrorMiddleware(getTermsOfServicePageH
 
 router.get('/logout', catchAsyncErrorMiddleware(getLogoutHandler));
 
-router.post('/', catchAsyncErrorMiddleware(postNotificationHandler));
+router.post(
+	'/',
+	apiKeyAuthenticationMiddleware,
+	catchAsyncErrorMiddleware(postNotificationHandler),
+);
 
 router.get(
 	'/settings',
@@ -99,6 +108,12 @@ router.post(
 	'/apps/:id/channels/discord',
 	authenticationMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppDiscordChannelConfigHandler),
+);
+
+router.post(
+	'/apps/:id/create-api-key',
+	authenticationMiddleware,
+	catchAsyncErrorMiddleware(postCreateAppApiKeyHandler),
 );
 
 router.post(

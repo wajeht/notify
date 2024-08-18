@@ -1,10 +1,40 @@
-import { NotFoundError } from './error';
+import { verifyApiKey } from './utils';
+import { NotFoundError, UnauthorizedError } from './error';
 import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
 		next(new NotFoundError());
 	};
+}
+
+export async function apiKeyAuthenticationMiddleware(
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) {
+	try {
+		const apiKey = req.header('X-API-Key');
+
+		if (!apiKey) {
+			throw new UnauthorizedError('api key is missing');
+		}
+
+		const result = await verifyApiKey(apiKey);
+
+		if (!result) {
+			throw new UnauthorizedError('invalid api key');
+		}
+
+		req.app = {
+			id: result.apiKey,
+			userId: result.userId,
+		};
+
+		next();
+	} catch (error) {
+		next(error);
+	}
 }
 
 export async function authenticationMiddleware(req: Request, res: Response, next: NextFunction) {

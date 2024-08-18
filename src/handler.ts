@@ -3,6 +3,7 @@ import { appConfig, oauthConfig } from './config';
 import { db } from './db/db';
 import { Request, Response } from 'express';
 import { getGithubOauthToken, getGithubUserEmails } from './utils';
+import jwt from 'jsonwebtoken';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -122,6 +123,24 @@ export async function postAppUpdateHandler(req: Request, res: Response) {
 		description,
 		updated_at: db.fn.now(),
 	});
+
+	return res.redirect(`/apps/${id}`);
+}
+
+// POST /apps/:id/create-api-key
+export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
+	const { id } = req.params;
+
+	const app = await db('apps').where({ id }).first();
+
+	const payload = {
+		appId: app.id,
+		userId: app.user_id,
+	};
+
+	const apiKey = jwt.sign(payload, appConfig.apiKeySecret, { expiresIn: '1y' });
+
+	await db('apps').where({ id }).update({ api_key: apiKey, api_key_created_at: db.fn.now() });
 
 	return res.redirect(`/apps/${id}`);
 }

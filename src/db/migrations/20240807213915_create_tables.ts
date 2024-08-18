@@ -7,11 +7,9 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('username').unique().notNullable();
 			table.string('email').unique().notNullable();
 			table.boolean('is_admin').defaultTo(false);
-			table.string('api_key').unique().nullable();
 			table.timestamps(true, true);
 
 			table.index('email');
-			table.index('api_key');
 		})
 		.createTable('apps', (table) => {
 			table.increments('id').primary();
@@ -20,8 +18,11 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('url').nullable();
 			table.string('description').nullable();
 			table.boolean('is_active').defaultTo(true);
+			table.string('api_key').unique().nullable();
+			table.timestamp('api_key_created_at').nullable();
 			table.timestamps(true, true);
 
+			table.index('api_key');
 			table.index('user_id');
 			table.index('name');
 			table.index('is_active');

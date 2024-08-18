@@ -15,7 +15,7 @@
 		"format:verbose": "prettier --write --cache .",
 		"format": "prettier --write --cache . > /dev/null",
 		"lint:check": "eslint .",
-		"lint": "eslint --fix --cache . --ignore-path .gitignore",
+		"lint": "eslint --fix --cache .",
 		"db:prepare:dev": "npm run db:migrate:latest && npm run db:seed:run",
 		"db:prepare:prod": "npm run db:migrate:latest:prod",
 		"db:migrate:make": "tsx ./node_modules/knex/bin/cli.js migrate:make --knexfile=./src/db/knexfile.ts",

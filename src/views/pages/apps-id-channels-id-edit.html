@@ -60,7 +60,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
           <label for="webhook_url">Webhook URL:</label>
-          <input type="url" id="webhook_url" name="webhook_url" value="<%= config.webhook_url %>" required>
+          <input type="url" id="webhook_url" name="webhook_url" value="<%= state.input.webhook_url ?? config.webhook_url %>" required>
         </div>
 
         <div style="display: flex; align-items: center; gap: 5px;">

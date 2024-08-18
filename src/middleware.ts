@@ -65,13 +65,18 @@ export async function authenticationMiddleware(req: Request, res: Response, next
 
 export async function appLocalStateMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
-		const user = req.session?.user;
+		res.locals.state = {
+			user: req.session?.user || null,
+			copyRightYear: new Date().getFullYear(),
+			input: {},
+		};
 
-		if (user) {
-			res.locals.state = {
-				user: user,
-				copyRightYear: new Date().getFullYear(),
-			};
+		if (req.method === 'POST') {
+			res.locals.state.input = req.body;
+			req.session.input = req.body;
+		} else if (req.method === 'GET' && req.session?.input) {
+			res.locals.state.input = req.session.input;
+			delete req.session.input;
 		}
 
 		next();

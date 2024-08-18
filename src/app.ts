@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import path from 'node:path';
 import express from 'express';
 import { router } from './router';
+import flash from 'connect-flash';
 import { redis } from './db/redis';
 import compression from 'compression';
 import session from 'express-session';
@@ -43,6 +44,8 @@ app.use(
 		},
 	}),
 );
+
+app.use(flash());
 
 app.use(
 	helmet.contentSecurityPolicy({

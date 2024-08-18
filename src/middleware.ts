@@ -14,7 +14,7 @@ export async function apiKeyAuthenticationMiddleware(
 	next: NextFunction,
 ) {
 	try {
-		const apiKey = req.header('X-API-Key');
+		const apiKey = req.header('X-API-KEY');
 
 		if (!apiKey) {
 			return res.status(401).json({ message: 'api key is missing' });

@@ -487,7 +487,7 @@ export function getLoginHandler(req: Request, res: Response) {
 // GET /oauth/github
 export async function getGithub(req: Request, res: Response) {
 	if (req.session?.user) {
-		return res.redirect('back');
+		return res.redirect('/apps');
 	}
 
 	const rootUrl = 'https://github.com/login/oauth/authorize';

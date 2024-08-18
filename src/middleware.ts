@@ -20,19 +20,17 @@ export async function apiKeyAuthenticationMiddleware(
 			return res.status(401).json({ message: 'api key is missing' });
 		}
 
-		const result = await verifyApiKey(apiKey);
+		const apiKeyPayload = await verifyApiKey(apiKey);
 
-		if (!result) {
+		if (!apiKeyPayload) {
 			return res.status(401).json({ message: 'invalid api key' });
 		}
 
-		req.decodedApp = {
-			id: result.apiKey,
-			userId: result.userId,
-		};
+		req.apiKeyPayload = apiKeyPayload;
 
 		next();
 	} catch (error) {
+		console.error('failed to auth api key', error);
 		return res.status(500).json({ message: 'internal server error' });
 	}
 }

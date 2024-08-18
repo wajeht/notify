@@ -10,14 +10,15 @@ declare global {
 	// eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
-			decodedApp?: DecodedApp;
+			apiKeyPayload?: ApiKeyPayload;
 		}
 	}
 }
 
-export type DecodedApp = {
-	id: string;
+export type ApiKeyPayload = {
+	appId: string;
 	userId: string;
+	apiKeyVersion: number;
 };
 
 export interface GitHubUser {

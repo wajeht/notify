@@ -105,6 +105,12 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 			copyRightYear: new Date().getFullYear(),
 			input: req.session?.input || {},
 			errors: req.session?.errors || {},
+			flash: {
+				success: req.flash('success'),
+				error: req.flash('error'),
+				info: req.flash('info'),
+				warning: req.flash('warning'),
+			},
 		};
 
 		// Clear session input and errors after setting locals

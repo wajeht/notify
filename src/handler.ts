@@ -172,7 +172,7 @@ export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 
 	await db('app_channels').where({ id: cid }).del();
 
-	return res.redirect(`/apps/${aid}/channels`);
+	return res.redirect(`/apps/${aid}/channels?toast=deleted`);
 }
 
 // POST '/apps/:id/notifications/:nid/delete'

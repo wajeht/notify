@@ -17,13 +17,13 @@ export async function apiKeyAuthenticationMiddleware(
 		const apiKey = req.header('X-API-Key');
 
 		if (!apiKey) {
-			throw new UnauthorizedError('api key is missing');
+			return res.status(401).json({ message: 'api key is missing' });
 		}
 
 		const result = await verifyApiKey(apiKey);
 
 		if (!result) {
-			throw new UnauthorizedError('invalid api key');
+			return res.status(401).json({ message: 'invalid api key' });
 		}
 
 		req.app = {
@@ -33,7 +33,7 @@ export async function apiKeyAuthenticationMiddleware(
 
 		next();
 	} catch (error) {
-		next(error);
+		return res.status(500).json({ message: 'internal server error' });
 	}
 }
 

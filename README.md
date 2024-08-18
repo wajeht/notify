@@ -28,7 +28,8 @@ web 2.0 style notification systems for discord, email, and sms
 - [ ] rbac on all handlers
 - [ ] search on apps page
 - [ ] tests
-- [ ] csrf
+- [x] post notifications with api auth
+- [x] csrf
 
 # 📑 Docs
 

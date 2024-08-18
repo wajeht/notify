@@ -1,3 +1,4 @@
+import { csrfSync } from 'csrf-sync';
 import { verifyApiKey } from './utils';
 import { NotFoundError } from './error';
 import { NextFunction, Request, Response } from 'express';
@@ -7,6 +8,21 @@ export function notFoundMiddleware() {
 		next(new NotFoundError());
 	};
 }
+
+export const csrfMiddleware = (() => {
+	const { csrfSynchronisedProtection } = csrfSync({
+		getTokenFromRequest: (req: Request) => req.body.csrfToken || req.query.csrfToken,
+	});
+
+	return [
+		csrfSynchronisedProtection,
+		(req: Request, res: Response, next: NextFunction) => {
+			// @ts-expect-error - trust be bro
+			res.locals.csrfToken = req.csrfToken();
+			next();
+		},
+	];
+})();
 
 export async function apiKeyAuthenticationMiddleware(
 	req: Request,

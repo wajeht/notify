@@ -4,6 +4,7 @@ import {
 	apiKeyAuthenticationMiddleware,
 	authenticationMiddleware,
 	catchAsyncErrorMiddleware,
+	csrfMiddleware,
 } from './middleware';
 
 import {
@@ -59,6 +60,7 @@ router.post(
 router.get(
 	'/settings',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getSettingsPageHandler),
 );
 
@@ -68,107 +70,143 @@ router.get(
 	catchAsyncErrorMiddleware(getNotificationsPageHandler),
 );
 
-router.get('/apps', authenticationMiddleware, catchAsyncErrorMiddleware(getAppsPageHandler));
+router.get(
+	'/apps',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getAppsPageHandler),
+);
 
-router.post('/apps', authenticationMiddleware, catchAsyncErrorMiddleware(postCreateAppHandler));
+router.post(
+	'/apps',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postCreateAppHandler),
+);
 
 router.get(
 	'/apps/create',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getCreateNewAppPageHandler),
 );
 
-router.get('/apps/:id', authenticationMiddleware, catchAsyncErrorMiddleware(getAppPageHandler));
+router.get(
+	'/apps/:id',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getAppPageHandler),
+);
 
 router.get(
 	'/apps/:id/edit',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getAppEditPageHandler),
 );
 
-router.post('/apps/:id', authenticationMiddleware, catchAsyncErrorMiddleware(postAppUpdateHandler));
+router.post(
+	'/apps/:id',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postAppUpdateHandler),
+);
 
 router.post(
 	'/apps/:id/delete',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postDeleteAppHandler),
 );
 
 router.get(
 	'/apps/:id/channels',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getAppChannelsPageHandler),
 );
 
 router.get(
 	'/apps/:id/channels/create',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getNewAppChannelPageHandler),
 );
 
 router.post(
 	'/apps/:id/channels/discord',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppDiscordChannelConfigHandler),
 );
 
 router.post(
 	'/apps/:id/create-api-key',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppApiKeyHandler),
 );
 
 router.post(
 	'/apps/:id/channels/sms',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppSMSChannelConfigHandler),
 );
 
 router.post(
 	'/apps/:id/channels/email',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postCreateAppEmailChannelConfigHandler),
 );
 
 router.post(
 	'/apps/:aid/channels/:cid/delete',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postDeleteAppChannelHandler),
 );
 
 router.get(
 	'/apps/:id/channels/:cid/configs/:cfid/edit',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getAppChannelEditPageHandler),
 );
 
 router.post(
 	'/apps/:id/channels/:cid/configs/:cfid/sms',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postUpdateAppChannelSMSHandler),
 );
 
 router.post(
 	'/apps/:id/channels/:cid/configs/:cfid/discord',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postUpdateAppChannelDiscordHandler),
 );
 
 router.post(
 	'/apps/:id/channels/:cid/configs/:cfid/email',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postUpdateAppChannelEmailHandler),
 );
 
 router.get(
 	'/apps/:id/notifications',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(getAppNotificationsPageHandler),
 );
 
 router.post(
 	'/apps/:id/notifications/:nid/delete',
 	authenticationMiddleware,
+	csrfMiddleware,
 	catchAsyncErrorMiddleware(postDeleteAppNotificationHandler),
 );
 

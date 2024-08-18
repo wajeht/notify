@@ -13,37 +13,39 @@
 
     <% if (app.channels.length) { %>
       <% app.channels.forEach(channel => { %>
-        <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px;">
-          <div><strong>ID:</strong></div>
-          <div><%= channel.id %></div>
+        <div style="border: dashed; border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px;">
+            <div><strong>ID:</strong></div>
+            <div><%= channel.id %></div>
 
-          <div><strong>Name:</strong></div>
-          <div style="word-break: break-all;"><%= channel.config.name %></div>
+            <div><strong>Name:</strong></div>
+            <div style="word-break: break-all;"><%= channel.config.name %></div>
 
-          <div><strong>Type:</strong></div>
-          <div><%= channel.channel_type %></div>
+            <div><strong>Type:</strong></div>
+            <div><%= channel.channel_type %></div>
 
-          <div><strong>Status:</strong></div>
-          <div
-            style="
-              height: fit-content;
-              width: fit-content;
-              padding: 0px 5px;
-              border-radius: 5px;
-              <%= channel.config.is_active ? 'color: green; border: 1px solid green;' : 'color: red; border: 1px solid red;' %>"
-          >
-            <%= channel.config.is_active ? 'Active' : 'Inactive' %>
+            <div><strong>Status:</strong></div>
+            <div
+              style="
+                height: fit-content;
+                width: fit-content;
+                padding: 0px 5px;
+                border-radius: 5px;
+                <%= channel.config.is_active ? 'color: green; border: 1px solid green;' : 'color: red; border: 1px solid red;' %>"
+            >
+              <%= channel.config.is_active ? 'Active' : 'Inactive' %>
+            </div>
+
+            <div><strong>Created:</strong></div>
+            <div><%= new Date(channel.config.created_at).toLocaleString() %></div>
+
+            <div><strong>Updated:</strong></div>
+            <div><%= new Date(channel.config.updated_at).toLocaleString() %></div>
           </div>
 
-          <div><strong>Created:</strong></div>
-          <div><%= new Date(channel.config.created_at).toLocaleString() %></div>
-
-          <div><strong>Updated:</strong></div>
-          <div><%= new Date(channel.config.updated_at).toLocaleString() %></div>
-
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
             <details style="position: relative;">
-              <summary>View</summary>
+              <summary>Details</summary>
               <div style="position: absolute; top: 100%; left: 0; z-index: 1; border: dashed; padding: 10px; background-color: white; border-radius: 5px;">
                 <% if (channel.channel_type === 'email') { %>
                   <div><strong>Email Host:</strong></div>
@@ -82,6 +84,7 @@
                 <% } %>
               </div>
             </details>
+
             <a href="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= channel.config.id %>/edit">Edit</a>
 
             <button class="no-style-btn" onclick="document.getElementById(`delete-channels-<%= channel.config.id %>-modal`).showModal()">Delete</button>
@@ -96,7 +99,6 @@
               </form>
             </dialog>
           </div>
-
         </div>
       <% }) %>
     <% } %>

@@ -3,6 +3,7 @@ public/libs/*
 public/lib*
 public/js*
 public/client.js
+public/script.js
 public/*
 src/views/components/*
 src/views/layouts/*

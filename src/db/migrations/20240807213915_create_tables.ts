@@ -19,8 +19,8 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('description').nullable();
 			table.boolean('is_active').defaultTo(true);
 			table.string('api_key').unique().nullable();
+			table.integer('api_key_version').defaultTo(0).notNullable();
 			table.timestamp('api_key_created_at').nullable();
-			table.integer('api_key_version').defaultTo(1).notNullable();
 
 			table.timestamps(true, true);
 

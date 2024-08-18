@@ -4,7 +4,7 @@ import path from 'node:path';
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
 import { appConfig, oauthConfig } from './config';
-import { GithubUserEmail, GitHubOauthToken } from './types';
+import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
 
 export async function runMigrations(force: boolean = false) {
 	try {
@@ -89,30 +89,24 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
 	}
 }
 
-export async function verifyApiKey(
-	apiKey: string,
-): Promise<{ apiKey: string; userId: string } | null> {
+export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null> {
 	try {
-		const decoded = jwt.verify(apiKey, appConfig.apiKeySecret) as {
-			appId: string;
-			userId: string;
-			apiKeyVersion: number;
-		};
+		const decodedApiKeyPayload = jwt.verify(apiKey, appConfig.apiKeySecret) as ApiKeyPayload;
 
 		const app = await db('apps')
 			.where({
-				id: decoded.appId,
+				id: decodedApiKeyPayload.appId,
 				api_key: apiKey,
 				is_active: true,
-				api_key_version: decoded.apiKeyVersion,
+				api_key_version: decodedApiKeyPayload.apiKeyVersion,
 			})
 			.first();
 
 		if (!app) return null;
 
-		return { apiKey: decoded.appId, userId: decoded.userId };
+		return decodedApiKeyPayload;
 	} catch (error) {
-		console.error('invalid api key:', error);
+		console.error('failed to verify api key ', error);
 		return null;
 	}
 }

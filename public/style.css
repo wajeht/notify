@@ -81,6 +81,10 @@ dialog {
 	margin: 0;
 }
 
+summary {
+	color: #0000ee;
+}
+
 .no-style-btn {
 	background: none;
 	border: none;

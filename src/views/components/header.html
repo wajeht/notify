@@ -12,7 +12,7 @@
     </div>
 
     <details style="position: relative;">
-      <summary style="color: #0000ee;"><%= state.user.username %></summary>
+      <summary><%= state.user.username %></summary>
       <div style="position: absolute; top: 100%; left: 0; z-index: 1; border: dashed; padding: 10px; background-color: white; border-radius: 5px;">
         <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>; <%= path === '/settings' ? 'text-decoration: underline' : null %>" href="/settings">Settings</a>
         <a href="/logout">Logout</a>

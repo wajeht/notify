@@ -47,7 +47,7 @@
       <div><strong>Updated:</strong></div>
       <div><%= new Date(app.updated_at).toLocaleString() %></div>
 
-      <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+      <div style="display: flex; gap: 10px; align-items: center;">
         <a href="/apps/<%= app.id %>/edit">Edit</a>
         <button class="no-style-btn" onclick="document.getElementById('delete-app-modal').showModal()">Delete</button>
 

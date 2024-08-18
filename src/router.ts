@@ -1,9 +1,11 @@
 import express from 'express';
+
 import {
 	apiKeyAuthenticationMiddleware,
 	authenticationMiddleware,
 	catchAsyncErrorMiddleware,
 } from './middleware';
+
 import {
 	getHealthzHandler,
 	postNotificationHandler,

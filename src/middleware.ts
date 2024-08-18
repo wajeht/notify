@@ -1,5 +1,5 @@
 import { verifyApiKey } from './utils';
-import { NotFoundError, UnauthorizedError } from './error';
+import { NotFoundError } from './error';
 import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {

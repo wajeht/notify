@@ -2,15 +2,15 @@ import ejs from 'ejs';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'node:path';
-import session from 'express-session';
 import express from 'express';
 import { router } from './router';
-import compression from 'compression';
-import expressLayouts from 'express-ejs-layouts';
-import { appLocalStateMiddleware, errorMiddleware, notFoundMiddleware } from './middleware';
-import { appConfig, sessionConfig } from './config';
-import RedisStore from 'connect-redis';
 import { redis } from './db/redis';
+import compression from 'compression';
+import session from 'express-session';
+import RedisStore from 'connect-redis';
+import expressLayouts from 'express-ejs-layouts';
+import { appConfig, sessionConfig } from './config';
+import { appLocalStateMiddleware, errorMiddleware, notFoundMiddleware } from './middleware';
 
 const app = express();
 

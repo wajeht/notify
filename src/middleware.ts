@@ -2,12 +2,40 @@ import { csrfSync } from 'csrf-sync';
 import { verifyApiKey } from './utils';
 import { NotFoundError } from './error';
 import { NextFunction, Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
 		next(new NotFoundError());
 	};
 }
+
+export const validateRequestMiddleware = (schemas: any) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
+		try {
+			await Promise.all(schemas.map((schema: any) => schema.run(req)));
+			const result = validationResult(req) as any;
+
+			if (result.isEmpty()) return next();
+
+			const { errors } = result;
+
+			const reshapedErrors = errors.reduce((acc: { [key: string]: string }, error: any) => {
+				acc[error.path] = error.msg;
+				return acc;
+			}, {});
+
+			req.flash('error', Object.values(reshapedErrors));
+			req.session.errors = reshapedErrors;
+
+			req.session.input = req.body;
+
+			return res.redirect('back');
+		} catch (error) {
+			next(error);
+		}
+	};
+};
 
 export const csrfMiddleware = (() => {
 	const { csrfSynchronisedProtection } = csrfSync({
@@ -69,14 +97,22 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 			user: req.session?.user || null,
 			copyRightYear: new Date().getFullYear(),
 			input: {},
+			errors: {},
 		};
 
+		// Handle input
 		if (req.method === 'POST') {
-			res.locals.state.input = req.body;
-			req.session.input = req.body;
+			res.locals.state.input = req.body || {};
+			req.session.input = req.body || {};
 		} else if (req.method === 'GET' && req.session?.input) {
-			res.locals.state.input = req.session.input;
+			res.locals.state.input = req.session.input || {};
 			delete req.session.input;
+		}
+
+		// Handle errors
+		if (req.session?.errors) {
+			res.locals.state.errors = req.session.errors;
+			delete req.session.errors;
 		}
 
 		next();

@@ -134,11 +134,9 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 
 	const app = await db('apps').where({ id }).first();
 
-	if (!app) return null;
-
 	const newKeyVersion = (app.api_key_version || 0) + 1;
 
-	const payload: ApiKeyPayload = {
+	const payload = {
 		appId: app.id,
 		userId: app.user_id,
 		apiKeyVersion: newKeyVersion,

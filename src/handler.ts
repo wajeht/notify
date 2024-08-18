@@ -2,9 +2,11 @@ import { db } from './db/db';
 import jwt from 'jsonwebtoken';
 import { ApiKeyPayload } from 'types';
 import { UnauthorizedError } from './error';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { getGithubOauthToken, getGithubUserEmails } from './utils';
+import { validateRequestMiddleware } from './middleware';
+import { body } from 'express-validator';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -110,7 +112,14 @@ export async function postDeleteAppHandler(req: Request, res: Response) {
 }
 
 // POST /apps/:id
-export async function postAppUpdateHandler(req: Request, res: Response) {
+export async function postAppUpdateHandler(req: Request, res: Response, next: NextFunction) {
+	validateRequestMiddleware([
+		body('name').notEmpty().withMessage('Name is required').trim(),
+		body('url').isURL().withMessage('Valid URL is required').trim(),
+		body('description').optional().isString().withMessage('Description must be a string').trim(),
+		body('is_active').toBoolean(),
+	])(req, res, next);
+
 	const { name, url, description } = req.body;
 
 	const id = parseInt(req.params.id!);

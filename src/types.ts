@@ -4,7 +4,7 @@ declare module 'express-session' {
 	interface SessionData {
 		user?: User;
 		input?: Record<string, unknown>;
-		errors?: Record<string, unknown>[];
+		errors?: Record<string, unknown>;
 	}
 }
 

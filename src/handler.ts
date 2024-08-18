@@ -478,7 +478,7 @@ export function getLogoutHandler(req: Request, res: Response) {
 
 export function getLoginHandler(req: Request, res: Response) {
 	if (req.session?.user) {
-		return res.redirect('back');
+		return res.redirect('/apps');
 	}
 
 	return res.redirect('/oauth/github');

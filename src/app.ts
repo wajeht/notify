@@ -20,7 +20,7 @@ const redisStore = new RedisStore({
 	disableTouch: true,
 });
 
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '100kb' }));
 
 app.use(express.urlencoded({ extended: true }));
 

@@ -32,7 +32,7 @@
             left: 50%;
             transform: translateX(-50%);
             background-color: white;
-            border: 1px dashed;
+            border: 2px solid;
             color: black;
             padding: 20px;
             border-radius: 5px;
@@ -50,6 +50,10 @@
 
         // Add click event to dismiss toast
         toast.onclick = function() {
+            dismissToast(toast, background);
+        };
+
+        background.onclick = function() {
             dismissToast(toast, background);
         };
 
@@ -79,17 +83,17 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        const alertMessage = urlParams.get('alert');
-        if (alertMessage) {
-            createToast(alertMessage);
-            urlParams.delete('alert');
+        const toastMessage = urlParams.get('toast');
+        if (toastMessage) {
+            createToast(toastMessage);
+            urlParams.delete('toast');
             const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
             history.replaceState({}, document.title, newUrl);
         }
     });
 
     // For EJS flash messages
-    if (typeof flashMessages !== 'undefined' && flashMessages.alert) {
-        createToast(flashMessages.alert);
+    if (typeof flashMessages !== 'undefined' && flashMessages.toast) {
+        createToast(flashMessages.toast);
     }
 </script>

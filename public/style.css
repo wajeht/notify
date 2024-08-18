@@ -57,8 +57,10 @@ pre {
 	overflow-wrap: break-word;
 	white-space: pre-wrap;
 	background-color: #f8f9fa;
+	border: 1px solid #edeff0;
 	padding: 10px;
 	border-radius: 5px;
+	font-size: 0.9em;
 }
 
 a {

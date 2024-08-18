@@ -11,56 +11,88 @@
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; width: 32.5%;">
+  <div style="display: flex; gap: 20px;">
+    <div style="flex: 0 0 32.5%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; height: fit-content;">
 
-    <div><strong>ID:</strong></div>
-    <div><%= app.id %></div>
+      <div><strong>ID:</strong></div>
+      <div><%= app.id %></div>
 
-    <div><strong>Name:</strong></div>
-    <div><%= app.name %></div>
+      <div><strong>Name:</strong></div>
+      <div><%= app.name %></div>
 
-    <div><strong>Status:</strong></div>
-    <div
-      style="
-        width: fit-content;
-        padding: 0px 5px;
-        border-radius: 5px;
-        <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
-    >
-      <%= app.is_active ? 'Active' : 'Inactive' %>
+      <div><strong>Status:</strong></div>
+      <div
+        style="
+          width: fit-content;
+          padding: 0px 5px;
+          border-radius: 5px;
+          <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
+      >
+        <%= app.is_active ? 'Active' : 'Inactive' %>
+      </div>
+
+      <% if(app.url) { %>
+        <div><strong>Url:</strong></div>
+        <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer"><%= app.url %> ↗</a>
+      <% } %>
+
+      <% if(app.description) { %>
+        <div><strong>Description:</strong></div>
+        <div><%= app.description %></div>
+      <% } %>
+
+      <div><strong>Created:</strong></div>
+      <div><%= new Date(app.created_at).toLocaleString() %></div>
+
+      <div><strong>Updated:</strong></div>
+      <div><%= new Date(app.updated_at).toLocaleString() %></div>
+
+      <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+        <a href="/apps/<%= app.id %>/edit">Edit</a>
+        <button class="no-style-btn" onclick="document.getElementById('delete-app-modal').showModal()">Delete</button>
+
+        <dialog id="delete-app-modal">
+          <h2>Confirm Deletion</h2>
+          <p>Are you sure you want to delete this app?</p>
+          <form method="POST" action="/apps/<%= app.id %>/delete">
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+              <button type="button" onclick="this.closest('dialog').close()">Cancel</button>
+              <button type="submit">Delete</button>
+            </div>
+          </form>
+        </dialog>
+      </div>
     </div>
 
-    <% if(app.url) { %>
-      <div><strong>Url:</strong></div>
-      <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer"><%= app.url %> ↗</a>
-    <% } %>
+    <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div><strong>API Key</strong></div>
+          <button class="no-style-btn">Generate</button>
+        </div>
 
-    <% if(app.description) { %>
-      <div><strong>Description:</strong></div>
-      <div><%= app.description %></div>
-    <% } %>
+        <pre style="width: fit-content;"><span>click to generate api key</span></pre>
+      </div>
 
-    <div><strong>Created:</strong></div>
-    <div><%= new Date(app.created_at).toLocaleString() %></div>
-
-    <div><strong>Updated:</strong></div>
-    <div><%= new Date(app.updated_at).toLocaleString() %></div>
-
-    <div style="display: flex; gap: 10px; justify-content: center; align-items: center;">
-      <a href="/apps/<%= app.id %>/edit">Edit</a>
-      <button class="no-style-btn" onclick="document.getElementById('delete-app-modal').showModal()">Delete</button>
-
-      <dialog id="delete-app-modal">
-        <h2>Confirm Deletion</h2>
-        <p>Are you sure you want to delete this app?</p>
-        <form method="POST" action="/apps/<%= app.id %>/delete">
-          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button type="button" onclick="this.closest('dialog').close()">Cancel</button>
-            <button type="submit">Delete</button>
-          </div>
-        </form>
-      </dialog>
+      <div>
+        <div><strong>Example</strong></div>
+        <pre>
+await fetch('https://notify.jaw.dev', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'your_api_key_here'
+  },
+  body: JSON.stringify({
+    app_id: 'your_app_id_here',
+    message: 'Your message here',
+    details: {
+      key1: 'value1',
+      key2: 'value2'
+    }
+  })
+});</pre>
+      </div>
     </div>
   </div>
-
 </div>

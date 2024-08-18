@@ -43,13 +43,13 @@ export const smsConfig = {
 
 export const oauthConfig = {
 	github: {
-		redirect_uri: process.env.GITHUB_REDIRECT_URI || '',
+		redirect_uri: process.env.GITHUB_REDIRECT_URI || 'http://localhost/oauth/github/redirect',
 		client_id: process.env.GITHUB_CLIENT_ID || '',
 		client_secret: process.env.GITHUB_CLIENT_SECRET || '',
 	},
 } as const;
 
 export const sessionConfig = {
-	store_prefix: process.env.SESSION_STORE_PREFIX || '',
-	secret: process.env.SESSION_SECRET || '',
+	store_prefix: process.env.SESSION_STORE_PREFIX || 'notify',
+	secret: process.env.SESSION_SECRET || 'notify',
 } as const;

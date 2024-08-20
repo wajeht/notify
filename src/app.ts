@@ -23,7 +23,7 @@ const redisStore = new RedisStore({
 
 app.use(express.json({ limit: '100kb' }));
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 app.use(
 	session({
@@ -48,12 +48,15 @@ app.set('trust proxy', 1);
 app.use(flash());
 
 app.use(
-	helmet.contentSecurityPolicy({
-		directives: {
-			...helmet.contentSecurityPolicy.getDefaultDirectives(),
-			'default-src': ["'self'", 'plausible.jaw.dev'],
-			'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'plausible.jaw.dev'],
-			'script-src-attr': ["'unsafe-inline'"],
+	helmet({
+		contentSecurityPolicy: {
+			useDefaults: true,
+			directives: {
+				...helmet.contentSecurityPolicy.getDefaultDirectives(),
+				'default-src': ["'self'", 'plausible.jaw.dev'],
+				'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'plausible.jaw.dev'],
+				'script-src-attr': ["'unsafe-inline'"],
+			},
 		},
 	}),
 );

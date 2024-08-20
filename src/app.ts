@@ -25,8 +25,6 @@ app.use(express.json({ limit: '100kb' }));
 
 app.use(express.urlencoded({ extended: true }));
 
-app.set('trust proxy', 1);
-
 app.use(
 	session({
 		secret: sessionConfig.secret,
@@ -36,14 +34,16 @@ app.use(
 		proxy: appConfig.env === 'production',
 		cookie: {
 			path: '/',
-			// domain: `.${sessionConfig.domain}`,
+			domain: `.${sessionConfig.domain}`,
 			maxAge: 1000 * 60 * 60 * 24, // 24 hours
 			httpOnly: appConfig.env === 'production',
-			// sameSite: 'lax',
+			sameSite: 'lax',
 			secure: appConfig.env === 'production',
 		},
 	}),
 );
+
+app.set('trust proxy', 1);
 
 app.use(flash());
 

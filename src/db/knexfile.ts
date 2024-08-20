@@ -6,7 +6,13 @@ import { databaseConfig, appConfig } from '../config';
 
 const knexConfig: Knex.Config = {
 	client: 'pg',
-	connection: `postgresql://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}/${databaseConfig.database}`,
+	// connection: `postgresql://${databaseConfig.username}:${databaseConfig.password}@${databaseConfig.host}/${databaseConfig.database}`,
+	connection: {
+		database: databaseConfig.database,
+		host: databaseConfig.host,
+		user: databaseConfig.host,
+		password: databaseConfig.password,
+	},
 	migrations: {
 		extension: 'ts',
 		tableName: 'knex_migrations',

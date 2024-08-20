@@ -10,7 +10,7 @@ const knexConfig: Knex.Config = {
 	connection: {
 		database: databaseConfig.database,
 		host: databaseConfig.host,
-		user: databaseConfig.host,
+		user: databaseConfig.username,
 		password: databaseConfig.password,
 	},
 	migrations: {

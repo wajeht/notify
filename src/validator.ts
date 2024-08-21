@@ -6,6 +6,9 @@ export const postSettingsAccountHandlerValidator = [
 	body('username')
 		.notEmpty()
 		.custom(async (username, { req }) => {
+			if (username.length > 3) {
+				throw new ValidationError('too long');
+			}
 			const userId = req.session?.user?.id;
 
 			const existingUser = await db

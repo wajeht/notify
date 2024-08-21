@@ -3,8 +3,17 @@ import axios from 'axios';
 import path from 'node:path';
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
+import { Request } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
+
+export function extractDomain(req: Request): string {
+	const host = req.hostname;
+	const port = req.get('host')?.split(':')[1] || '';
+	const protocol = process.env.APP_ENV === 'production' ? 'https' : req.protocol;
+	const url = `${protocol}://${host}${port ? ':' + port : ''}`;
+	return url;
+}
 
 export async function runMigrations(force: boolean = false) {
 	try {

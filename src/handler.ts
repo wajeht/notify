@@ -1,11 +1,12 @@
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
+import { job } from './jobs/jobs';
+import axios, { AxiosError } from 'axios';
 import { ApiKeyPayload } from 'types';
 import { UnauthorizedError } from './error';
 import { NextFunction, Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
-import { getGithubOauthToken, getGithubUserEmails } from './utils';
-import { job } from './jobs/jobs';
+import { extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -183,6 +184,45 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 	await db('notifications').where({ id: nid }).del();
 
 	return res.redirect(`/apps/${id}/notifications`);
+}
+
+// POST '/apps/:id/notifications/test
+export async function postTestAppNotificationHandler(req: Request, res: Response) {
+	const { id } = req.params;
+
+	const app = await db.select('api_key', 'id').from('apps').where({ id }).first();
+
+	if (app.is_active === null || app.is_active === false) {
+		return res.redirect(`/apps/${id}?toast=app is not active`);
+	}
+
+	if (app.api_key === null || app.api_key === '') {
+		return res.redirect(`/apps/${id}?toast=please generate an api key first`);
+	}
+
+	try {
+		await axios.post(
+			extractDomain(req),
+			{
+				appId: app.id,
+				message: 'your-message-details',
+				details: {
+					hello: 'world',
+				},
+			},
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					'X-API-KEY': app.api_key,
+				},
+			},
+		);
+	} catch (error) {
+		console.error((error as AxiosError).response?.data);
+		return res.redirect(`/apps/${id}?toast=oops! something went wrong!`);
+	}
+
+	return res.redirect(`/apps/${id}?toast=notification queued successfully`);
 }
 
 // GET '/apps/:aid/channels/:cid/configs/:cfid/edit'

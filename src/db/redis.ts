@@ -11,7 +11,7 @@ const redisOptions = {
 };
 
 const createRedisClient = () => {
-	if (process.env.NODE_ENV === 'testing') {
+	if (process.env.APP_ENV === 'testing') {
 		return new RedisMock(redisOptions);
 	}
 	return new Redis(redisOptions);

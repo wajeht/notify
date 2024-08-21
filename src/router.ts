@@ -39,6 +39,7 @@ import {
 	getGithubRedirect,
 	getLoginHandler,
 	postCreateAppApiKeyHandler,
+	postTestAppNotificationHandler,
 } from './handler';
 
 const router = express.Router();
@@ -208,6 +209,13 @@ router.post(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(postDeleteAppNotificationHandler),
+);
+
+router.post(
+	'/apps/:id/notifications/test',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postTestAppNotificationHandler),
 );
 
 router.get('/jobs', authenticationMiddleware, catchAsyncErrorMiddleware(getJobsPageHandler));

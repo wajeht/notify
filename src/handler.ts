@@ -66,6 +66,26 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 	});
 }
 
+// POST /settings/account
+export async function postSettingsAccountHandler(req: Request, res: Response) {
+	const { email, username } = req.body;
+	const userId = req.session?.user?.id;
+
+	const [user] = await db('users')
+		.update({
+			email,
+			username,
+		})
+		.where({ id: userId })
+		.returning('*');
+
+	return res.render('settings-account.html', {
+		user,
+		path: '/settings/account',
+		layout: '../layouts/settings.html',
+	});
+}
+
 // GET /settings/danger-zone
 export async function getSettingsDangerZonePageHandler(req: Request, res: Response) {
 	const userId = req.session?.user?.id;

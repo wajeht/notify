@@ -33,6 +33,7 @@ import {
 	postUpdateAppChannelEmailHandler,
 	getNotificationsPageHandler,
 	getAppNotificationsPageHandler,
+	getAppSettingsPageHandler,
 	postDeleteAppNotificationHandler,
 	getJobsPageHandler,
 	getGithub,
@@ -202,6 +203,13 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getAppNotificationsPageHandler),
+);
+
+router.get(
+	'/apps/:id/settings',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getAppSettingsPageHandler),
 );
 
 router.post(

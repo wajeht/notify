@@ -485,6 +485,17 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 	return res.redirect(`/apps/${id}/channels`);
 }
 
+// GET /apps/:id/settings
+export async function getAppSettingsPageHandler(req: Request, res: Response) {
+	const { id } = req.params;
+	const app = await db.select('*').from('apps').where({ id }).first();
+	return res.render('apps-id-settings.html', {
+		app,
+		layout: '../layouts/app.html',
+		path: `/apps/${app.id}/settings`,
+	});
+}
+
 // GET /apps/:id/notifications
 export async function getAppNotificationsPageHandler(req: Request, res: Response) {
 	const app = await db

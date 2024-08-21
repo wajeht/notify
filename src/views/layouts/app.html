@@ -19,6 +19,7 @@
 						<a style="font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>; <%= path === `/apps/${app.id}` ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>">App</a>
 						<a style="font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/channels/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/channels">Channels</a>
 						<a style="font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/notifications/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/notifications">Notifications</a>
+						<a style="font-weight: <%= /\/apps\/.*\/settings/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/settings/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/settings">Settings</a>
 					</div>
 				</aside>
 

@@ -14,8 +14,8 @@
     </div>
   </div>
 
-  <div style="display: flex; gap: 20px;">
-    <div style="flex: 0 0 32.5%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; height: fit-content;">
+  <div style="display: flex; gap: 20px; flex-direction: column;">
+    <div style="flex: 0 0 32.5%; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; height: fit-content; width: 66%;">
 
       <div><strong>ID:</strong></div>
       <div><%= app.id %></div>
@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: inherit;">
+    <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: 66%;">
       <div>
         <div style="display: flex; align-items: center; gap: 10px;">
           <div style="display: flex; align-items: center; gap: 5px;"><strong>API Key</strong><% if (app.api_key_version > 0) { %> <small style="color: #bbb;">(v<%= app.api_key_version %>)</small> <% } %></div>

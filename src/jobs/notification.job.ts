@@ -13,7 +13,7 @@ export const sendNotificationJob = setupJob<NotificationJobData>(
 		try {
 			await sendNotification(job.data);
 		} catch (error) {
-			console.error('Failed to process notification job:', error);
+			console.error('failed to process notification job:', error);
 			// throw error;
 		}
 	},

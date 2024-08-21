@@ -4,10 +4,10 @@ type Params = {
 	embeds?: any;
 };
 
-export async function send(
-	discordWebhookUrl: string,
+export async function sendDiscord(
+	webhookUrl: string,
 	message: string,
-	details: any = null,
+	details: Record<string, unknown> | null,
 ): Promise<void> {
 	try {
 		const params: Params = {
@@ -24,16 +24,16 @@ export async function send(
 			];
 		}
 
-		const res = await fetch(discordWebhookUrl, {
+		const res = await fetch(webhookUrl, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(params),
 		});
 
 		if (res.status === 204) {
-			console.info(`Discord bot has sent: ${message}`);
+			console.info(`discord bot has sent: ${message}`);
 		}
 	} catch (error) {
-		console.error('Error sending Discord notification:', error);
+		console.error('error sending discord notification:', error);
 	}
 }

@@ -1,3 +1,4 @@
+import { sendDiscordNotificationJob } from 'jobs/discord.job';
 import { db } from '../../db/db';
 import { NotificationJobData } from 'jobs/notification.job';
 
@@ -69,7 +70,7 @@ async function dispatchNotificationJob(
 ) {
 	switch (channelType) {
 		case 'discord':
-			console.log(`dispatching ${channelType} job`, { channelType, config, message, details });
+			await sendDiscordNotificationJob({ config, message, details });
 			break;
 		case 'email':
 			console.log(`dispatching ${channelType} job`, { channelType, config, message, details });

@@ -1,3 +1,21 @@
+<script>
+  function viewApiKey() {
+    const apiKeyPre = document.getElementById('apiKeyPre');
+    if (apiKeyPre.textContent === '••••••••••••••••••••••••••••••••••••••••••••••••') {
+      apiKeyPre.textContent = '<%= app.api_key %>';
+    } else {
+      apiKeyPre.textContent = '••••••••••••••••••••••••••••••••••••••••••••••••';
+    }
+  }
+
+  function copyApiKey() {
+    const apiKey = '<%= app.api_key %>';
+    navigator.clipboard.writeText(apiKey).then(() => {
+      alert('API key copied to clipboard!');
+    });
+  }
+  </script>
+
 <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -57,16 +75,28 @@
 
     <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: 66%;">
       <div>
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 5px;"><strong>API Key</strong><% if (app.api_key_version > 0) { %> <small style="color: #bbb;">(v<%= app.api_key_version %>)</small> <% } %></div>
-          <form action="/apps/<%= app.id %>/create-api-key" method="post">
-            <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
-            <button type="submit" class="no-style-btn">Generate</button>
-          </form>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <form action="/apps/<%= app.id %>/create-api-key" method="post">
+              <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+              <button type="submit" class="no-style-btn">
+                <% if (app.api_key_version > 0) {  %>
+                  <span> Regenerate </span>
+                <% } else { %>
+                  <span> Generate </span>
+                <% } %>
+              </button>
+            </form>
+
+            <button onclick="viewApiKey()" class="no-style-btn">View</button>
+
+            <button onclick="copyApiKey()" class="no-style-btn">Copy</button>
+          </div>
         </div>
 
-        <pre><% if (!app.api_key) { %>click to generate api key<% } else { %><%= app.api_key %><% } %></pre>
+        <pre id="apiKeyPre" style="white-space: nowrap; overflow-x: scroll; padding-right: 150px;"><% if (!app.api_key) { %>click to generate api key<% } else { %>••••••••••••••••••••••••••••••••••••••••••••••••<% } %></pre>
       </div>
 
       <div>

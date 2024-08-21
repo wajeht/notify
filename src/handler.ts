@@ -28,14 +28,14 @@ export function getHomePageHandler(req: Request, res: Response) {
 }
 
 // POST /
-export function postNotificationHandler(req: Request, res: Response) {
+export async function postNotificationHandler(req: Request, res: Response) {
 	if (req.get('Content-Type') !== 'application/json') {
 		return res.status(404).json({ message: 'not found' });
 	}
 
 	const { appId, message, details } = req.body;
 
-	sendNotificationJob({ appId, message, details }).catch(() => {});
+	await sendNotificationJob({ appId, message, details });
 
 	return res.json({
 		message: 'Notification queued successfully',

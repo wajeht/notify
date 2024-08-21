@@ -8,14 +8,17 @@ import flash from 'connect-flash';
 import { redis } from './db/redis';
 import compression from 'compression';
 import session from 'express-session';
-import RedisStore from 'connect-redis';
+import connectRedisStore from 'connect-redis';
 import expressLayouts from 'express-ejs-layouts';
+import rateLimit from 'express-rate-limit';
+import rateLimitRedisStore from 'rate-limit-redis';
+
 import { appConfig, sessionConfig } from './config';
 import { appLocalStateMiddleware, errorMiddleware, notFoundMiddleware } from './middleware';
 
 const app = express();
 
-const redisStore = new RedisStore({
+const redisStore = new connectRedisStore({
 	client: redis,
 	prefix: sessionConfig.store_prefix,
 	disableTouch: true,
@@ -57,6 +60,25 @@ app.use(
 				'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'plausible.jaw.dev'],
 				'script-src-attr': ["'unsafe-inline'"],
 			},
+		},
+	}),
+);
+
+app.use(
+	rateLimit({
+		store: new rateLimitRedisStore({
+			// @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
+			sendCommand: (...args: string[]) => redis.call(...args),
+		}),
+		windowMs: 15 * 60 * 1000, // 15 minutes
+		max: 100, // Limit each IP to 100 requests per windowMs
+		standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+		legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+		handler: (req, res) => {
+			if (req.get('Content-Type') === 'application/json') {
+				return res.json({ message: 'Too many requests from this IP, please try again later.' });
+			}
+			return res.status(429).render('./rate-limit.html');
 		},
 	}),
 );

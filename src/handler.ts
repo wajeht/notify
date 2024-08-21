@@ -1,7 +1,7 @@
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
 import { sendNotificationJob } from './jobs/notification.job';
-import { ApiKeyPayload } from 'types';
+import { ApiKeyPayload } from './types';
 import axios, { AxiosError } from 'axios';
 import { UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';

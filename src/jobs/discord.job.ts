@@ -12,7 +12,7 @@ export const sendDiscordNotificationJob = setupJob<DiscordNotificationJobData>(
 	'sendDiscordNotificationJob',
 	async (job) => {
 		try {
-			await sendDiscord(job.data.config.webhook_url, job.data.message, job.data.details);
+			await sendDiscord(job.data);
 		} catch (error) {
 			console.error('failed to process discord notification job:', error);
 			// throw error;

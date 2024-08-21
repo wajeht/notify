@@ -1,32 +1,29 @@
 import nodemailer from 'nodemailer';
 
 import { emailConfig, appConfig } from '../../config';
+import { EmailNotificationJobData } from '../email.job';
 
 const transporter = nodemailer.createTransport(emailConfig);
 
-const domain = appConfig.appUrl;
-
-interface SendMailOptions {
-	to?: string;
-	subject: string;
-	html: string;
-	from?: string;
+function template(message: string, details: Record<string, any> | null) {
+	return `
+		<h2>${message}</h2>
+		<pre>${JSON.stringify(details)}</pre>
+	`;
 }
 
-const template = `<h1>hello world</h1>`;
-
-export async function sendEmail({
-	to = `${domain} <${emailConfig.alias}>`,
-	subject,
-	html: template,
-	from = `${domain} <${emailConfig.alias}>`,
-}: SendMailOptions): Promise<void> {
+export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 	try {
-		await transporter.sendMail({ from, to, subject, html: template });
+		transporter.sendMail({
+			from: data.config.alias,
+			to: data.config.auth_email,
+			subject: data.message,
+			html: template(data.message, data.details),
+		});
 
-		console.info('email sent to:', to);
+		console.info('email sent to:', data.config.auth_email);
 	} catch (error) {
 		console.error('error while sending email:', error);
-		throw error;
+		// throw error;
 	}
 }

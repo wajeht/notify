@@ -1,30 +1,21 @@
-import { Queue, Worker } from 'bullmq';
-import { redis } from '../db/db';
-// import { sendEmail } from './channel/email';
+import { sendEmail } from './channel/email';
+import { setupJob } from '../utils';
+import { EmailConfig } from '../types';
 
-const queueName = 'sendEmailQueue';
-
-export const sendEmailQueue = new Queue(queueName, {
-	connection: redis,
-});
-
-const processSendEmailJob = async (job: any) => {
-	try {
-		job.updateProgress(0);
-		// await sendEmail({ tenant: job.data.tenant, coach: job.data.coach });
-		job.updateProgress(100);
-		console.info(`Email successfully sent for tenant: ${job.data.tenant}`);
-	} catch (error) {
-		console.error(`Failed to send email for tenant: ${job.data.tenant}`, error);
-	}
-};
-
-new Worker(queueName, processSendEmailJob, { connection: redis });
-
-export async function sendApproveTenantEmailJob(data: any) {
-	try {
-		await sendEmailQueue.add('sendEmailJob', data);
-	} catch (error) {
-		console.error(`Failed to add job to queue for tenant: ${data.tenant}`, error);
-	}
+export interface EmailNotificationJobData {
+	config: EmailConfig;
+	message: string;
+	details: Record<string, any> | null;
 }
+
+export const sendEmailNotificationJob = setupJob<EmailNotificationJobData>(
+	'sendEmailNotificationJob',
+	async (job) => {
+		try {
+			await sendEmail(job.data);
+		} catch (error) {
+			console.error('failed to process email notification job:', error);
+			// throw error;
+		}
+	},
+);

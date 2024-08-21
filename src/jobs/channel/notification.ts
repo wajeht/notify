@@ -1,6 +1,7 @@
-import { sendDiscordNotificationJob } from 'jobs/discord.job';
 import { db } from '../../db/db';
+import { sendEmailNotificationJob } from 'jobs/email.job';
 import { NotificationJobData } from 'jobs/notification.job';
+import { sendDiscordNotificationJob } from 'jobs/discord.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {
@@ -56,9 +57,10 @@ export async function sendNotification(data: NotificationJobData) {
 			details: details,
 		});
 
-		console.log(`Notification jobs dispatched for app ${appId}`);
+		console.log(`notification jobs dispatched for app ${appId}`);
 	} catch (error) {
-		console.error('Error in sendNotification:', error);
+		console.error('error in sendNotification:', error);
+		// throw error
 	}
 }
 
@@ -73,7 +75,7 @@ async function dispatchNotificationJob(
 			await sendDiscordNotificationJob({ config, message, details });
 			break;
 		case 'email':
-			console.log(`dispatching ${channelType} job`, { channelType, config, message, details });
+			await sendEmailNotificationJob({ config, message, details });
 			break;
 		case 'sms':
 			console.log(`dispatching ${channelType} job`, { channelType, config, message, details });

@@ -90,9 +90,10 @@
               </button>
             </form>
 
-            <button onclick="viewApiKey()" class="no-style-btn">View</button>
-
-            <button onclick="copyApiKey()" class="no-style-btn">Copy</button>
+            <% if (app.api_key) { %>
+              <button onclick="viewApiKey()" class="no-style-btn">View</button>
+              <button onclick="copyApiKey()" class="no-style-btn">Copy</button>
+            <% } %>
           </div>
         </div>
 

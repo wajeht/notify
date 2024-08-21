@@ -56,25 +56,25 @@ services:
       timeout: 10s
       retries: 5
 
-  # redis-commander:
-  #   container_name: redis-commander
-  #   image: rediscommander/redis-commander:latest
-  #   restart: unless-stopped
-  #   depends_on:
-  #     - redis
-  #   environment:
-  #     REDIS_HOST: ${REDIS_HOST}
-  #     REDIS_PORT: ${REDIS_PORT}
-  #     REDIS_PASSWORD: ${REDIS_PASSWORD}
-  #   ports:
-  #     - '8081:8081'
-  #   networks:
-  #     - notify-network
-  #   healthcheck:
-  #     test: ['CMD', 'curl', '-f', 'http://localhost:8081/']
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
+  redis-commander:
+    container_name: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - '8081:8081'
+    networks:
+      - notify-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8081/']
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   mailhog:
     container_name: mailhot

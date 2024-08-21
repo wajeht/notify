@@ -79,7 +79,7 @@ export async function postSettingsAccountHandler(req: Request, res: Response) {
 		.where({ id: userId })
 		.returning('*');
 
-	return res.redirect('/settings/account');
+	return res.redirect('/settings/account?toast=updated!');
 }
 
 // GET /settings/danger-zone
@@ -109,7 +109,7 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 		});
 	}
 
-	return res.redirect('/');
+	return res.redirect('/?toast=deleted');
 }
 
 // GET /notifications
@@ -170,7 +170,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 // POST /apps/:id/delete
 export async function postDeleteAppHandler(req: Request, res: Response) {
 	await db('apps').where({ id: req.params.id }).del();
-	return res.redirect('/apps');
+	return res.redirect('/apps?toast=deleted');
 }
 
 // POST /apps/:id
@@ -245,7 +245,7 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 
 	await db('notifications').where({ id: nid }).del();
 
-	return res.redirect(`/apps/${id}/notifications`);
+	return res.redirect(`/apps/${id}/notifications?toast=deleted`);
 }
 
 // POST '/apps/:id/notifications/test

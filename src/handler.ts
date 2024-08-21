@@ -28,7 +28,7 @@ export function getHomePageHandler(req: Request, res: Response) {
 }
 
 // POST /
-export async function postNotificationHandler(req: Request, res: Response) {
+export function postNotificationHandler(req: Request, res: Response) {
 	if (req.get('Content-Type') !== 'application/json') {
 		return res.status(404).json({ message: 'not found' });
 	}

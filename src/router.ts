@@ -47,6 +47,7 @@ import {
 	postDeleteSettingsDangerZoneHandler,
 	postSettingsAccountHandler,
 } from './handler';
+
 import { postSettingsAccountHandlerValidator } from './validator';
 
 const router = express.Router();

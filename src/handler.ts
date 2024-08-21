@@ -1,11 +1,11 @@
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
-import { sendNotificationJob } from './jobs/notification.job';
 import { ApiKeyPayload } from './types';
 import axios, { AxiosError } from 'axios';
 import { UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';
 import { NextFunction, Request, Response } from 'express';
+import { sendNotificationJob } from './jobs/notification.job';
 import { extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 
 // GET /healthz

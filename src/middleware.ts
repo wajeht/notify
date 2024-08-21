@@ -1,13 +1,86 @@
+import helmet from 'helmet';
+import { redis } from './db/db';
 import { csrfSync } from 'csrf-sync';
+import session from 'express-session';
 import { verifyApiKey } from './utils';
 import { NotFoundError } from './error';
-import { NextFunction, Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
+import connectRedisStore from 'connect-redis';
+import { sessionConfig, appConfig } from './config';
+import rateLimitRedisStore from 'rate-limit-redis';
 import { validationResult } from 'express-validator';
+import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
 		next(new NotFoundError());
 	};
+}
+
+export function helmetMiddleware() {
+	return helmet({
+		contentSecurityPolicy: {
+			useDefaults: true,
+			directives: {
+				...helmet.contentSecurityPolicy.getDefaultDirectives(),
+				'default-src': ["'self'", 'plausible.jaw.dev', 'notify.jaw.dev', 'jaw.lol'],
+				'script-src': [
+					"'self'",
+					"'unsafe-inline'",
+					"'unsafe-eval'",
+					'plausible.jaw.dev',
+					'jaw.lol',
+					'notify.jaw.dev',
+				],
+				'script-src-attr': ["'unsafe-inline'"],
+			},
+		},
+		referrerPolicy: {
+			policy: 'strict-origin-when-cross-origin',
+		},
+	});
+}
+
+export function sessionMiddleware() {
+	return session({
+		secret: sessionConfig.secret,
+		resave: false,
+		saveUninitialized: false,
+		store: new connectRedisStore({
+			client: redis,
+			prefix: sessionConfig.store_prefix,
+			disableTouch: true,
+		}),
+		proxy: appConfig.env === 'production',
+		cookie: {
+			path: '/',
+			domain: `.${sessionConfig.domain}`,
+			maxAge: 1000 * 60 * 60 * 24, // 24 hours
+			httpOnly: appConfig.env === 'production',
+			sameSite: 'lax',
+			secure: appConfig.env === 'production',
+		},
+	});
+}
+
+export function rateLimitMiddleware() {
+	return rateLimit({
+		store: new rateLimitRedisStore({
+			// @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
+			sendCommand: (...args: string[]) => redis.call(...args),
+		}),
+		windowMs: 15 * 60 * 1000, // 15 minutes
+		max: 100, // Limit each IP to 100 requests per windowMs
+		standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+		legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+		handler: (req, res) => {
+			if (req.get('Content-Type') === 'application/json') {
+				return res.json({ message: 'Too many requests from this IP, please try again later.' });
+			}
+			return res.status(429).render('./rate-limit.html');
+		},
+		skip: (req: any, res: any) => appConfig.env !== 'production',
+	});
 }
 
 export const validateRequestMiddleware = (schemas: any) => {

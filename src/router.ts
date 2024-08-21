@@ -43,6 +43,7 @@ import {
 	postTestAppNotificationHandler,
 	getSettingsAccountPageHandler,
 	getSettingsDangerZonePageHandler,
+	postDeleteSettingsDangerZoneHandler,
 } from './handler';
 
 const router = express.Router();
@@ -80,6 +81,13 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getSettingsDangerZonePageHandler),
+);
+
+router.post(
+	'/settings/danger-zone/delete',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postDeleteSettingsDangerZoneHandler),
 );
 
 router.get(

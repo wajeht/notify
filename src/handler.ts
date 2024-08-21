@@ -78,6 +78,24 @@ export async function getSettingsDangerZonePageHandler(req: Request, res: Respon
 	});
 }
 
+// POST /settings/danger-zone/delete
+export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Response) {
+	const userId = req.session?.user?.id;
+
+	await db('users').where({ id: userId }).delete();
+
+	if (req.session && req.session?.user) {
+		req.session.user = undefined;
+		req.session.destroy((error) => {
+			if (error) {
+				throw new Error(error);
+			}
+		});
+	}
+
+	return res.redirect('/');
+}
+
 // GET /notifications
 export async function getNotificationsPageHandler(req: Request, res: Response) {
 	const notifications = await db.select('*').from('notifications').orderBy('created_at', 'desc');
@@ -557,9 +575,11 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 // POST /apps
 export async function postCreateAppHandler(req: Request, res: Response) {
 	const { name, is_active, description, url } = req.body;
+	const userId = req.session?.user?.id;
 
 	const [app] = await db('apps')
 		.insert({
+			user_id: userId,
 			name,
 			url,
 			description,

@@ -8,9 +8,9 @@ import flash from 'connect-flash';
 import { redis } from './db/redis';
 import compression from 'compression';
 import session from 'express-session';
+import rateLimit from 'express-rate-limit';
 import connectRedisStore from 'connect-redis';
 import expressLayouts from 'express-ejs-layouts';
-import rateLimit from 'express-rate-limit';
 import rateLimitRedisStore from 'rate-limit-redis';
 
 import { appConfig, sessionConfig } from './config';
@@ -80,6 +80,7 @@ app.use(
 			}
 			return res.status(429).render('./rate-limit.html');
 		},
+		skip: (req: any, res: any) => appConfig.env !== 'production',
 	}),
 );
 

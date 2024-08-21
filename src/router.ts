@@ -41,6 +41,8 @@ import {
 	getLoginHandler,
 	postCreateAppApiKeyHandler,
 	postTestAppNotificationHandler,
+	getSettingsAccountPageHandler,
+	getSettingsDangerZonePageHandler,
 } from './handler';
 
 const router = express.Router();
@@ -64,6 +66,20 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getSettingsPageHandler),
+);
+
+router.get(
+	'/settings/account',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getSettingsAccountPageHandler),
+);
+
+router.get(
+	'/settings/danger-zone',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getSettingsDangerZonePageHandler),
 );
 
 router.get(

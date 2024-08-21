@@ -16,7 +16,8 @@
 			<div style="display: grid; grid-template-columns: 15% 85%; flex: 1;">
 				<aside style="display: inline-block; border-right: dashed; height: 100%;">
 					<div style="display: flex; flex-direction: column; gap: 10px">
-						<a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>; <%= path === '/settings' ? 'text-decoration: underline' : null %>" href="/settings">Settings</a>
+						<a style="font-weight: <%= (path === '/settings' || path === '/settings/account') ? 'bold' : 'normal' %>; <%= (path === '/settings' || path === '/settings/account') ? 'text-decoration: underline' : null %>" href="/settings/account">Account</a>
+						<a style="font-weight: <%= path === '/settings/danger-zone' ? 'bold' : 'normal' %>; <%= path === '/settings/danger-zone' ? 'text-decoration: underline' : null %>" href="/settings/danger-zone">Danger Zone</a>
 					</div>
 				</aside>
 

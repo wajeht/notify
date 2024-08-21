@@ -44,8 +44,24 @@ export async function postNotificationHandler(req: Request, res: Response) {
 
 // GET /settings
 export function getSettingsPageHandler(req: Request, res: Response) {
-	return res.render('settings.html', {
+	return res.render('settings-account.html', {
 		path: '/settings',
+		layout: '../layouts/settings.html',
+	});
+}
+
+// GET /settings/account
+export function getSettingsAccountPageHandler(req: Request, res: Response) {
+	return res.render('settings-account.html', {
+		path: '/settings/account',
+		layout: '../layouts/settings.html',
+	});
+}
+
+// GET /settings/danger-zone
+export function getSettingsDangerZonePageHandler(req: Request, res: Response) {
+	return res.render('settings-danger-zone.html', {
+		path: '/settings/danger-zone',
 		layout: '../layouts/settings.html',
 	});
 }

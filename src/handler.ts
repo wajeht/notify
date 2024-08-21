@@ -205,7 +205,7 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 			extractDomain(req),
 			{
 				appId: app.id,
-				message: 'your-message-details',
+				message: 'test notification',
 				details: {
 					hello: 'world',
 				},

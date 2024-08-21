@@ -5,6 +5,7 @@ import { UnauthorizedError } from './error';
 import { NextFunction, Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { getGithubOauthToken, getGithubUserEmails } from './utils';
+import { job } from './jobs/jobs';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -26,17 +27,17 @@ export function getHomePageHandler(req: Request, res: Response) {
 }
 
 // POST /
-export function postNotificationHandler(req: Request, res: Response) {
+export async function postNotificationHandler(req: Request, res: Response) {
 	if (req.get('Content-Type') !== 'application/json') {
 		return res.status(404).json({ message: 'not found' });
 	}
 
+	const { appId, message, details } = req.body;
+
+	await job.sendNotificationJob({ appId, message, details });
+
 	return res.json({
-		success: true,
-		message: 'Notification created and queued successfully',
-		notificationId: 'generated_uuid',
-		jobId: 'generated_job_id',
-		channels: ['email', 'sms'],
+		message: 'Notification queued successfully',
 	});
 }
 

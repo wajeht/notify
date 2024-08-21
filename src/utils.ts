@@ -18,9 +18,7 @@ export function setupJob<T extends Record<string, any>>(
 
 	new Worker<T>(jobName, processJob, { connection: redisConnection });
 
-	return async (data: T): Promise<Job<T>> => {
-		return queue.add(jobName, data);
-	};
+	return (data: T) => queue.add(jobName, data);
 }
 
 export function extractDomain(req: Request): string {

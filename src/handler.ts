@@ -189,7 +189,7 @@ export async function postAppUpdateHandler(req: Request, res: Response, next: Ne
 		updated_at: db.fn.now(),
 	});
 
-	return res.redirect(`/apps/${id}`);
+	return res.redirect(`/apps/${id}?toast=updated`);
 }
 
 // POST /apps/:id/create-api-key
@@ -214,7 +214,7 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 		api_key_created_at: db.fn.now(),
 	});
 
-	return res.redirect(`/apps/${id}`);
+	return res.redirect(`/apps/${id}?toast=created`);
 }
 
 // GET /apps/:id/edit
@@ -336,7 +336,7 @@ export async function postUpdateAppChannelSMSHandler(req: Request, res: Response
 			updated_at: db.fn.now(),
 		});
 
-	res.redirect(`/apps/${id}/channels`);
+	res.redirect(`/apps/${id}/channels?toast=updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
@@ -353,7 +353,7 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 			updated_at: db.fn.now(),
 		});
 
-	res.redirect(`/apps/${id}/channels`);
+	res.redirect(`/apps/${id}/channels?toast=updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/email'
@@ -375,7 +375,7 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 			updated_at: db.fn.now(),
 		});
 
-	res.redirect(`/apps/${id}/channels`);
+	res.redirect(`/apps/${id}/channels?toast=updated`);
 }
 
 // GET /apps/:id/channels
@@ -489,7 +489,7 @@ export async function postCreateAppDiscordChannelConfigHandler(req: Request, res
 		is_active: is_active === 'on',
 	});
 
-	return res.redirect(`/apps/${id}/channels`);
+	return res.redirect(`/apps/${id}/channels?created`);
 }
 
 // POST /apps/:id/channels/sms
@@ -516,7 +516,7 @@ export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Re
 		is_active: is_active === 'on',
 	});
 
-	return res.redirect(`/apps/${id}/channels`);
+	return res.redirect(`/apps/${id}/channels?toast=created`);
 }
 
 // POST /apps/:id/channels/email
@@ -544,7 +544,7 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 		is_active: is_active === 'on',
 	});
 
-	return res.redirect(`/apps/${id}/channels`);
+	return res.redirect(`/apps/${id}/channels?toast=created`);
 }
 
 // GET /apps/:id/settings
@@ -603,7 +603,7 @@ export async function postCreateAppHandler(req: Request, res: Response) {
 		})
 		.returning('*');
 
-	return res.redirect(`/apps/${app.id}`);
+	return res.redirect(`/apps/${app.id}?toast=created`);
 }
 
 // GET /logout

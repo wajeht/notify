@@ -79,11 +79,7 @@ export async function postSettingsAccountHandler(req: Request, res: Response) {
 		.where({ id: userId })
 		.returning('*');
 
-	return res.render('settings-account.html', {
-		user,
-		path: '/settings/account',
-		layout: '../layouts/settings.html',
-	});
+	return res.redirect('/settings/account');
 }
 
 // GET /settings/danger-zone

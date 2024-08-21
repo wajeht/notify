@@ -220,7 +220,6 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 	} catch (error) {
 		// @ts-ignore- trust me bro
 		const message = (error as AxiosError).response?.data?.message;
-		console.error(message);
 		return res.redirect(`/apps/${id}?toast=${message}`);
 	}
 

@@ -1,11 +1,27 @@
 import qs from 'qs';
 import axios from 'axios';
 import path from 'node:path';
-import { db } from './db/db';
 import jwt from 'jsonwebtoken';
+import { Redis } from 'ioredis';
 import { Request } from 'express';
+import { db, redis } from './db/db';
+import { Queue, Worker, Job } from 'bullmq';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
+
+export function setupJob<T extends Record<string, any>>(
+	jobName: string,
+	processJob: (job: Job<T>) => Promise<void>,
+	redisConnection: Redis = redis,
+) {
+	const queue = new Queue<T>(jobName, { connection: redisConnection });
+
+	new Worker<T>(jobName, processJob, { connection: redisConnection });
+
+	return async (data: T): Promise<Job<T>> => {
+		return queue.add(jobName, data);
+	};
+}
 
 export function extractDomain(req: Request): string {
 	const host = req.hostname;

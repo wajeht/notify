@@ -1,6 +1,6 @@
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
-import { job } from './jobs/jobs';
+import { sendNotificationJob } from './jobs/notification.job';
 import { ApiKeyPayload } from 'types';
 import axios, { AxiosError } from 'axios';
 import { UnauthorizedError } from './error';
@@ -35,7 +35,7 @@ export async function postNotificationHandler(req: Request, res: Response) {
 
 	const { appId, message, details } = req.body;
 
-	await job.sendNotificationJob({ appId, message, details });
+	await sendNotificationJob({ appId, message, details });
 
 	return res.json({
 		message: 'Notification queued successfully',

@@ -49,6 +49,12 @@ export async function sendNotification(data: NotificationJobData) {
 			}
 		}
 
+		await db('notifications').insert({
+			app_id: appId,
+			message: message,
+			details: details,
+		});
+
 		console.log(`Notification jobs dispatched for app ${appId}`);
 	} catch (error) {
 		console.error('Error in sendNotification:', error);

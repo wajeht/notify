@@ -43,24 +43,36 @@ export async function postNotificationHandler(req: Request, res: Response) {
 }
 
 // GET /settings
-export function getSettingsPageHandler(req: Request, res: Response) {
+export async function getSettingsPageHandler(req: Request, res: Response) {
+	const userId = req.session?.user?.id;
+	const user = await db.select('*').from('users').where({ id: userId }).first();
+
 	return res.render('settings-account.html', {
+		user,
 		path: '/settings',
 		layout: '../layouts/settings.html',
 	});
 }
 
 // GET /settings/account
-export function getSettingsAccountPageHandler(req: Request, res: Response) {
+export async function getSettingsAccountPageHandler(req: Request, res: Response) {
+	const userId = req.session?.user?.id;
+	const user = await db.select('*').from('users').where({ id: userId }).first();
+
 	return res.render('settings-account.html', {
+		user,
 		path: '/settings/account',
 		layout: '../layouts/settings.html',
 	});
 }
 
 // GET /settings/danger-zone
-export function getSettingsDangerZonePageHandler(req: Request, res: Response) {
+export async function getSettingsDangerZonePageHandler(req: Request, res: Response) {
+	const userId = req.session?.user?.id;
+	const user = await db.select('*').from('users').where({ id: userId }).first();
+
 	return res.render('settings-danger-zone.html', {
+		user,
 		path: '/settings/danger-zone',
 		layout: '../layouts/settings.html',
 	});

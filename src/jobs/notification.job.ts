@@ -1,5 +1,5 @@
 import { Queue, Worker, Job } from 'bullmq';
-import { redis } from '../db/db';
+import { redis, db } from '../db/db';
 import { sendNotification } from './channel/notification';
 
 const queueName = 'sendNotificationQueue';
@@ -18,6 +18,13 @@ const processSendNotificationJob = async (job: Job<NotificationJobData>) => {
 	try {
 		await job.updateProgress(0);
 		await sendNotification(job.data);
+
+		await db('notifications').insert({
+			app_id: job.data.appId,
+			message: job.data.message,
+			details: job.data.details,
+		});
+
 		await job.updateProgress(100);
 	} catch (error) {
 		console.error('Failed to send notification:', error);

@@ -6,82 +6,106 @@ on:
   pull_request:
 
 env:
+  # app
   APP_PORT: 80
   APP_ENV: 'development'
   APP_URL: 'localhost'
+
+  # redis
   REDIS_HOST: 'redis'
   REDIS_PORT: 6379
   REDIS_PASSWORD: 'password'
+
+  # database
   DB_PORT: 5432
   DB_HOST: 'postgres'
   DB_USERNAME: 'username'
   DB_PASSWORD: 'password'
   DB_DATABASE: 'database'
+
+  # email
   EMAIL_HOST: 'mailhot'
   EMAIL_PORT: 1025
   EMAIL_ALIAS: 'mail@jaw.dev'
   EMAIL_AUTH_EMAIL: 'name@email.com'
   EMAIL_AUTH_PASS: 'password'
+
+  # twilio
   TWILIO_ACCOUNT_SID: ''
   TWILIO_AUTH_TOKEN: ''
   TWILIO_FROM_PHONE_NUMBER: ''
   TWILIO_PHONE_NUMBER: ''
 
 jobs:
-  test_and_lint:
-    name: Test and Lint
+  test:
+    name: Unit tests
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '22.x'
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-
-      - name: Create .env file
+      - name: Create .env file from .env.example
         run: cp .env.example .env
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
-      - name: Run tests and linting
-        run: |
-          npm run test:coverage
-          npm run lint
+      - name: Test codes
+        run: npm run test:coverage
 
-  format:
-    needs: [test_and_lint]
-    name: Prettier format
+  lint:
+    name: ESLint
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '22.x'
+          node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Install dependencies
+        run: npm i
+
+      - name: Lint codes
+        run: npm run lint
+
+  format:
+    needs: [lint, test]
+    name: Prettier format
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Format codes
         run: npm run format
@@ -93,7 +117,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy:
+   deploy:
     needs: [test_and_lint, format]
     name: Deploy to Production
     runs-on: ubuntu-latest

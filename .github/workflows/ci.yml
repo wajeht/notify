@@ -117,14 +117,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-   deploy:
-    needs: [test_and_lint, format]
+  deploy:
+    needs: [test, lint, format]
     name: Deploy to Production
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     environment:
       name: production
       url: https://notify.jaw.dev/
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v3

@@ -1,7 +1,7 @@
 import { db } from '../../db/db';
 import { sendEmailNotificationJob } from 'jobs/email.job';
-import { NotificationJobData } from 'jobs/notification.job';
-import { sendDiscordNotificationJob } from 'jobs/discord.job';
+import { NotificationJobData } from '../notification.job';
+import { sendDiscordNotificationJob } from '../discord.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {

@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-import { emailConfig, appConfig } from '../../config';
+import { emailConfig } from '../../config';
 import { EmailNotificationJobData } from '../email.job';
 
 const transporter = nodemailer.createTransport(emailConfig);

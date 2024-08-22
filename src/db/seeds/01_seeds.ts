@@ -19,6 +19,7 @@ export async function seed(knex: Knex): Promise<void> {
 			username: 'admin',
 			email: 'admin@example.com',
 			is_admin: true,
+			max_apps_allowed: 10,
 			created_at: new Date(),
 			updated_at: new Date(),
 		},
@@ -28,6 +29,7 @@ export async function seed(knex: Knex): Promise<void> {
 				username: faker.internet.userName(),
 				email: faker.internet.email(),
 				is_admin: false,
+				max_apps_allowed: faker.number.int({ min: 1, max: 5 }),
 				created_at: faker.date.past(),
 				updated_at: faker.date.recent(),
 			})),
@@ -43,6 +45,12 @@ export async function seed(knex: Knex): Promise<void> {
 			url: faker.internet.url(),
 			description: faker.lorem.sentences(1),
 			is_active: faker.datatype.boolean(),
+			api_key: faker.string.uuid(),
+			api_key_version: faker.number.int({ min: 0, max: 5 }),
+			api_key_created_at: faker.date.past(),
+			max_monthly_alerts: faker.number.int({ min: 10, max: 100 }),
+			alerts_sent_this_month: faker.number.int({ min: 0, max: 50 }),
+			alerts_reset_date: faker.date.recent(),
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),
 		}));
@@ -86,6 +94,8 @@ export async function seed(knex: Knex): Promise<void> {
 		is_active: faker.datatype.boolean(),
 		auth_email: faker.internet.email(),
 		auth_pass: faker.internet.password(),
+		created_at: faker.date.past(),
+		updated_at: faker.date.recent(),
 	}));
 	await knex('email_configs').insert(emailConfigs);
 
@@ -107,6 +117,8 @@ export async function seed(knex: Knex): Promise<void> {
 		is_active: faker.datatype.boolean(),
 		from_phone_number: faker.phone.number(),
 		phone_number: faker.phone.number(),
+		created_at: faker.date.past(),
+		updated_at: faker.date.recent(),
 	}));
 	await knex('sms_configs').insert(smsConfigs);
 
@@ -125,6 +137,8 @@ export async function seed(knex: Knex): Promise<void> {
 		app_channel_id: channel.id,
 		is_active: faker.datatype.boolean(),
 		webhook_url: faker.internet.url(),
+		created_at: faker.date.past(),
+		updated_at: faker.date.recent(),
 	}));
 	await knex('discord_configs').insert(discordConfigs);
 

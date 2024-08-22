@@ -21,7 +21,7 @@
       alert('Demo code copied to clipboard!');
     });
   }
-  </script>
+</script>
 
 <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
 
@@ -69,6 +69,15 @@
         <div><%= app.description %></div>
       <% } %>
 
+      <div><strong>Max Monthly Alerts:</strong></div>
+      <div><%= app.max_monthly_alerts %></div>
+
+      <div><strong>Alerts Sent This Month:</strong></div>
+      <div><%= app.alerts_sent_this_month %></div>
+
+      <div><strong>Alerts Reset Date:</strong></div>
+      <div><%= new Date(app.alerts_reset_date).toLocaleString() %></div>
+
       <div><strong>Created:</strong></div>
       <div><%= new Date(app.created_at).toLocaleString() %></div>
 
@@ -83,7 +92,12 @@
     <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: 66%;">
       <div>
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 5px;"><strong>API Key</strong><% if (app.api_key_version > 0) { %> <small style="color: #bbb;">(v<%= app.api_key_version %>)</small> <% } %></div>
+          <div style="display: flex; align-items: center; gap: 5px;">
+            <strong>API Key</strong>
+            <% if (app.api_key_version > 0) { %>
+              <small style="color: #bbb;">(v<%= app.api_key_version %>)</small>
+            <% } %>
+          </div>
 
           <div style="display: flex; align-items: center; gap: 10px;">
             <form action="/apps/<%= app.id %>/create-api-key" method="post">
@@ -104,7 +118,11 @@
           </div>
         </div>
 
-        <pre id="apiKeyPre" style="white-space: nowrap; overflow-x: scroll; padding-right: 150px;"><% if (!app.api_key) { %>click to generate api key<% } else { %>••••••••••••••••••••••••••••••••••••••••••••••••<% } %></pre>
+        <pre id="apiKeyPre" style="white-space: nowrap; overflow-x: auto; padding-right: 150px;"><% if (!app.api_key) { %>click to generate api key<% } else { %>••••••••••••••••••••••••••••••••••••••••••••••••<% } %></pre>
+
+        <% if (app.api_key_created_at) { %>
+          <small style="color: #bbb;">Created: <%= new Date(app.api_key_created_at).toLocaleString() %></small>
+        <% } %>
       </div>
 
       <div>

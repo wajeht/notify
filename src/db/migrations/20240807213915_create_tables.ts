@@ -10,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.integer('max_apps_allowed').defaultTo(5);
 			table.timestamps(true, true);
 
-			table.index('email');
+			table.index(['email', 'is_admin']);
 		})
 		.createTable('apps', (table) => {
 			table.increments('id').primary();
@@ -29,17 +29,14 @@ export async function up(knex: Knex): Promise<void> {
 
 			table.timestamps(true, true);
 
+			table.index(['user_id', 'is_active']);
 			table.index('api_key');
-			table.index('user_id');
-			table.index('name');
-			table.index('is_active');
+			table.index(['name', 'is_active']);
 		})
 		.createTable('channel_types', (table) => {
 			table.increments('id').primary();
 			table.string('name').unique().notNullable();
 			table.timestamps(true, true);
-
-			table.index('name');
 		})
 		.createTable('app_channels', (table) => {
 			table.increments('id').primary();
@@ -52,8 +49,7 @@ export async function up(knex: Knex): Promise<void> {
 				.onDelete('CASCADE');
 			table.timestamps(true, true);
 
-			table.index('app_id');
-			table.index('channel_type_id');
+			table.index(['app_id', 'channel_type_id']);
 		})
 		.createTable('email_configs', (table) => {
 			table.increments('id').primary();
@@ -72,7 +68,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('auth_pass').notNullable();
 			table.timestamps(true, true);
 
-			table.index('host');
+			table.index(['app_channel_id', 'is_active']);
 			table.index('auth_email');
 		})
 		.createTable('sms_configs', (table) => {
@@ -91,8 +87,8 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('phone_number').notNullable();
 			table.timestamps(true, true);
 
+			table.index(['app_channel_id', 'is_active']);
 			table.index('account_sid');
-			table.index('from_phone_number');
 			table.index('phone_number');
 		})
 		.createTable('discord_configs', (table) => {
@@ -108,6 +104,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('webhook_url').notNullable();
 			table.timestamps(true, true);
 
+			table.index(['app_channel_id', 'is_active']);
 			table.index('webhook_url');
 		})
 		.createTable('notifications', (table) => {
@@ -117,8 +114,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.jsonb('details').nullable();
 			table.timestamps(true, true);
 
-			table.index('app_id');
-			table.index('created_at');
+			table.index(['app_id', 'created_at']);
 		})
 		.createTable('jobs', (table) => {
 			table.increments('id').primary();
@@ -139,10 +135,8 @@ export async function up(knex: Knex): Promise<void> {
 			table.jsonb('result').nullable();
 			table.timestamps(true, true);
 
-			table.index('notification_id');
-			table.index('app_channel_id');
-			table.index('status');
-			table.index('created_at');
+			table.index(['notification_id', 'app_channel_id', 'status']);
+			table.index(['status', 'created_at']);
 			table.index('attempts');
 		});
 

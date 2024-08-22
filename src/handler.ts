@@ -2,7 +2,7 @@ import { db } from './db/db';
 import jwt from 'jsonwebtoken';
 import { ApiKeyPayload } from './types';
 import axios, { AxiosError } from 'axios';
-import { UnauthorizedError } from './error';
+import { HttpError, UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';
 import { NextFunction, Request, Response } from 'express';
 import { sendNotificationJob } from './jobs/notification.job';
@@ -104,7 +104,7 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 		req.session.user = undefined;
 		req.session.destroy((error) => {
 			if (error) {
-				throw new Error(error);
+				throw HttpError(error);
 			}
 		});
 	}
@@ -612,7 +612,7 @@ export function getLogoutHandler(req: Request, res: Response) {
 		req.session.user = undefined;
 		req.session.destroy((error) => {
 			if (error) {
-				throw new Error(error);
+				throw HttpError(error);
 			}
 		});
 	}
@@ -651,7 +651,7 @@ export async function getGithubRedirect(req: Request, res: Response) {
 	const code = req.query.code as string;
 
 	if (!code) {
-		throw new UnauthorizedError('Something went wrong while authenticating with github');
+		throw UnauthorizedError('Something went wrong while authenticating with github');
 	}
 
 	const { access_token } = await getGithubOauthToken(code);

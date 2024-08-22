@@ -16,7 +16,7 @@ export const postSettingsAccountHandlerValidator = [
 				.first();
 
 			if (existingUser) {
-				throw new ValidationError('Username is already taken');
+				throw ValidationError('Username is already taken');
 			}
 
 			return true;
@@ -35,7 +35,7 @@ export const postSettingsAccountHandlerValidator = [
 				.first();
 
 			if (existingUser) {
-				throw new ValidationError('Email is already in use');
+				throw ValidationError('Email is already in use');
 			}
 
 			return true;

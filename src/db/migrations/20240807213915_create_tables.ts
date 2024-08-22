@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('username').unique().notNullable();
 			table.string('email').unique().notNullable();
 			table.boolean('is_admin').defaultTo(false);
+			table.integer('max_apps_allowed').defaultTo(5);
 			table.timestamps(true, true);
 
 			table.index('email');
@@ -21,6 +22,10 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('api_key').unique().nullable();
 			table.integer('api_key_version').defaultTo(0).notNullable();
 			table.timestamp('api_key_created_at').nullable();
+
+			table.integer('max_monthly_alerts').defaultTo(50);
+			table.integer('alerts_sent_this_month').defaultTo(0);
+			table.date('alerts_reset_date').defaultTo(knex.fn.now());
 
 			table.timestamps(true, true);
 

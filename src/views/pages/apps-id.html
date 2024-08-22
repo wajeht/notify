@@ -14,6 +14,13 @@
       alert('API key copied to clipboard!');
     });
   }
+
+  function copyDemoCode() {
+    const demoCode = document.getElementById('demoCode').innerText;
+    navigator.clipboard.writeText(demoCode).then(() => {
+      alert('Demo code copied to clipboard!');
+    });
+  }
   </script>
 
 <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
@@ -101,8 +108,11 @@
       </div>
 
       <div>
-        <div><strong>Example</strong></div>
-<pre><span style="color: rgb(215, 58, 73); font-weight: 400;">await</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">fetch</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'https://notify.jaw.dev'</span>, {
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <strong>Example</strong>
+          <button onclick="copyDemoCode()" class="no-style-btn">Copy</button>
+        </div>
+<pre id="demoCode"><span style="color: rgb(215, 58, 73); font-weight: 400;">await</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">fetch</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'https://notify.jaw.dev'</span>, {
   <span style="color: rgb(0, 92, 197); font-weight: 400;">method</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'POST'</span>,
   <span style="color: rgb(0, 92, 197); font-weight: 400;">headers</span>: {
     <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>,

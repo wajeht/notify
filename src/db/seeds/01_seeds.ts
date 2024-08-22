@@ -48,7 +48,7 @@ export async function seed(knex: Knex): Promise<void> {
 			api_key: faker.string.uuid(),
 			api_key_version: faker.number.int({ min: 0, max: 5 }),
 			api_key_created_at: faker.date.past(),
-			max_monthly_alerts: faker.number.int({ min: 10, max: 100 }),
+			user_monthly_limit_threshold: faker.number.int({ min: 10, max: 100 }),
 			alerts_sent_this_month: faker.number.int({ min: 0, max: 50 }),
 			alerts_reset_date: faker.date.recent(),
 			created_at: faker.date.past(),

@@ -175,7 +175,7 @@ export async function postDeleteAppHandler(req: Request, res: Response) {
 
 // POST /apps/:id
 export async function postAppUpdateHandler(req: Request, res: Response, next: NextFunction) {
-	const { name, url, description } = req.body;
+	const { name, url, description, user_monthly_limit_threshold } = req.body;
 
 	const id = parseInt(req.params.id!);
 
@@ -184,6 +184,7 @@ export async function postAppUpdateHandler(req: Request, res: Response, next: Ne
 	await db('apps').where({ id }).update({
 		is_active,
 		name,
+		user_monthly_limit_threshold,
 		url,
 		description,
 		updated_at: db.fn.now(),

@@ -69,8 +69,11 @@
         <div><%= app.description %></div>
       <% } %>
 
-      <div><strong>Max Monthly Alerts:</strong></div>
-      <div><%= app.max_monthly_alerts %></div>
+      <div><strong>Max Alerts Allowed Per Month:</strong></div>
+      <div><%= app.max_monthly_alerts_allowed %></div>
+
+      <div><strong>Your Monthly Limit:</strong></div>
+      <div><%= app.user_monthly_limit_threshold ?? 'N/A' %></div>
 
       <div><strong>Alerts Sent This Month:</strong></div>
       <div><%= app.alerts_sent_this_month %></div>

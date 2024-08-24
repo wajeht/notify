@@ -23,7 +23,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.integer('api_key_version').defaultTo(0).notNullable();
 			table.timestamp('api_key_created_at').nullable();
 
-			table.integer('max_monthly_alerts_allowed').defaultTo(50); // admin
+			table.integer('max_monthly_alerts_allowed').defaultTo(100);
 			table.integer('user_monthly_limit_threshold').defaultTo(null);
 			table.integer('alerts_sent_this_month').defaultTo(0);
 			table.date('alerts_reset_date').defaultTo(knex.fn.now());

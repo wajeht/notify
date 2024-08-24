@@ -116,29 +116,6 @@ export async function up(knex: Knex): Promise<void> {
 			table.timestamps(true, true);
 
 			table.index(['app_id', 'created_at']);
-		})
-		.createTable('jobs', (table) => {
-			table.increments('id').primary();
-			table.uuid('notification_id').references('id').inTable('notifications').onDelete('CASCADE');
-			table
-				.integer('app_channel_id')
-				.unsigned()
-				.references('id')
-				.inTable('app_channels')
-				.onDelete('CASCADE');
-			table
-				.enu('status', ['pending', 'processing', 'completed', 'failed', 'retrying'])
-				.notNullable()
-				.defaultTo('pending');
-			table.integer('attempts').defaultTo(0);
-			table.timestamp('processed_at').nullable();
-			table.text('error_message').nullable();
-			table.jsonb('result').nullable();
-			table.timestamps(true, true);
-
-			table.index(['notification_id', 'app_channel_id', 'status']);
-			table.index(['status', 'created_at']);
-			table.index('attempts');
 		});
 
 	// Insert default channel types
@@ -147,7 +124,6 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema
-		.dropTableIfExists('jobs')
 		.dropTableIfExists('notifications')
 		.dropTableIfExists('discord_configs')
 		.dropTableIfExists('sms_configs')

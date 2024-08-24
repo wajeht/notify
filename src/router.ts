@@ -36,7 +36,6 @@ import {
 	getAppNotificationsPageHandler,
 	getAppSettingsPageHandler,
 	postDeleteAppNotificationHandler,
-	getJobsPageHandler,
 	getGithub,
 	getGithubRedirect,
 	getLoginHandler,
@@ -261,8 +260,6 @@ router.post(
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(postTestAppNotificationHandler),
 );
-
-router.get('/jobs', authenticationMiddleware, catchAsyncErrorMiddleware(getJobsPageHandler));
 
 router.get('/login', catchAsyncErrorMiddleware(getLoginHandler));
 

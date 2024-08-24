@@ -122,16 +122,6 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 	});
 }
 
-// GET /jobs
-export async function getJobsPageHandler(req: Request, res: Response) {
-	const jobs = await db.select('*').from('jobs').orderBy('created_at', 'desc');
-	return res.render('jobs.html', {
-		jobs,
-		path: '/jobs',
-		layout: '../layouts/auth.html',
-	});
-}
-
 // GET /apps
 export async function getAppsPageHandler(req: Request, res: Response) {
 	const apps = await db

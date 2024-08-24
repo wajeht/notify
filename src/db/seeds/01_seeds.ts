@@ -1,9 +1,7 @@
-import { faker } from '@faker-js/faker';
 import { Knex } from 'knex';
+import { faker } from '@faker-js/faker';
 
 export async function seed(knex: Knex): Promise<void> {
-	// Clear all tables
-	await knex('jobs').del();
 	await knex('notifications').del();
 	await knex('discord_configs').del();
 	await knex('sms_configs').del();
@@ -54,6 +52,7 @@ export async function seed(knex: Knex): Promise<void> {
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),
 		}));
+
 	const appIds = await knex('apps').insert(apps).returning('id');
 
 	// Seed channel types
@@ -62,6 +61,7 @@ export async function seed(knex: Knex): Promise<void> {
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
 	}));
+
 	const channelTypeIds = await knex('channel_types').insert(channelTypes).returning('*');
 
 	// Seed app channels
@@ -73,6 +73,7 @@ export async function seed(knex: Knex): Promise<void> {
 			updated_at: faker.date.recent(),
 		})),
 	);
+
 	const appChannelIds = await knex('app_channels').insert(appChannels).returning('id');
 
 	// Seed email configs
@@ -85,6 +86,7 @@ export async function seed(knex: Knex): Promise<void> {
 			'channel_type_id',
 			channelTypeIds.filter((ct) => ct.name === 'email').map((ct) => ct.id),
 		);
+
 	const emailConfigs = emailChannels.map((channel) => ({
 		name: `email-${channel.id}`,
 		app_channel_id: channel.id,
@@ -97,6 +99,7 @@ export async function seed(knex: Knex): Promise<void> {
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
 	}));
+
 	await knex('email_configs').insert(emailConfigs);
 
 	// Seed SMS configs
@@ -120,6 +123,7 @@ export async function seed(knex: Knex): Promise<void> {
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
 	}));
+
 	await knex('sms_configs').insert(smsConfigs);
 
 	// Seed Discord configs
@@ -132,6 +136,7 @@ export async function seed(knex: Knex): Promise<void> {
 			'channel_type_id',
 			channelTypeIds.filter((ct) => ct.name === 'discord').map((ct) => ct.id),
 		);
+
 	const discordConfigs = discordChannels.map((channel) => ({
 		name: `discord-${channel.id}`,
 		app_channel_id: channel.id,
@@ -140,6 +145,7 @@ export async function seed(knex: Knex): Promise<void> {
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
 	}));
+
 	await knex('discord_configs').insert(discordConfigs);
 
 	// Seed notifications
@@ -155,34 +161,6 @@ export async function seed(knex: Knex): Promise<void> {
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),
 		}));
-	const notificationIds = await knex('notifications').insert(notifications).returning('id');
 
-	// Seed jobs
-	const jobs = notificationIds.flatMap((notification) =>
-		Array(faker.number.int({ min: 1, max: 3 }))
-			.fill(null)
-			.map(() => ({
-				notification_id: notification.id,
-				app_channel_id: faker.helpers.arrayElement(appChannelIds).id,
-				status: faker.helpers.arrayElement([
-					'pending',
-					'processing',
-					'completed',
-					'failed',
-					'retrying',
-				]),
-				attempts: faker.number.int({ min: 0, max: 5 }),
-				processed_at: faker.date.recent(),
-				error_message: faker.datatype.boolean() ? faker.lorem.sentence() : null,
-				result: faker.datatype.boolean()
-					? JSON.stringify(
-							faker.helpers.objectEntry({ key: faker.word.sample(), value: faker.word.sample() }),
-						)
-					: null,
-				created_at: faker.date.past(),
-				updated_at: faker.date.recent(),
-			})),
-	);
-
-	await knex('jobs').insert(jobs);
+	await knex('notifications').insert(notifications);
 }

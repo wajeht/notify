@@ -22,6 +22,10 @@ export function getTermsOfServicePageHandler(req: Request, res: Response) {
 
 // GET /
 export function getHomePageHandler(req: Request, res: Response) {
+	if (req.session?.user) {
+		return res.redirect('/apps');
+	}
+
 	return res.render('home.html', {
 		path: '/',
 	});

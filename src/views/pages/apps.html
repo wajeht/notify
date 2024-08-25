@@ -2,11 +2,11 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h2>Apps</h2>
-      <p>Your apps</p>
+      <h2>Apps 📱</h2>
+      <p>Your apps 🗂️</p>
     </div>
 
-    <a href="/apps/create">Create a new app</a>
+    <a href="/apps/create">➕ Create a new app</a>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
@@ -17,7 +17,7 @@
 
           <div style="display: flex; align-items: center; gap: 10px; justify-content: space-between;">
             <h3>
-              <a href="/apps/<%= app.id %>"><%= app.name %></a>
+              <a href="/apps/<%= app.id %>"><%= app.name %> 🔗</a>
             </h3>
 
             <span style="
@@ -26,7 +26,7 @@
                   border-radius: 5px;
                   <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
             >
-              <%= app.is_active ? 'Active' : 'Inactive' %>
+              <%= app.is_active ? '✅ Active' : '❌ Inactive' %>
             </span>
 
           </div>
@@ -34,19 +34,19 @@
           <% if (app.description || app.url) { %>
             <div>
               <% if (app.url) { %>
-                <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer"><%= app.url %></a>
+                <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer">🌐 <%= app.url %></a>
               <% } %>
 
               <% if (app.description) { %>
-                <p><%= app.description %></p>
+                <p>📝 <%= app.description %></p>
               <% } %>
             </div>
           <% } %>
 
           <div style="display: flex; gap: 20px; align-items: center;">
-            <a href="/apps/<%= app.id %>/channels">Channels (<%= app.channel_count %>)</a>
+            <a href="/apps/<%= app.id %>/channels">Channels 🎚️ (<%= app.channel_count %>)</a>
             <span>|</span>
-            <a href="/apps/<%= app.id %>/notifications">Notifications (<%= app.notification_count %>)</a>
+            <a href="/apps/<%= app.id %>/notifications">Notifications 🛎️ (<%= app.notification_count %>)</a>
           </div>
 
         </article>
@@ -55,7 +55,7 @@
 
     <% if (!apps.length) { %>
       <article style="border: dashed; padding: 20px; border-radius: 5px;">
-        <p>There are no apps currently</p>
+        <p>🚫 There are no apps currently</p>
       </article>
     <% } %>
 

@@ -11,17 +11,26 @@
 
 		<main style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
 
-			<h2>Apps / <%= app.name %></h2>
+			<h2>Apps 📱 / <%= app.name %> 🔗</h2>
 
 			<div style="display: grid; grid-template-columns: 15% 85%; flex: 1;">
 				<aside style="display: inline-block; border-right: dashed; height: 100%;">
 					<div style="display: flex; flex-direction: column; gap: 10px">
-						<a style="font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>; <%= path === `/apps/${app.id}` ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>">App</a>
-						<a style="font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/channels/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/channels">Channels</a>
-						<a style="font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/notifications/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/notifications">Notifications</a>
-						<a style="font-weight: <%= /\/apps\/.*\/settings/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/settings/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/settings">Settings</a>
+						<a style="font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>; <%= path === `/apps/${app.id}` ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>">
+							🛠️ App
+						</a>
+						<a style="font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/channels/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/channels">
+							🎚️ Channels
+						</a>
+						<a style="font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/notifications/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/notifications">
+							🛎️ Notifications
+						</a>
+						<a style="font-weight: <%= /\/apps\/.*\/settings/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/settings/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/settings">
+							⚙️ Settings
+						</a>
 					</div>
 				</aside>
+
 
 				<div style="display: inline-block; padding-left: 40px;">
 					<%- body %>

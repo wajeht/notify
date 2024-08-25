@@ -1,20 +1,20 @@
 <header style="flex: 0; display: flex; flex-direction: column; gap: 20px;">
   <div>
     <h1><a href="/apps">🔔 Notify</a></h1>
-    <p>web 2.0 style notification systems for Discord, email, and SMS</p>
+    <p>Web 2.0 style notification systems for Discord, email, and SMS</p>
   </div>
 
   <nav style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 20px;">
-      <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>; <%= path === '/apps' ? 'text-decoration: underline;' : null %>" href="/apps">Apps</a>
-      <a style="font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'text-decoration: underline;' : null %>" href="/notifications">Notifications</a>
+      <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>; <%= path === '/apps' ? 'text-decoration: underline;' : null %>" href="/apps">📱 Apps</a>
+      <a style="font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'underline' : 'none' %>" href="/notifications">🔔 Notifications</a>
     </div>
 
     <details style="position: relative;">
       <summary><%= state.user.username %> 👤</summary>
       <div style="position: absolute; top: 100%; left: 0; z-index: 1; border: dashed; padding: 10px; background-color: white; border-radius: 5px;">
-        <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>; <%= path === '/settings' ? 'text-decoration: underline' : null %>" href="/settings">Settings</a>
-        <a href="/logout">Logout</a>
+        <a style="font-weight: <%= path === '/settings' ? 'bold' : 'normal' %>; <%= path === '/settings' ? 'text-decoration: underline' : null %>" href="/settings">⚙️ Settings</a>
+        <a href="/logout">🚪 Logout</a>
       </div>
     </details>
   </nav>

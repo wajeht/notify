@@ -1,7 +1,7 @@
 <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
 
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-    <h2 style="margin: 0;">Settings</h2>
+    <h2 style="margin: 0;">⚙️ Settings</h2>
     <span>settings</span>
   </div>
 
@@ -13,12 +13,12 @@
       <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <h3>Account</h3>
+        <h3>👤 Account</h3>
         <p>Manage your account details.</p>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="name">Username:</label>
+        <label for="username">Username:</label>
         <input type="text" id="username" name="username" value="<%= state.input.username ?? user.username %>" required>
 
         <% if (state.errors.username) { %>
@@ -27,7 +27,7 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="name">Email:</label>
+        <label for="email">Email:</label>
         <input type="email" id="email" name="email" value="<%= state.input.email ?? user.email %>" required>
 
         <% if (state.errors.email) { %>

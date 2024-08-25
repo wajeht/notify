@@ -10,6 +10,7 @@ export const appConfig = {
 	appUrl: process.env.APP_URL || '',
 	adminEmail: process.env.APP_ADMIN_EMAIL || '',
 	apiKeySecret: process.env.APP_API_KEY_SECRET || 'notify',
+	secretSalt: process.env.APP_SECRET_SALT || 'notify',
 } as const;
 
 export const emailConfig = {

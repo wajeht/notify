@@ -1,6 +1,6 @@
-import bcrypt from 'bcryptjs';
 import qs from 'qs';
 import axios from 'axios';
+import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
 import { Redis } from 'ioredis';
@@ -10,28 +10,17 @@ import { Queue, Worker, Job } from 'bullmq';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
 
-export function secret() {
-	const SALT_ROUNDS = 5;
-
-	return {
-		hash: async function (text: string): Promise<string> {
-			try {
-				return await bcrypt.hash(text, SALT_ROUNDS);
-			} catch (error) {
-				console.error('Error while hashing:', error);
-				throw error;
-			}
-		},
-		verify: async function (text: string, hash: string): Promise<boolean> {
-			try {
-				return await bcrypt.compare(text, hash);
-			} catch (error) {
-				console.error('Error while verifying:', error);
-				throw error;
-			}
-		},
-	};
-}
+export const secret = {
+	hash: function (text: string): string {
+		const hash = crypto.createHash('sha256');
+		hash.update(appConfig.secretSalt + text);
+		return hash.digest('hex');
+	},
+	verify: function (text: string, hash: string): boolean {
+		const newHash = this.hash(text);
+		return newHash === hash;
+	},
+};
 
 export function setupJob<T extends Record<string, any>>(
 	jobName: string,

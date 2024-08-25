@@ -29,6 +29,8 @@ web 2.0 style notification systems for discord, email, and sms
 - [ ] search on apps page
 - [ ] tests
 - [x] post notifications with api auth
+- [x] marketing page
+- [x] emoji
 - [x] csrf
 
 # 📑 Docs

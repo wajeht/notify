@@ -135,36 +135,44 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 
 // GET /apps
 export async function getAppsPageHandler(req: Request, res: Response) {
-	const filter = req.query.filter as string;
+  const filter = req.query.filter as string;
+  const page = parseInt(req.query.page as string) || 1;
+  const perPage = parseInt(req.query.perPage as string) || 10;
 
-	let query = db
-		.select(
-			'apps.*',
-			db.raw(
-				'(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id) as channel_count',
-			),
-			db.raw(
-				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
-			),
-		)
-		.from('apps')
-		.orderBy('apps.created_at', 'desc');
+  let query = db
+    .select(
+      'apps.*',
+      db.raw(
+        '(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id) as channel_count',
+      ),
+      db.raw(
+        '(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
+      ),
+    )
+    .from('apps')
+    .orderBy('apps.created_at', 'desc');
 
-	if (filter === 'active') {
-		query = query.where('apps.is_active', true);
-	} else if (filter === 'inactive') {
-		query = query.where('apps.is_active', false);
-	}
+  if (filter === 'active') {
+    query = query.where('apps.is_active', true);
+  } else if (filter === 'inactive') {
+    query = query.where('apps.is_active', false);
+  }
 
-	const apps = await query;
+  const { data: apps, pagination } = await query.paginate({
+    perPage,
+    currentPage: page,
+    isLengthAware: true
+  });
 
-	const path = filter ? `/apps?filter=${filter}` : '/apps';
 
-	return res.render('apps.html', {
-		apps,
-		path,
-		layout: '../layouts/auth.html',
-	});
+  const path = filter ? `/apps?filter=${filter}` : '/apps';
+
+  return res.render('apps.html', {
+    apps,
+    path,
+    pagination,
+    layout: '../layouts/auth.html',
+  });
 }
 
 // GET /apps/:id

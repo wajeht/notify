@@ -365,7 +365,7 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 	const { id, cfid } = req.params;
 	const { name, is_active, webhook_url } = req.body;
 
-	const hashedWebhookUrl = secret.hash(webhook_url);
+	const hashedWebhookUrl = secret().encrypt(webhook_url);
 
 	await db('discord_configs')
 		.where({ id: cfid })
@@ -505,7 +505,7 @@ export async function postCreateAppDiscordChannelConfigHandler(req: Request, res
 		})
 		.returning('*');
 
-	const hashedWebhookUrl = secret.hash(webhook_url);
+	const hashedWebhookUrl = secret().encrypt(webhook_url);
 
 	await db('discord_configs').insert({
 		app_channel_id: app_channel.id,
@@ -558,8 +558,8 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 		})
 		.returning('*');
 
-	const hashedAuthEmail = secret.hash(auth_email);
-	const hashedAuthPass = secret.hash(auth_pass);
+	const hashedAuthEmail = secret().encrypt(auth_email);
+	const hashedAuthPass = secret().encrypt(auth_pass);
 
 	await db('email_configs').insert({
 		app_channel_id: app_channel.id,

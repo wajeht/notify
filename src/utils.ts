@@ -10,17 +10,47 @@ import { Queue, Worker, Job } from 'bullmq';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
 
-export const secret = {
-	hash: function (text: string): string {
-		const hash = crypto.createHash('sha256');
-		hash.update(appConfig.secretSalt + text);
-		return hash.digest('hex');
-	},
-	verify: function (text: string, hash: string): boolean {
-		const newHash = this.hash(text);
-		return newHash === hash;
-	},
-};
+export function secret(secretSalt: string = appConfig.secretSalt) {
+	const algorithm = 'aes-256-gcm';
+	const keyLength = 32;
+	const ivLength = 12;
+	const saltLength = 16;
+	const tagLength = 16;
+	const encoding = 'base64url' as const;
+
+	function getKey(): Buffer {
+		const salt = crypto.randomBytes(saltLength);
+		return crypto.scryptSync(secretSalt, salt, keyLength);
+	}
+
+	function encrypt(text: string): string {
+		const iv = crypto.randomBytes(ivLength);
+		const key = getKey();
+		const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: tagLength });
+
+		const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+		const tag = cipher.getAuthTag();
+
+		return Buffer.concat([iv, tag, encrypted]).toString(encoding);
+	}
+
+	function decrypt(encryptedText: string): string {
+		const buffer = Buffer.from(encryptedText, encoding);
+		const iv = buffer.subarray(0, ivLength);
+		const tag = buffer.subarray(ivLength, ivLength + tagLength);
+		const encrypted = buffer.subarray(ivLength + tagLength);
+
+		const key = getKey();
+		const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: tagLength });
+		decipher.setAuthTag(tag);
+
+		const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+
+		return decrypted.toString('utf8');
+	}
+
+	return { encrypt, decrypt };
+}
 
 export function setupJob<T extends Record<string, any>>(
 	jobName: string,

@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { EmailNotificationJobData } from '../email.job';
+import { secret } from '../../utils';
 
 function template(message: string, details: Record<string, any> | null) {
 	return `
@@ -9,19 +10,23 @@ function template(message: string, details: Record<string, any> | null) {
 }
 
 export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
-	const transporter = nodemailer.createTransport({
-		host: data.config.host,
-		port: data.config.port,
+	const config = {
+		host: secret().decrypt(data.config.host),
+		port: secret().decrypt(data.config.port),
+		alias: secret().decrypt(data.config.alias),
 		auth: {
-			user: data.config.auth_email,
-			pass: data.config.auth_pass,
+			user: secret().decrypt(data.config.auth_email),
+			pass: secret().decrypt(data.config.auth_pass),
 		},
-	});
+	};
+
+	// @ts-expect-error - trust me bro
+	const transporter = nodemailer.createTransport(config);
 
 	try {
 		await transporter.sendMail({
-			from: data.config.alias,
-			to: data.config.auth_email,
+			from: config.alias,
+			to: config.auth.user,
 			subject: data.message,
 			html: template(data.message, data.details),
 		});

@@ -121,7 +121,12 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 	const perPage = parseInt(req.query.perPage as string) || 10; // Number of items per page
 	const currentPage = parseInt(req.query.page as string) || 1; // Current page number
 
-	const result = await db('notifications')
+	const result = await db
+		.select('notifications.*')
+		.from('notifications')
+		.leftJoin('apps', 'apps.id', 'notifications.app_id')
+		.leftJoin('users', 'users.id', 'apps.user_id')
+		.where('users.id', req.session?.user?.id)
 		.orderBy('created_at', 'desc')
 		.paginate({ perPage, currentPage, isLengthAware: true });
 

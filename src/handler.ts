@@ -367,7 +367,13 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 export async function postUpdateAppChannelSMSHandler(req: Request, res: Response) {
 	const { id, cfid } = req.params;
 
-	const { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
+	// eslint-disable-next-line prefer-const
+	let { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
+
+	account_sid = secret().encrypt(account_sid);
+	auth_token = secret().encrypt(auth_token);
+	from_phone_number = secret().encrypt(from_phone_number);
+	phone_number = secret().encrypt(phone_number);
 
 	await db('sms_configs')
 		.where({ id: cfid })
@@ -565,10 +571,10 @@ export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Re
 	await db('sms_configs').insert({
 		app_channel_id: app_channel.id,
 		name,
-		account_sid,
-		auth_token,
-		from_phone_number,
-		phone_number,
+		account_sid: secret().encrypt(account_sid),
+		auth_token: secret().encrypt(auth_token),
+		from_phone_number: secret().encrypt(from_phone_number),
+		phone_number: secret().encrypt(phone_number),
 		is_active: is_active === 'on',
 	});
 
@@ -615,6 +621,7 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 export async function getAppSettingsPageHandler(req: Request, res: Response) {
 	const { id } = req.params;
 	const app = await db.select('*').from('apps').where({ id }).first();
+
 	return res.render('apps-id-settings.html', {
 		app,
 		layout: '../layouts/app.html',

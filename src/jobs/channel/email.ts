@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 
-import { emailConfig } from '../../config';
 import { EmailNotificationJobData } from '../email.job';
 
 function template(message: string, details: Record<string, any> | null) {
@@ -10,8 +9,24 @@ function template(message: string, details: Record<string, any> | null) {
 	`;
 }
 
-export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
-	const transporter = nodemailer.createTransport(emailConfig);
+export async function sendEmail(
+	data: EmailNotificationJobData,
+	emailConfig: Record<string, any>,
+): Promise<void> {
+	const config =
+		Object.keys(emailConfig).length > 0
+			? emailConfig
+			: {
+					host: data.config.host,
+					port: data.config.port,
+					auth: {
+						user: data.config.auth_email,
+						pass: data.config.auth_pass,
+					},
+				};
+
+	const transporter = nodemailer.createTransport(config);
+
 	try {
 		await transporter.sendMail({
 			from: data.config.alias,

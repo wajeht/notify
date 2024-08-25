@@ -1,3 +1,29 @@
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const messages = [
+      "📱 Notify: One app, all your alerts!",
+      "💬 Discord, 📧 Email, 📲 SMS \n We've got you covered!",
+      "🚀 Boost productivity with real-time notifications!",
+      "🔒 Secure, reliable, and oh-so-Web 2.0!",
+      "🌐 Reach your team wherever they are!"
+    ];
+    let count = 0;
+
+    function showNextToast() {
+      if (count < messages.length) {
+        createToast(messages[count]);
+        count++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }
+
+    showNextToast();
+
+    const intervalId = setInterval(showNextToast, 5000);
+  });
+</script>
+
 <div style="display: flex; flex-direction: column; align-items: center; gap: 100px; padding: 20px; margin: 0 auto;">
   <header
     style="display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: dashed; padding-bottom: 60px; width: 100%;">

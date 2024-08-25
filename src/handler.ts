@@ -118,9 +118,16 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 
 // GET /notifications
 export async function getNotificationsPageHandler(req: Request, res: Response) {
-	const notifications = await db.select('*').from('notifications').orderBy('created_at', 'desc');
+	const perPage = parseInt(req.query.perPage as string) || 10; // Number of items per page
+	const currentPage = parseInt(req.query.page as string) || 1; // Current page number
+
+	const result = await db('notifications')
+		.orderBy('created_at', 'desc')
+		.paginate({ perPage, currentPage, isLengthAware: true });
+
 	return res.render('notifications.html', {
-		notifications,
+		notifications: result.data,
+		pagination: result.pagination,
 		path: '/notifications',
 		layout: '../layouts/auth.html',
 	});

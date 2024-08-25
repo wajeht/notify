@@ -11,14 +11,14 @@
   function copyApiKey() {
     const apiKey = '<%= app.api_key %>';
     navigator.clipboard.writeText(apiKey).then(() => {
-      alert('API key copied to clipboard!');
+      alert('🔑 API key copied to clipboard!');
     });
   }
 
   function copyDemoCode() {
     const demoCode = document.getElementById('demoCode').innerText;
     navigator.clipboard.writeText(demoCode).then(() => {
-      alert('Demo code copied to clipboard!');
+      alert('📋 Demo code copied to clipboard!');
     });
   }
 </script>
@@ -34,7 +34,7 @@
     <div style="display: flex; gap: 20px;">
       <form method="post" action="/apps/<%= app.id %>/notifications/test">
         <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
-        <button class="no-style-btn" type="submit">Run test notification</button>
+        <button class="no-style-btn" type="submit">🚀 Run test notification</button>
       </form>
     </div>
   </div>
@@ -56,39 +56,39 @@
           border-radius: 5px;
           <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
       >
-        <%= app.is_active ? 'Active' : 'Inactive' %>
+        <%= app.is_active ? '🟢 Active' : '🔴 Inactive' %>
       </div>
 
       <% if(app.url) { %>
-        <div><strong>Url:</strong></div>
+        <div><strong>🔗 Url:</strong></div>
         <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer"><%= app.url %></a>
       <% } %>
 
       <% if(app.description) { %>
-        <div><strong>Description:</strong></div>
+        <div><strong>📝 Description:</strong></div>
         <div><%= app.description %></div>
       <% } %>
 
-      <div><strong>Max Alerts Allowed Per Month:</strong></div>
+      <div><strong>📈 Max Alerts Allowed Per Month:</strong></div>
       <div><%= app.max_monthly_alerts_allowed %></div>
 
-      <div><strong>Your Monthly Limit:</strong></div>
+      <div><strong>📊 Your Monthly Limit:</strong></div>
       <div><%= app.user_monthly_limit_threshold ?? 'N/A' %></div>
 
-      <div><strong>Alerts Sent This Month:</strong></div>
+      <div><strong>📧 Alerts Sent This Month:</strong></div>
       <div><%= app.alerts_sent_this_month %></div>
 
-      <div><strong>Alerts Reset Date:</strong></div>
+      <div><strong>⏳ Alerts Reset Date:</strong></div>
       <div><%= new Date(app.alerts_reset_date).toLocaleString() %></div>
 
-      <div><strong>Created:</strong></div>
+      <div><strong>🕒 Created:</strong></div>
       <div><%= new Date(app.created_at).toLocaleString() %></div>
 
-      <div><strong>Updated:</strong></div>
+      <div><strong>🛠️ Updated:</strong></div>
       <div><%= new Date(app.updated_at).toLocaleString() %></div>
 
       <div style="display: flex; gap: 10px; align-items: center;">
-        <a href="/apps/<%= app.id %>/edit">Edit</a>
+        <a href="/apps/<%= app.id %>/edit">✏️ Edit</a>
       </div>
     </div>
 
@@ -96,7 +96,7 @@
       <div>
         <div style="display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 5px;">
-            <strong>API Key</strong>
+            <strong>🔑 API Key</strong>
             <% if (app.api_key_version > 0) { %>
               <small style="color: #bbb;">(v<%= app.api_key_version %>)</small>
             <% } %>
@@ -107,16 +107,16 @@
               <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
               <button type="submit" class="no-style-btn">
                 <% if (app.api_key_version > 0) {  %>
-                  <span> Regenerate </span>
+                  <span>🔄 Regenerate</span>
                 <% } else { %>
-                  <span> Generate </span>
+                  <span>➕ Generate</span>
                 <% } %>
               </button>
             </form>
 
             <% if (app.api_key) { %>
-              <button onclick="viewApiKey()" class="no-style-btn">View</button>
-              <button onclick="copyApiKey()" class="no-style-btn">Copy</button>
+              <button onclick="viewApiKey()" class="no-style-btn">👁️ View</button>
+              <button onclick="copyApiKey()" class="no-style-btn">📋 Copy</button>
             <% } %>
           </div>
         </div>
@@ -130,8 +130,8 @@
 
       <div>
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <strong>Example</strong>
-          <button onclick="copyDemoCode()" class="no-style-btn">Copy</button>
+          <strong>💻 Example</strong>
+          <button onclick="copyDemoCode()" class="no-style-btn">📋 Copy</button>
         </div>
 <pre id="demoCode"><span style="color: rgb(215, 58, 73); font-weight: 400;">await</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">fetch</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'https://notify.jaw.dev'</span>, {
   <span style="color: rgb(0, 92, 197); font-weight: 400;">method</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'POST'</span>,
@@ -142,12 +142,9 @@
   <span style="color: rgb(0, 92, 197); font-weight: 400;">body</span>: <span style="color: rgb(111, 66, 193); font-weight: 400;">JSON</span>.<span style="color: rgb(111, 66, 193); font-weight: 400;">stringify</span>({
     <span style="color: rgb(0, 92, 197); font-weight: 400;">appId</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'your_appId_here'</span>,
     <span style="color: rgb(0, 92, 197); font-weight: 400;">message</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'Your message here'</span>,
-    <span style="color: rgb(0, 92, 197); font-weight: 400;">details</span>: {
-      <span style="color: rgb(0, 92, 197); font-weight: 400;">key1</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'value1'</span>,
-      <span style="color: rgb(0, 92, 197); font-weight: 400;">key2</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'value2'</span>
-    }
+    <span style="color: rgb(0, 92, 197); font-weight: 400;">type</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'info'</span>
   })
-});</pre>
+})</pre>
       </div>
     </div>
   </div>

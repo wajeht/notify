@@ -14,7 +14,7 @@
 			<h2>Apps 📱 / <%= app.name %> 🔗</h2>
 
 			<div style="display: grid; grid-template-columns: 15% 85%; flex: 1;">
-				<aside style="display: inline-block; border-right: dashed 2px black; height: 100%;">
+				<aside style="display: inline-block; border-right: dashed; height: 100%;">
 					<div style="display: flex; padding-right: 40px; flex-direction: column; gap: 10px">
 						<a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === `/apps/${app.id}` ? 'bold' : 'normal' %>; <%= path === `/apps/${app.id}` ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>">
 							🛠️ App

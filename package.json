@@ -41,6 +41,7 @@
 	"dependencies": {
 		"axios": "^1.7.4",
 		"bcrypt": "^5.1.1",
+		"bcryptjs": "^2.4.3",
 		"bullmq": "^5.12.1",
 		"compression": "^1.7.4",
 		"connect-flash": "^0.1.1",
@@ -68,6 +69,7 @@
 		"@faker-js/faker": "^8.4.1",
 		"@tailwindcss/typography": "^0.5.14",
 		"@types/bcrypt": "^5.0.2",
+		"@types/bcryptjs": "^2.4.6",
 		"@types/compression": "^1.7.5",
 		"@types/connect-flash": "^0.0.40",
 		"@types/cors": "^2.8.17",

@@ -63,7 +63,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('name').notNullable();
 			table.boolean('is_active').defaultTo(true);
 			table.string('host').notNullable();
-			table.integer('port').notNullable();
+			table.string('port').notNullable();
 			table.string('alias').notNullable();
 			table.string('auth_email').notNullable();
 			table.string('auth_pass').notNullable();

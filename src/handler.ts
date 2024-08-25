@@ -150,6 +150,7 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 			),
 		)
 		.from('apps')
+		.where({ user_id: req.session?.user?.id })
 		.orderBy('apps.created_at', 'desc');
 
 	if (filter === 'active') {

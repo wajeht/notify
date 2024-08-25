@@ -1,10 +1,9 @@
 import twilio from 'twilio';
-import { smsConfig } from '../../config';
 import { SmsNotificationJobData } from '../sms.job';
 
-const client = twilio(smsConfig.accountSid, smsConfig.authToken);
-
 export async function sendSms(data: SmsNotificationJobData): Promise<void> {
+	const client = twilio(data.config.account_sid, data.config.auth_token);
+
 	try {
 		const message = await client.messages.create({
 			body: `${data.message}\n\n${JSON.stringify(data.details)}`,

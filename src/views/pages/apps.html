@@ -12,8 +12,14 @@
           <a href="/apps">📱 All</a>
         <% } %>
 
-        <a href="/apps?filter=active">🟢 Active</a>
-        <a href="/apps?filter=inactive">🔴 Inactive</a>
+        <% if (path !== '/apps?filter=inactive') { %>
+          <a href="/apps?filter=inactive">🔴 Inactive</a>
+        <% } %>
+
+        <% if (path !== '/apps?filter=active') { %>
+          <a href="/apps?filter=active">🟢 Active</a>
+        <% } %>
+
       </div>
 
       <a href="/apps/create">➕ Create a new app</a>

@@ -20,7 +20,7 @@ web 2.0 style notification systems for discord, email, and sms
 
 - [x] ~~pagination on jobs page~~
 - [x] pagination on notifications page
-- [ ] pagination on app notifications page
+- [x] pagination on app notifications page
 - [x] pagination on apps page
 - [x] filters on apps page
 - [x] ~~search on apps page~~

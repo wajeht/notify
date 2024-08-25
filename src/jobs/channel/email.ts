@@ -9,7 +9,14 @@ function template(message: string, details: Record<string, any> | null) {
 }
 
 export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
-	const transporter = nodemailer.createTransport(data.config);
+	const transporter = nodemailer.createTransport({
+		host: data.config.host,
+		port: data.config.port,
+		auth: {
+			user: data.config.auth_email,
+			pass: data.config.auth_pass,
+		},
+	});
 
 	try {
 		await transporter.sendMail({

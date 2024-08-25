@@ -4,7 +4,7 @@ import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 import axios, { AxiosError } from 'axios';
 import { HttpError, UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { sendNotificationJob } from './jobs/notification.job';
 import { extractDomain, getGithubOauthToken, getGithubUserEmails, secret } from './utils';
 
@@ -194,7 +194,7 @@ export async function postDeleteAppHandler(req: Request, res: Response) {
 }
 
 // POST /apps/:id
-export async function postAppUpdateHandler(req: Request, res: Response, next: NextFunction) {
+export async function postAppUpdateHandler(req: Request, res: Response) {
 	const { name, url, description, user_monthly_limit_threshold } = req.body;
 
 	const id = parseInt(req.params.id!);

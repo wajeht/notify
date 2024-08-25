@@ -1,4 +1,4 @@
-<header style="flex: 0; display: flex; flex-direction: column; gap: 20px;">
+<header style="flex: 0; display: flex; flex-direction: column; gap: 20px; border-bottom: dashed; padding-bottom: 30px;">
   <div>
     <h1><a href="/apps">🔔 Notify</a></h1>
     <p>Web 2.0 style notification systems for Discord, email, and SMS</p>
@@ -6,8 +6,8 @@
 
   <nav style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 20px;">
-      <a style="font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>; <%= path === '/apps' ? 'text-decoration: underline;' : null %>" href="/apps">📱 Apps</a>
-      <a style="font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'underline' : 'none' %>" href="/notifications">🔔 Notifications</a>
+      <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>; <%= path === '/apps' ? 'text-decoration: underline;' : null %>" href="/apps">📱 Apps</a>
+      <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'underline' : 'none' %>" href="/notifications">🔔 Notifications</a>
     </div>
 
     <details style="position: relative;">

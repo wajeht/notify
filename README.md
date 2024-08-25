@@ -32,6 +32,7 @@ web 2.0 style notification systems for discord, email, and sms
 - [x] marketing page
 - [x] emoji
 - [x] csrf
+- [ ] encrypt all configs
 
 # 📑 Docs
 

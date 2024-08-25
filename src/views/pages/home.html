@@ -1,11 +1,92 @@
-<div
-  style="border-style: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 20px; width: fit-content; margin: 0 auto;">
-  <div>
-    <h1><a href="/">Notify</a></h1>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 20px; margin: 0 auto;">
+  <header style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+    <h1><a href="/" style="text-decoration: none; color: inherit;">🔔 Notify</a></h1>
     <p>web 2.0 style notification systems for discord, email, and sms</p>
-  </div>
+  </header>
 
-  <a href="/oauth/github">Sign in with GitHub</a>
+  <section style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 800px;">
+    <h3>🌟 Why Choose Notify?</h3>
+    <div style="display: flex; justify-content: space-around; width: 100%; flex-wrap: wrap;">
+      <div style="flex: 1 1 200px; padding: 10px; text-align: center;">
+        <h4>🚀 Boost Productivity</h4>
+        <p>Never miss a beat with real-time alerts</p>
+      </div>
+      <div style="flex: 1 1 200px; padding: 10px; text-align: center;">
+        <h4>🔒 Secure & Reliable</h4>
+        <p>Your data is protected with industry-standard encryption</p>
+      </div>
+      <div style="flex: 1 1 200px; padding: 10px; text-align: center;">
+        <h4>🌐 Multi-Channel Support</h4>
+        <p>Reach your team wherever they are</p>
+      </div>
+    </div>
+  </section>
 
-  <p>By signing in, you agree to our <a href="/terms-of-service" class="link">Terms of Service</a></p>
+  <section style="display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; width: 100%;">
+    <div
+      style="border: 2px dashed #000; padding: 20px; display: flex; flex-direction: column; border-radius: 5px; width: 300px;">
+      <h3 style="margin: 0 0 15px 0;">🆓 Free</h3>
+      <p style="font-size: 2em; margin: 0 0 15px 0;">$0<span style="font-size: 0.5em;">/month</span></p>
+      <ul style="flex-grow: 1; padding-left: 20px; margin: 0;">
+        <li>5 apps</li>
+        <li>100 alerts per app/month</li>
+        <li>Monthly reset</li>
+        <li>Basic support</li>
+        <li>Community forums</li>
+      </ul>
+      <p style="margin: 15px 0 0 0; font-style: italic;">Perfect for small teams and personal projects</p>
+      <button style="margin-top: 20px;" onclick="document.getElementById('sign-up-modal').showModal()">🚀 Get Started</button>
+    </div>
+
+    <div
+      style="border: 2px dashed #000; padding: 20px; display: flex; flex-direction: column; border-radius: 5px; width: 300px;">
+      <h3 style="margin: 0 0 15px 0;">🛠️ Custom</h3>
+      <p style="font-size: 2em; margin: 0 0 15px 0;">Self-Hosted</p>
+      <ul style="flex-grow: 1; padding-left: 20px; margin: 0;">
+        <li>Self-host it yourself</li>
+        <li>Open source code</li>
+        <li>Unlimited apps</li>
+        <li>No official support</li>
+        <li>Full customization</li>
+      </ul>
+      <p style="margin: 15px 0 0 0; font-style: italic;">Ideal for developers and enterprises with specific needs</p>
+      <a href="https://github.com/wajeht/notify" target="_blank" rel="noopener noreferrer"
+        style="text-decoration: none;">
+        <button style="margin-top: 20px; width: 100%;">👨‍💻 View on GitHub</button>
+      </a>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 600px; gap: 10px;">
+    <h3>🎉 Join thousands of satisfied users</h3>
+    <div style="width: 100%; padding: 20px; border: 2px dashed #000; border-radius: 5px;">
+      <p style="font-style: italic; margin-bottom: 10px;">
+        "I created Notify to scratch my own itch, and it turned out to be a game-changer. It's the notification system I
+        always wished existed - simple, powerful, and infinitely customizable. Now, I can't imagine running my projects
+        without it."
+      </p>
+      <p>
+        - wajeht, Creator of Notify 👨‍🚀
+      </p>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px;">
+    <h3>🚀 Ready to streamline your notifications?</h3>
+    <button style="width: 256px;" onclick="document.getElementById('sign-up-modal').showModal()">🎯 Get Started</button>
+  </section>
 </div>
+
+<dialog id="sign-up-modal">
+  <div style="display: flex; flex-direction: column; gap: 20px; padding: 10px;">
+    <h3 style="margin: 0;">🔐 Login</h3>
+    <p>Login to get started with Notify.</p>
+    <a href="/login" style="text-decoration: none;">
+      <button style="width: 100%;">🐙 Login with GitHub</button>
+    </a>
+    <p>By logging in, you agree to our <a href="/terms-of-service">📜 Terms of Service</a></p>
+    <div style="display: flex; justify-content: flex-end;">
+      <button onclick="document.getElementById('sign-up-modal').close()">❌ Cancel</button>
+    </div>
+  </div>
+</dialog>

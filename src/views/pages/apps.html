@@ -7,20 +7,22 @@
     </div>
 
     <div style="display: flex; gap: 40px; align-items: center;">
-      <div style="display: flex; gap: 20px; align-items: center;">
-        <% if (path !== '/apps') { %>
-          <a href="/apps">📱 All</a>
-        <% } %>
 
-        <% if (path !== '/apps?filter=inactive') { %>
-          <a href="/apps?filter=inactive">🔴 Inactive</a>
-        <% } %>
+      <% if (apps.length) { %>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <% if (path !== '/apps') { %>
+            <a href="/apps">📱 All</a>
+          <% } %>
 
-        <% if (path !== '/apps?filter=active') { %>
-          <a href="/apps?filter=active">🟢 Active</a>
-        <% } %>
+          <% if (path !== '/apps?filter=inactive') { %>
+            <a href="/apps?filter=inactive">🔴 Inactive</a>
+          <% } %>
 
-      </div>
+          <% if (path !== '/apps?filter=active') { %>
+            <a href="/apps?filter=active">🟢 Active</a>
+          <% } %>
+        </div>
+      <% } %>
 
       <a href="/apps/create">➕ Create a new app</a>
     </div>

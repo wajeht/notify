@@ -84,7 +84,7 @@
     <div style="display: flex; justify-content: center; gap: 10px; align-items: center; padding: 20px;">
       <% if (pagination.currentPage > 1) { %>
         <a href="<%= path %>?page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
-        <a href="<%= path %>?page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">◀️ Previous</a>
+        <a href="<%= path %>?page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">⬅️ Previous</a>
       <% } %>
 
       <details style="position: relative;">
@@ -99,7 +99,7 @@
       </details>
 
       <% if (pagination.currentPage < pagination.lastPage) { %>
-        <a href="<%= path %>?page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ▶️</a>
+        <a href="<%= path %>?page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
         <a href="<%= path %>?page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
       <% } %>
     </div>

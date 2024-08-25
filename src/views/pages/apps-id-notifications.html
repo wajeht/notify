@@ -5,7 +5,34 @@
       <p>Manage your notifications</p>
     </div>
 
-    <a href="#" style="white-space: nowrap;">✅ Mark all as read</a>
+    <div style="display: flex; align-items: center; gap: 40px; justify-content: center;">
+      <% if (pagination.total > 10) { %>
+        <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+          <% if (pagination.currentPage > 1) { %>
+            <a href="<%= path %>?page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
+            <a href="<%= path %>?page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">◀️ Previous</a>
+          <% } %>
+
+          <details style="position: relative;">
+            <summary>📄 Page <%= pagination.currentPage %></summary>
+            <div style="position: absolute; padding: 10px; width: max-content; display: flex; flex-direction: column; background-color: white; border: dashed; border-radius: 5px;">
+              <% for (let i = 1; i <= pagination.lastPage; i++) { %>
+                <% if (i !== pagination.currentPage) { %>
+                  <a href="<%= path %>?page=<%= i %>&perPage=<%= pagination.perPage %>">Page <%= i %></a>
+                <% } %>
+              <% } %>
+            </div>
+          </details>
+
+          <% if (pagination.currentPage < pagination.lastPage) { %>
+            <a href="<%= path %>?page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ▶️</a>
+            <a href="<%= path %>?page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
+          <% } %>
+        </div>
+      <% } %>
+
+      <a href="#">✅ Mark all as read</a>
+    </div>
   </div>
 
   <% app.notifications.forEach(n => { %>

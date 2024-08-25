@@ -69,6 +69,18 @@
         <div><%= app.description %></div>
       <% } %>
 
+      <div><strong>🕒 Created:</strong></div>
+      <div><%= new Date(app.created_at).toLocaleString() %></div>
+
+      <div><strong>🛠️ Updated:</strong></div>
+      <div><%= new Date(app.updated_at).toLocaleString() %></div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="/apps/<%= app.id %>/edit">✏️ Edit</a>
+      </div>
+    </div>
+
+    <div style="flex: 1; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; height: fit-content; width: 66%;">
       <div><strong>📈 Max Alerts Allowed Per Month:</strong></div>
       <div><%= app.max_monthly_alerts_allowed %></div>
 
@@ -81,16 +93,11 @@
       <div><strong>⏳ Alerts Reset Date:</strong></div>
       <div><%= new Date(app.alerts_reset_date).toLocaleString() %></div>
 
-      <div><strong>🕒 Created:</strong></div>
-      <div><%= new Date(app.created_at).toLocaleString() %></div>
-
-      <div><strong>🛠️ Updated:</strong></div>
-      <div><%= new Date(app.updated_at).toLocaleString() %></div>
-
       <div style="display: flex; gap: 10px; align-items: center;">
         <a href="/apps/<%= app.id %>/edit">✏️ Edit</a>
       </div>
     </div>
+  </div>
 
     <div style="flex: 1; border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px; width: 66%;">
       <div>

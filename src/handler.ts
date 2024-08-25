@@ -581,23 +581,31 @@ export async function getAppSettingsPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id/notifications
 export async function getAppNotificationsPageHandler(req: Request, res: Response) {
-	const app = await db
-		.select(
-			'apps.*',
-			db.raw(
-				"COALESCE(json_agg(notifications.* ORDER BY notifications.created_at DESC) FILTER (WHERE notifications.id IS NOT NULL), '[]') as notifications",
-			),
-		)
-		.from('apps')
-		.leftJoin('notifications', 'apps.id', 'notifications.app_id')
-		.where('apps.id', req.params.id)
-		.groupBy('apps.id')
-		.first();
+	const appId = req.params.id;
+	const perPage = parseInt(req.query.perPage as string) || 10;
+	const currentPage = parseInt(req.query.page as string) || 1;
+
+	const app = await db.select('apps.*').from('apps').where('apps.id', appId).first();
+
+	if (!app) {
+		return res.status(404).send('App not found');
+	}
+
+	const result = await db('notifications')
+		.where('app_id', appId)
+		.orderBy('created_at', 'desc')
+		.paginate({ perPage, currentPage, isLengthAware: true });
+
+	const notifications = {
+		...app,
+		notifications: result.data,
+	};
 
 	return res.render('apps-id-notifications.html', {
-		app,
+		app: notifications,
+		pagination: result.pagination,
 		layout: '../layouts/app.html',
-		path: `/apps/${req.params.id}/notifications`,
+		path: `/apps/${appId}/notifications`,
 	});
 }
 

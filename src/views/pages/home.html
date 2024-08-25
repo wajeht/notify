@@ -2,7 +2,7 @@
   window.addEventListener('DOMContentLoaded', () => {
     const messages = [
       "📱 Notify: One app, all your alerts!",
-      "💬 Discord, 📧 Email, 📲 SMS \n We've got you covered!",
+      "💬 Discord, 📧 Email, 📲 SMS - We've got you covered!",
       "🚀 Boost productivity with real-time notifications!",
       "🔒 Secure, reliable, and oh-so-Web 2.0!",
       "🌐 Reach your team wherever they are!"
@@ -19,8 +19,6 @@
       }
     }
 
-    showNextToast();
-
     const intervalId = setInterval(showNextToast, 5000);
   });
 </script>
@@ -35,17 +33,20 @@
   <section style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 50px;">
     <h2>🌟 Why Choose Notify?</h2>
     <div style="display: flex; justify-content: space-around; width: 100%; flex-wrap: wrap; gap: 100px;">
-      <div style="flex: 1 1 200px; padding: 10px; text-align: center; border: dashed; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
+      <div
+        style="flex: 1 1 200px; padding: 10px; text-align: center; border: dashed; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
         <h4>🚀 Boost Productivity</h4>
         <p>Never miss a beat with real-time alerts</p>
       </div>
 
-      <div style="flex: 1 1 200px; padding: 10px; text-align: center; border: dashed; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
+      <div
+        style="flex: 1 1 200px; padding: 10px; text-align: center; border: dashed; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
         <h4>🔒 Secure & Reliable</h4>
         <p>Your data is protected with industry-standard encryption</p>
       </div>
 
-      <div style="flex: 1 1 200px; padding: 10px; text-align: center; border: dashed; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
+      <div
+        style="flex: 1 1 200px; padding: 10px; text-align: center; border: dashed; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
         <h4>🌐 Multi-Channel Support</h4>
         <p>Reach your team wherever they are</p>
       </div>
@@ -58,7 +59,11 @@
     <div style="display: flex; gap: 100px; flex-wrap: wrap; justify-content: center; width: 100%;">
 
       <div
-        style="border: dashed; padding: 20px; display: flex; flex-direction: column; border-radius: 5px; width: 350px;">
+        style="border: dashed; padding: 20px; display: flex; flex-direction: column; border-radius: 5px; width: 350px; position: relative; overflow: hidden;">
+        <div
+          style="position: absolute; top: 45px; right: -50px; transform: rotate(50deg); background: #ffcc00; text-align: center; width: 200px; line-height: 30px; z-index: 1;">
+          most popular
+        </div>
         <h3 style="margin: 0 0 15px 0;">🆓 Free</h3>
         <p style="font-size: 2em; margin: 0 0 15px 0;">$0<span style="font-size: 0.5em;">/month</span></p>
         <ul style="flex-grow: 1; padding-left: 20px; margin: 0;">
@@ -74,7 +79,7 @@
       </div>
 
       <div
-        style="border: dashed;  padding: 20px; display: flex; flex-direction: column; border-radius: 5px; width: 350px;">
+        style="border: dashed; padding: 20px; display: flex; flex-direction: column; border-radius: 5px; width: 350px;">
         <h3 style="margin: 0 0 15px 0;">🛠️ Custom</h3>
         <p style="font-size: 2em; margin: 0 0 15px 0;">Self-Hosted</p>
         <ul style="flex-grow: 1; padding-left: 20px; margin: 0;">
@@ -90,6 +95,7 @@
           <button style="margin-top: 20px; width: 100%;">👨‍💻 View on GitHub</button>
         </a>
       </div>
+
     </div>
   </section>
 
@@ -107,7 +113,8 @@
     </div>
   </section>
 
-  <section style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 50px; padding-bottom: 60px;">
+  <section
+    style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 50px; padding-bottom: 60px;">
     <h2>🚀 Ready to streamline your notifications?</h2>
     <button style="width: 306px;" onclick="document.getElementById('sign-up-modal').showModal()">🎯 Get Started</button>
   </section>

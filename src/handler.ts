@@ -79,7 +79,7 @@ export async function postSettingsAccountHandler(req: Request, res: Response) {
 		.where({ id: userId })
 		.returning('*');
 
-	return res.redirect('/settings/account?toast=updated!');
+	return res.redirect('/settings/account?toast=🔄 updated!');
 }
 
 // GET /settings/danger-zone
@@ -109,7 +109,7 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 		});
 	}
 
-	return res.redirect('/?toast=deleted');
+	return res.redirect('/?toast=🗑️ deleted');
 }
 
 // GET /notifications
@@ -160,7 +160,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 // POST /apps/:id/delete
 export async function postDeleteAppHandler(req: Request, res: Response) {
 	await db('apps').where({ id: req.params.id }).del();
-	return res.redirect('/apps?toast=deleted');
+	return res.redirect('/apps?toast=🗑️ deleted');
 }
 
 // POST /apps/:id
@@ -180,7 +180,7 @@ export async function postAppUpdateHandler(req: Request, res: Response, next: Ne
 		updated_at: db.fn.now(),
 	});
 
-	return res.redirect(`/apps/${id}?toast=updated`);
+	return res.redirect(`/apps/${id}?toast=🔄 updated`);
 }
 
 // POST /apps/:id/create-api-key
@@ -205,7 +205,7 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 		api_key_created_at: db.fn.now(),
 	});
 
-	return res.redirect(`/apps/${id}?toast=created`);
+	return res.redirect(`/apps/${id}?toast=🎉 created`);
 }
 
 // GET /apps/:id/edit
@@ -227,7 +227,7 @@ export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 
 	await db('app_channels').where({ id: cid }).del();
 
-	return res.redirect(`/apps/${aid}/channels?toast=deleted`);
+	return res.redirect(`/apps/${aid}/channels?toast=🗑️ deleted`);
 }
 
 // POST '/apps/:id/notifications/:nid/delete'
@@ -236,7 +236,7 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 
 	await db('notifications').where({ id: nid }).del();
 
-	return res.redirect(`/apps/${id}/notifications?toast=deleted`);
+	return res.redirect(`/apps/${id}/notifications?toast=🗑️ deleted`);
 }
 
 // POST '/apps/:id/notifications/test
@@ -327,7 +327,7 @@ export async function postUpdateAppChannelSMSHandler(req: Request, res: Response
 			updated_at: db.fn.now(),
 		});
 
-	res.redirect(`/apps/${id}/channels?toast=updated`);
+	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
@@ -344,7 +344,7 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 			updated_at: db.fn.now(),
 		});
 
-	res.redirect(`/apps/${id}/channels?toast=updated`);
+	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/email'
@@ -366,7 +366,7 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 			updated_at: db.fn.now(),
 		});
 
-	res.redirect(`/apps/${id}/channels?toast=updated`);
+	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // GET /apps/:id/channels
@@ -507,7 +507,7 @@ export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Re
 		is_active: is_active === 'on',
 	});
 
-	return res.redirect(`/apps/${id}/channels?toast=created`);
+	return res.redirect(`/apps/${id}/channels?toast=🎉 created`);
 }
 
 // POST /apps/:id/channels/email
@@ -535,7 +535,7 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 		is_active: is_active === 'on',
 	});
 
-	return res.redirect(`/apps/${id}/channels?toast=created`);
+	return res.redirect(`/apps/${id}/channels?toast=🎉 created`);
 }
 
 // GET /apps/:id/settings
@@ -594,7 +594,7 @@ export async function postCreateAppHandler(req: Request, res: Response) {
 		})
 		.returning('*');
 
-	return res.redirect(`/apps/${app.id}?toast=created`);
+	return res.redirect(`/apps/${app.id}?toast=🎉 created`);
 }
 
 // GET /logout

@@ -2,11 +2,11 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h2>Notifications</h2>
+      <h2>🔔 Notifications</h2>
       <p>All notifications</p>
     </div>
 
-    <a href="#">Mark all as read</a>
+    <a href="#">✅ Mark all as read</a>
   </div>
 
   <% notifications.forEach(n => { %>
@@ -14,14 +14,14 @@
 
       <div style="display: flex; align-items: baseline; gap: 20px;">
         <p style="font-weight: bold;">
-          <%= new Date(n.created_at).toLocaleString() %>
+          📅 <%= new Date(n.created_at).toLocaleString() %>
         </p>
 
-        <p><%= n.message %></p>
+        <p>📢 <%= n.message %></p>
       </div>
 
       <details>
-        <summary>Details</summary>
+        <summary>🔽 Details</summary>
         <pre><%= JSON.stringify(n, null, 2) %></pre>
       </details>
     </div>
@@ -29,10 +29,7 @@
 
   <% if (!notifications.length) { %>
     <div style="border-radius: 5px; border: dashed; padding: 20px; width: 32.5%;">
-      <p>There are no notifications currently</p>
+      <p>🚫 There are no notifications currently</p>
     </div>
   <% } %>
-</div>
-
-
 </div>

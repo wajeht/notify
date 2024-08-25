@@ -12,7 +12,7 @@ export const sendSmsNotificationJob = setupJob<SmsNotificationJobData>(
 	'sendSmsNotificationJob',
 	async (job) => {
 		try {
-			await sendSms(job.data);
+			// await sendSms(job.data);
 		} catch (error) {
 			console.error('failed to process sms notification job:', error);
 			// throw error;

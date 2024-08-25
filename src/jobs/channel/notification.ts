@@ -2,6 +2,7 @@ import { db } from '../../db/db';
 import { sendEmailNotificationJob } from '../email.job';
 import { NotificationJobData } from '../notification.job';
 import { sendDiscordNotificationJob } from '../discord.job';
+import { sendSmsNotificationJob } from '../sms.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {
@@ -79,7 +80,7 @@ async function dispatchNotificationJob(
 				await sendEmailNotificationJob({ config, message, details });
 				break;
 			case 'sms':
-				console.log(`dispatching ${channelType} job`, { channelType, config, message, details });
+				await sendSmsNotificationJob({ config, message, details });
 				break;
 			default:
 				throw new Error(`Unsupported channel type: ${channelType}`);

@@ -587,10 +587,6 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 
 	const app = await db.select('apps.*').from('apps').where('apps.id', appId).first();
 
-	if (!app) {
-		return res.status(404).send('App not found');
-	}
-
 	const result = await db('notifications')
 		.where('app_id', appId)
 		.orderBy('created_at', 'desc')

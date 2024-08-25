@@ -13,7 +13,7 @@ function template(message: string, details: Record<string, any> | null) {
 export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 	const transporter = nodemailer.createTransport(emailConfig);
 	try {
-		transporter.sendMail({
+		await transporter.sendMail({
 			from: data.config.alias,
 			to: data.config.auth_email,
 			subject: data.message,

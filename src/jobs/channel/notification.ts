@@ -70,18 +70,28 @@ async function dispatchNotificationJob(
 	message: string,
 	details: any,
 ) {
-	switch (channelType) {
-		case 'discord':
-			await sendDiscordNotificationJob({ config, message, details });
-			break;
-		case 'email':
-			await sendEmailNotificationJob({ config, message, details });
-			break;
-		case 'sms':
-			console.log(`dispatching ${channelType} job`, { channelType, config, message, details });
-			break;
-
-		default:
-			break;
+	try {
+		switch (channelType) {
+			case 'discord':
+				await sendDiscordNotificationJob({ config, message, details });
+				break;
+			case 'email':
+				await sendEmailNotificationJob({ config, message, details });
+				break;
+			case 'sms':
+				console.log(`dispatching ${channelType} job`, { channelType, config, message, details });
+				break;
+			default:
+				throw new Error(`Unsupported channel type: ${channelType}`);
+		}
+	} catch (error) {
+		console.error('Failed to dispatch notification job:', {
+			channelType,
+			config,
+			message,
+			details,
+			error,
+		});
+		// throw error;
 	}
 }

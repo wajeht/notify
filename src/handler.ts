@@ -272,6 +272,7 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 // POST '/apps/:id/notifications/test
 export async function postTestAppNotificationHandler(req: Request, res: Response) {
 	const { id } = req.params;
+	const { message } = req.body;
 
 	const app = await db.select('api_key', 'id', 'is_active').from('apps').where({ id }).first();
 
@@ -288,10 +289,8 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 			extractDomain(req),
 			{
 				appId: app.id,
-				message: 'test notification',
-				details: {
-					hello: 'world',
-				},
+				message,
+				details: null,
 			},
 			{
 				headers: {

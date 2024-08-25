@@ -13,39 +13,30 @@ import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
 export function secret(secretSalt: string = appConfig.secretSalt) {
 	const algorithm = 'aes-256-gcm';
 	const keyLength = 32;
-	const ivLength = 12;
-	const saltLength = 16;
-	const tagLength = 16;
 	const encoding = 'base64url' as const;
 
 	function getKey(): Buffer {
-		const salt = crypto.randomBytes(saltLength);
-		return crypto.scryptSync(secretSalt, salt, keyLength);
+		return crypto.scryptSync(secretSalt, '', keyLength);
 	}
 
 	function encrypt(text: string): string {
-		const iv = crypto.randomBytes(ivLength);
+		const iv = crypto.randomBytes(12);
 		const key = getKey();
-		const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: tagLength });
-
+		const cipher = crypto.createCipheriv(algorithm, key, iv);
 		const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
 		const tag = cipher.getAuthTag();
-
 		return Buffer.concat([iv, tag, encrypted]).toString(encoding);
 	}
 
 	function decrypt(encryptedText: string): string {
 		const buffer = Buffer.from(encryptedText, encoding);
-		const iv = buffer.subarray(0, ivLength);
-		const tag = buffer.subarray(ivLength, ivLength + tagLength);
-		const encrypted = buffer.subarray(ivLength + tagLength);
-
+		const iv = buffer.subarray(0, 12);
+		const tag = buffer.subarray(12, 28);
+		const encrypted = buffer.subarray(28);
 		const key = getKey();
-		const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: tagLength });
+		const decipher = crypto.createDecipheriv(algorithm, key, iv);
 		decipher.setAuthTag(tag);
-
 		const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
-
 		return decrypted.toString('utf8');
 	}
 

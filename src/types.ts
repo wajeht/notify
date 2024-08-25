@@ -56,7 +56,7 @@ export type EmailConfig = {
 	name: string;
 	is_active: boolean;
 	host: string;
-	port: number;
+	port: string;
 	alias: string;
 	auth_email: string;
 	auth_pass: string;

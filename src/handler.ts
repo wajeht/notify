@@ -1,6 +1,6 @@
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
-import { ApiKeyPayload } from './types';
+import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 import axios, { AxiosError } from 'axios';
 import { HttpError, UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';
@@ -324,11 +324,35 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 		.where({ 'app_channels.id': cid, 'app_channels.app_id': id })
 		.first();
 
-	const config = await db
+	let config = await db
 		.select('*')
 		.from(`${channel.channel_type_name}_configs`)
 		.where({ id: cfid })
 		.first();
+
+	if (channel.channel_type_name === 'discord') {
+		const webhook_url = secret().decrypt((config as DiscordConfig).webhook_url);
+		config = {
+			...config,
+			webhook_url,
+		} as DiscordConfig;
+	}
+
+	if (channel.channel_type_name === 'email') {
+		const host = secret().decrypt((config as EmailConfig).host);
+		const port = secret().decrypt((config as EmailConfig).port);
+		const alias = secret().decrypt((config as EmailConfig).alias);
+		const auth_email = secret().decrypt((config as EmailConfig).auth_email);
+		const auth_pass = secret().decrypt((config as EmailConfig).auth_pass);
+		config = {
+			...config,
+			host,
+			port,
+			alias,
+			auth_email,
+			auth_pass,
+		} as DiscordConfig;
+	}
 
 	return res.render('apps-id-channels-id-edit.html', {
 		app,
@@ -383,7 +407,14 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 export async function postUpdateAppChannelEmailHandler(req: Request, res: Response) {
 	const { id, cfid } = req.params;
 
-	const { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+	// eslint-disable-next-line prefer-const
+	let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+
+	host = secret().encrypt(host);
+	port = secret().encrypt(port);
+	alias = secret().encrypt(alias);
+	auth_email = secret().encrypt(auth_email);
+	auth_pass = secret().encrypt(auth_pass);
 
 	await db('email_configs')
 		.where({ id: cfid })
@@ -547,7 +578,9 @@ export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Re
 // POST /apps/:id/channels/email
 export async function postCreateAppEmailChannelConfigHandler(req: Request, res: Response) {
 	const { id } = req.params;
-	const { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+
+	// eslint-disable-next-line prefer-const
+	let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
 
 	const channel_type = await db.select('id').from('channel_types').where({ name: 'email' }).first();
 
@@ -558,8 +591,11 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 		})
 		.returning('*');
 
-	const hashedAuthEmail = secret().encrypt(auth_email);
-	const hashedAuthPass = secret().encrypt(auth_pass);
+	host = secret().encrypt(host);
+	port = secret().encrypt(port);
+	alias = secret().encrypt(alias);
+	auth_email = secret().encrypt(auth_email);
+	auth_pass = secret().encrypt(auth_pass);
 
 	await db('email_configs').insert({
 		app_channel_id: app_channel.id,
@@ -567,8 +603,8 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 		host,
 		port,
 		alias,
-		auth_email: hashedAuthEmail,
-		auth_pass: hashedAuthPass,
+		auth_email,
+		auth_pass,
 		is_active: is_active === 'on',
 	});
 

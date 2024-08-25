@@ -11,41 +11,41 @@
         <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="name">Config Name:</label>
-          <input type="text" id="name" name="name" value="<%= config.name %>"  required>
+          <label for="name">📛 Config Name:</label>
+          <input type="text" id="name" name="name" value="<%= config.name %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="host">Email Host:</label>
-          <input type="text" id="host" name="host" value="<%= config.host %>"  required>
+          <label for="host">🏠 Email Host:</label>
+          <input type="text" id="host" name="host" value="<%= config.host %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="port">Email Port:</label>
-          <input type="number" id="port" name="port" value="<%= config.port %>"  required>
+          <label for="port">🔌 Email Port:</label>
+          <input type="number" id="port" name="port" value="<%= config.port %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="alias">Email Alias:</label>
-          <input type="email" id="alias" name="alias" value="<%= config.alias %>"  required>
+          <label for="alias">✉️ Email Alias:</label>
+          <input type="email" id="alias" name="alias" value="<%= config.alias %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="auth_email">Auth Email:</label>
-          <input type="email" id="auth_email" name="auth_email" value="<%= config.auth_email %>"  required>
+          <label for="auth_email">🔑 Auth Email:</label>
+          <input type="email" id="auth_email" name="auth_email" value="<%= config.auth_email %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="auth_pass">Auth Password:</label>
-          <input type="password" id="auth_pass" name="auth_pass" value="<%= config.auth_pass %>"  required>
+          <label for="auth_pass">🔒 Auth Password:</label>
+          <input type="password" id="auth_pass" name="auth_pass" value="<%= config.auth_pass %>" required>
         </div>
 
         <div style="display: flex; align-items: center; gap: 5px;">
-          <label for="is_active_email">Active</label>
-          <input type="checkbox" id="is_active_email"  name="is_active" <%= config.is_active ? 'checked' : '' %>>
+          <label for="is_active_email">✅ Active</label>
+          <input type="checkbox" id="is_active_email" name="is_active" <%= config.is_active ? 'checked' : '' %>>
         </div>
 
-        <button type="submit">Update</button>
+        <button type="submit">🔄 Update</button>
       </form>
     <% } %>
 
@@ -54,21 +54,21 @@
         <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="name">Config Name:</label>
+          <label for="name">📛 Config Name:</label>
           <input type="text" id="name" name="name" value="<%= config.name %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="webhook_url">Webhook URL:</label>
+          <label for="webhook_url">🔗 Webhook URL:</label>
           <input type="url" id="webhook_url" name="webhook_url" value="<%= state.input.webhook_url ?? config.webhook_url %>" required>
         </div>
 
         <div style="display: flex; align-items: center; gap: 5px;">
-          <label for="is_active_discord">Active</label>
-          <input type="checkbox" id="is_active_discord" name="is_active" <%= config.is_active ? 'checked' : '' %> >
+          <label for="is_active_discord">✅ Active</label>
+          <input type="checkbox" id="is_active_discord" name="is_active" <%= config.is_active ? 'checked' : '' %>>
         </div>
 
-        <button type="submit">Update</button>
+        <button type="submit">🔄 Update</button>
       </form>
     <% } %>
 
@@ -77,36 +77,36 @@
         <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="name">Config Name:</label>
+          <label for="name">📛 Config Name:</label>
           <input type="text" id="name" name="name" value="<%= config.name %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="account_sid">Twilio Account SID:</label>
+          <label for="account_sid">🏷️ Twilio Account SID:</label>
           <input type="text" id="account_sid" name="account_sid" value="<%= config.account_sid %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="auth_token">Twilio Auth Token:</label>
+          <label for="auth_token">🔑 Twilio Auth Token:</label>
           <input type="text" id="auth_token" name="auth_token" value="<%= config.auth_token %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="from_phone_number">Twilio From Phone Number:</label>
+          <label for="from_phone_number">📞 Twilio From Phone Number:</label>
           <input type="text" id="from_phone_number" name="from_phone_number" value="<%= config.from_phone_number %>" required>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 5px;">
-          <label for="phone_number">Twilio Phone Number:</label>
+          <label for="phone_number">📞 Twilio Phone Number:</label>
           <input type="text" id="phone_number" name="phone_number" value="<%= config.phone_number %>" required>
         </div>
 
         <div style="display: flex; align-items: center; gap: 5px;">
-          <label for="is_active_sms">Active</label>
-          <input type="checkbox" id="is_active_sms"  name="is_active" <%= config.is_active ? 'checked' : '' %>>
+          <label for="is_active_sms">✅ Active</label>
+          <input type="checkbox" id="is_active_sms" name="is_active" <%= config.is_active ? 'checked' : '' %>>
         </div>
 
-        <button type="submit">Update</button>
+        <button type="submit">🔄 Update</button>
       </form>
     <% } %>
 

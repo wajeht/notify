@@ -246,11 +246,11 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 	const app = await db.select('api_key', 'id', 'is_active').from('apps').where({ id }).first();
 
 	if (app.is_active === false) {
-		return res.redirect(`/apps/${id}?toast=app is not active`);
+		return res.redirect(`/apps/${id}?toast=🚨 app is not active`);
 	}
 
 	if (app.api_key === null) {
-		return res.redirect(`/apps/${id}?toast=please generate an api key first`);
+		return res.redirect(`/apps/${id}?toast=🚨 please generate an api key first`);
 	}
 
 	try {
@@ -276,7 +276,7 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 		return res.redirect(`/apps/${id}?toast=${message}`);
 	}
 
-	return res.redirect(`/apps/${id}?toast=notification queued successfully`);
+	return res.redirect(`/apps/${id}?toast=🎉 notification queued successfully`);
 }
 
 // GET '/apps/:aid/channels/:cid/configs/:cfid/edit'
@@ -480,7 +480,7 @@ export async function postCreateAppDiscordChannelConfigHandler(req: Request, res
 		is_active: is_active === 'on',
 	});
 
-	return res.redirect(`/apps/${id}/channels?created`);
+	return res.redirect(`/apps/${id}/channels?toast=🎉 created`);
 }
 
 // POST /apps/:id/channels/sms

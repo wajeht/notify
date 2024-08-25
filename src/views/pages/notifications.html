@@ -17,11 +17,11 @@
           📅 <%= new Date(n.created_at).toLocaleString() %>
         </p>
 
-        <p>📢 <%= n.message %></p>
+        <p>💬 <%= n.message %></p>
       </div>
 
       <details>
-        <summary>🔽 Details</summary>
+        <summary>🔍 Details</summary>
         <pre><%= JSON.stringify(n, null, 2) %></pre>
       </details>
     </div>

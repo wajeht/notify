@@ -128,25 +128,38 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 
 // GET /apps
 export async function getAppsPageHandler(req: Request, res: Response) {
-	const apps = await db
-		.select(
-			'apps.*',
-			db.raw(
-				'(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id) as channel_count',
-			),
-			db.raw(
-				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
-			),
-		)
-		.from('apps')
-		.orderBy('apps.created_at', 'desc');
+  const filter = req.query.filter as string;
 
-	return res.render('apps.html', {
-		apps,
-		path: '/apps',
-		layout: '../layouts/auth.html',
-	});
+  let query = db
+    .select(
+      'apps.*',
+      db.raw(
+        '(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id) as channel_count'
+      ),
+      db.raw(
+        '(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count'
+      )
+    )
+    .from('apps')
+    .orderBy('apps.created_at', 'desc');
+
+  if (filter === 'active') {
+    query = query.where('apps.is_active', true);
+  } else if (filter === 'inactive') {
+    query = query.where('apps.is_active', false);
+  }
+
+  const apps = await query;
+
+	const path = filter ? `/apps?filter=${filter}` : '/apps';
+
+  return res.render('apps.html', {
+    apps,
+    path,
+    layout: '../layouts/auth.html',
+  });
 }
+
 
 // GET /apps/:id
 export async function getAppPageHandler(req: Request, res: Response) {

@@ -6,7 +6,18 @@
       <p>Your apps 🗂️</p>
     </div>
 
-    <a href="/apps/create">➕ Create a new app</a>
+    <div style="display: flex; gap: 40px; align-items: center;">
+      <div style="display: flex; gap: 20px; align-items: center;">
+        <% if (path !== '/apps') { %>
+          <a href="/apps">📱 All</a>
+        <% } %>
+
+        <a href="/apps?filter=active">🟢 Active</a>
+        <a href="/apps?filter=inactive">🔴 Inactive</a>
+      </div>
+
+      <a href="/apps/create">➕ Create a new app</a>
+    </div>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">

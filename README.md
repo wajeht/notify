@@ -26,7 +26,7 @@ web 2.0 style notification systems for discord, email, and sms
 - [x] ~~search on apps page~~
 - [ ] validations on all routes
 - [ ] rbac on all handlers
-- [ ] search on apps page
+- [x] ~~search on apps page~~
 - [ ] tests
 - [x] post notifications with api auth
 - [x] marketing page

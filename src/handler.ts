@@ -6,7 +6,7 @@ import { HttpError, UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';
 import { NextFunction, Request, Response } from 'express';
 import { sendNotificationJob } from './jobs/notification.job';
-import { extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
+import { extractDomain, getGithubOauthToken, getGithubUserEmails, secret } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -365,10 +365,12 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 	const { id, cfid } = req.params;
 	const { name, is_active, webhook_url } = req.body;
 
+	const hashedWebhookUrl = await secret().hash(webhook_url);
+
 	await db('discord_configs')
 		.where({ id: cfid })
 		.update({
-			webhook_url: webhook_url,
+			webhook_url: hashedWebhookUrl,
 			name,
 			is_active: is_active === 'on',
 			updated_at: db.fn.now(),

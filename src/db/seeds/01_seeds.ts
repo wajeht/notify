@@ -1,5 +1,9 @@
+import dotenv from 'dotenv';
 import { Knex } from 'knex';
 import { faker } from '@faker-js/faker';
+import path from 'node:path';
+
+const env = dotenv.config({ path: path.resolve(path.join(process.cwd(), '..', '..', '.env')) });
 
 export async function seed(knex: Knex): Promise<void> {
 	await knex('notifications').del();
@@ -14,14 +18,14 @@ export async function seed(knex: Knex): Promise<void> {
 	// Seed users
 	const users = [
 		{
-			username: 'admin',
-			email: 'admin@example.com',
+			username: env.parsed?.APP_ADMIN_EMAIL?.split('@')[0],
+			email: env.parsed?.APP_ADMIN_EMAIL,
 			is_admin: true,
 			max_apps_allowed: 999999,
 			created_at: new Date(),
 			updated_at: new Date(),
 		},
-		...Array(4)
+		...Array(2)
 			.fill(null)
 			.map(() => ({
 				username: faker.internet.userName(),
@@ -35,7 +39,7 @@ export async function seed(knex: Knex): Promise<void> {
 	const userIds = await knex('users').insert(users).returning('id');
 
 	// Seed apps
-	const apps = Array(10)
+	const apps = Array(6)
 		.fill(null)
 		.map(() => ({
 			user_id: faker.helpers.arrayElement(userIds).id,
@@ -91,12 +95,12 @@ export async function seed(knex: Knex): Promise<void> {
 	const emailConfigs = emailChannels.map((channel) => ({
 		name: `email-${channel.id}`,
 		app_channel_id: channel.id,
-		host: faker.internet.domainName(),
-		port: faker.number.int({ min: 1, max: 65535 }),
-		alias: faker.internet.userName(),
+		host: 'mailhot',
+		port: 1025,
+		alias: 'noreply@jaw.dev',
 		is_active: faker.datatype.boolean(),
-		auth_email: faker.internet.email(),
-		auth_pass: faker.internet.password(),
+		auth_email: 'noreply@jaw.dev',
+		auth_pass: 'password',
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
 	}));

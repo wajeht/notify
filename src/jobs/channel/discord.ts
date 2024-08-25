@@ -1,4 +1,5 @@
 import { DiscordNotificationJobData } from '../discord.job';
+import { secret } from '../../utils';
 
 type Params = {
 	username: string;
@@ -22,7 +23,7 @@ export async function sendDiscord(data: DiscordNotificationJobData): Promise<voi
 			];
 		}
 
-		const res = await fetch(data.config.webhook_url, {
+		const res = await fetch(secret().decrypt(data.config.webhook_url), {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(params),

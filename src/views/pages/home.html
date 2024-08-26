@@ -21,6 +21,14 @@
 
     const intervalId = setInterval(showNextToast, 5000);
   });
+
+  function showTab(language) {
+    document.querySelectorAll('#express, #laravel, #go').forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    document.getElementById(language).style.display = 'block';
+  }
 </script>
 
 <div style="display: flex; flex-direction: column; align-items: center; gap: 100px; padding: 20px; margin: 0 auto;">
@@ -29,6 +37,64 @@
     <h1><a href="/">🔔 Notify</a></h1>
     <p>web 2.0 style notification systems for discord, email, and sms</p>
   </header>
+
+  <section style="display: flex; flex-direction: column; align-items: center; width: 800px; gap: 50px;">
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 10px; text-align: center;">
+      <h2>⚡️ Notify in a Flash!</h2>
+      <p>Create an app, add some channels, and boom, you're done! Notify can be embedded into any software that can make an HTTP request!</p>
+    </div>
+
+    <div style="flex: 1; border: dashed; border-radius: 5px; width: 100%;">
+      <div style="display: flex; padding: 20px 20px 0px 20px; gap: 20px;">
+        <button onclick="showTab('express')" style="flex: 1;">Express.js</button>
+        <button onclick="showTab('laravel')" style="flex: 1;">Laravel</button>
+      </div>
+
+      <div id="express" style="display: block; padding: 20px; width: 100%;">
+<pre style="padding: 20px;"><span style="color: rgb(215, 58, 73); font-weight: 400;">const</span> express = <span style="color: rgb(227, 98, 9); font-weight: 400;">require</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'express'</span>);
+<span style="color: rgb(215, 58, 73); font-weight: 400;">const</span> app = <span style="color: rgb(111, 66, 193); font-weight: 400;">express</span>();
+
+<span style="color: rgb(106, 115, 125); font-weight: 400;">// at the very last</span>
+app.<span style="color: rgb(111, 66, 193); font-weight: 400;">use</span>(<span style="color: rgb(215, 58, 73); font-weight: 400;">async</span> (err, req, res, next) =&gt; {
+  <span style="color: rgb(215, 58, 73); font-weight: 400;">await</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">fetch</span>(process.<span style="color: rgb(36, 41, 46); font-weight: 400;">env</span>.<span style="color: rgb(36, 41, 46); font-weight: 400;">NOTIFY_URL</span>, {
+    <span style="color: rgb(0, 92, 197); font-weight: 400;">method</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'POST'</span>,
+    <span style="color: rgb(0, 92, 197); font-weight: 400;">headers</span>: {
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>,
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>: process.<span style="color: rgb(36, 41, 46); font-weight: 400;">env</span>.<span style="color: rgb(36, 41, 46); font-weight: 400;">NOTIFY_X_API_KEY</span>,
+    },
+    <span style="color: rgb(0, 92, 197); font-weight: 400;">body</span>: <span style="color: rgb(111, 66, 193); font-weight: 400;">JSON</span>.<span style="color: rgb(111, 66, 193); font-weight: 400;">stringify</span>({
+      <span style="color: rgb(0, 92, 197); font-weight: 400;">appId</span>: process.<span style="color: rgb(36, 41, 46); font-weight: 400;">env</span>.<span style="color: rgb(36, 41, 46); font-weight: 400;">NOTIFY_APP_ID</span>,
+      <span style="color: rgb(0, 92, 197); font-weight: 400;">message</span>: err.<span style="color: rgb(36, 41, 46); font-weight: 400;">message</span>,
+      <span style="color: rgb(0, 92, 197); font-weight: 400;">details</span>: err.<span style="color: rgb(36, 41, 46); font-weight: 400;">stack</span>,
+    }),
+  });
+
+  res.<span style="color: rgb(111, 66, 193); font-weight: 400;">status</span>(<span style="color: rgb(0, 92, 197); font-weight: 400;">500</span>).<span style="color: rgb(111, 66, 193); font-weight: 400;">json</span>({ <span style="color: rgb(0, 92, 197); font-weight: 400;">error</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'An error occurred'</span> });
+});
+
+app.<span style="color: rgb(111, 66, 193); font-weight: 400;">listen</span>(<span style="color: rgb(0, 92, 197); font-weight: 400;">3000</span>, <span style="color: rgb(36, 41, 46); font-weight: 400;">() =&gt;</span> <span style="color: rgb(215, 58, 73); font-weight: 400;">console</span>.<span style="color: rgb(111, 66, 193); font-weight: 400;">log</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'Server running on port 3000'</span>));</pre>
+      </div>
+
+      <div id="laravel" style="display: none; padding: 20px; width: 100%;">
+<pre style="padding: 20px;"><span style="color: rgb(106, 115, 125); font-weight: 400;">// In app/Exceptions/Handler.php</span>
+<span style="color: rgb(215, 58, 73); font-weight: 400;">use</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">Illuminate</span>\<span style="color: rgb(111, 66, 193); font-weight: 400;">Support</span>\<span style="color: rgb(111, 66, 193); font-weight: 400;">Facades</span>\<span style="color: rgb(111, 66, 193); font-weight: 400;">Http</span>;
+
+<span style="color: rgb(215, 58, 73); font-weight: 400;">public</span> <span style="color: rgb(36, 41, 46); font-weight: 400;"><span style="color: rgb(215, 58, 73); font-weight: 400;">function</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">report</span>(<span style="color: rgb(36, 41, 46); font-weight: 400;"><span style="color: rgb(227, 98, 9); font-weight: 400;">Throwable</span> <span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span></span>)
+</span>{
+    <span style="color: rgb(111, 66, 193); font-weight: 400;">Http</span>::<span style="color: rgb(111, 66, 193); font-weight: 400;">withHeaders</span>([
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>,
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span> =&gt; <span style="color: rgb(111, 66, 193); font-weight: 400;">env</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_X_API_KEY'</span>),
+    ])-&gt;<span style="color: rgb(111, 66, 193); font-weight: 400;">post</span>(<span style="color: rgb(111, 66, 193); font-weight: 400;">env</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_URL'</span>), [
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">'appId'</span> =&gt; <span style="color: rgb(111, 66, 193); font-weight: 400;">env</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_APP_ID'</span>),
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">'message'</span> =&gt; <span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span>-&gt;<span style="color: rgb(111, 66, 193); font-weight: 400;">getMessage</span>(),
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">'details'</span> =&gt; <span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span>-&gt;<span style="color: rgb(111, 66, 193); font-weight: 400;">getTraceAsString</span>(),
+    ]);
+
+    <span style="color: rgb(227, 98, 9); font-weight: 400;">parent</span>::<span style="color: rgb(111, 66, 193); font-weight: 400;">report</span>(<span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span>);
+}</pre>
+      </div>
+    </div>
+  </section>
 
   <section style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 50px;">
     <h2>🌟 Why Choose Notify?</h2>
@@ -141,7 +207,7 @@
     </div>
   </section>
 
-  <section style="display: flex; flex-direction: column; align-items: center; width: 100%; width: 800px; gap: 50px;">
+  <section style="display: flex; flex-direction: column; align-items: center; width: 800px; gap: 50px;">
     <h2>🎉 Join thousands of satisfied users</h2>
     <div style="width: 100%; padding: 20px; border: dashed;  border-radius: 5px;">
       <p style="font-style: italic; margin-bottom: 10px;">

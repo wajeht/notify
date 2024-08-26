@@ -207,14 +207,16 @@ export async function postAppUpdateHandler(req: Request, res: Response) {
 
 	const is_active = req.body.is_active === 'on' ? true : false;
 
-	await db('apps').where({ id }).update({
-		is_active,
-		name,
-		user_monthly_limit_threshold,
-		url,
-		description,
-		updated_at: db.fn.now(),
-	});
+	await db('apps')
+		.where({ id })
+		.update({
+			is_active,
+			name,
+			user_monthly_limit_threshold: parseInt(user_monthly_limit_threshold) || null,
+			url,
+			description,
+			updated_at: db.fn.now(),
+		});
 
 	return res.redirect(`/apps/${id}?toast=🔄 updated`);
 }

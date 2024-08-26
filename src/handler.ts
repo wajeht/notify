@@ -39,7 +39,9 @@ export async function postNotificationHandler(req: Request, res: Response) {
 
 	const { appId, message, details } = req.body;
 
-	await sendNotificationJob({ appId, message, details });
+	const userId = req.apiKeyPayload?.userId as unknown as number;
+
+	await sendNotificationJob({ appId, message, details, userId });
 
 	return res.json({
 		message: 'Notification queued successfully',

@@ -6,13 +6,23 @@ import { sendSmsNotificationJob } from '../sms.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {
-		const { appId, message, details } = data;
+		const { appId, userId, message, details } = data;
 
 		const app = await db('apps').where({ id: appId, is_active: true }).first();
 
 		if (!app) {
 			console.log('Cannot find active app. Quitting notification job');
 			return;
+		}
+
+		const user = await db.select('*').from('users').where({ id: userId }).first();
+
+		if (user.is_admin === false) {
+			if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
+				console.log('you have reached month quota. please wait until another another!');
+				// TODO: send an email to user
+				return;
+			}
 		}
 
 		const appChannels = await db('app_channels')
@@ -58,6 +68,10 @@ export async function sendNotification(data: NotificationJobData) {
 			details: details,
 		});
 
+		await db('apps')
+			.update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
+			.where({ id: appId });
+
 		console.log(`notification jobs dispatched for app ${appId}`);
 	} catch (error) {
 		console.error('error in sendNotification:', error);
@@ -74,16 +88,14 @@ async function dispatchNotificationJob(
 	try {
 		switch (channelType) {
 			case 'discord':
-				await sendDiscordNotificationJob({ config, message, details });
-				break;
+				return await sendDiscordNotificationJob({ config, message, details });
 			case 'email':
-				await sendEmailNotificationJob({ config, message, details });
-				break;
+				return await sendEmailNotificationJob({ config, message, details });
 			case 'sms':
-				await sendSmsNotificationJob({ config, message, details });
-				break;
+				return await sendSmsNotificationJob({ config, message, details });
 			default:
-				throw new Error(`Unsupported channel type: ${channelType}`);
+				// Note: dont throw
+				console.log(`Unsupported channel type: ${channelType}`);
 		}
 	} catch (error) {
 		console.error('Failed to dispatch notification job:', {

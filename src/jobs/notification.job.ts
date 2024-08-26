@@ -2,6 +2,7 @@ import { sendNotification } from './channel/notification';
 import { setupJob } from '../utils';
 
 export interface NotificationJobData {
+	userId: number;
 	appId: string;
 	message: string;
 	details: Record<string, unknown>;

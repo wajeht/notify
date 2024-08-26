@@ -350,6 +350,20 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 		} as DiscordConfig;
 	}
 
+	if (channel.channel_type_name === 'sms') {
+		const account_sid = secret().decrypt((config as SmsConfig).account_sid);
+		const auth_token = secret().decrypt((config as SmsConfig).auth_token);
+		const from_phone_number = secret().decrypt((config as SmsConfig).from_phone_number);
+		const phone_number = secret().decrypt((config as SmsConfig).phone_number);
+		config = {
+			...config,
+			account_sid,
+			auth_token,
+			from_phone_number,
+			phone_number,
+		} as SmsConfig;
+	}
+
 	if (channel.channel_type_name === 'email') {
 		const host = secret().decrypt((config as EmailConfig).host);
 		const port = secret().decrypt((config as EmailConfig).port);

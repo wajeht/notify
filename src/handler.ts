@@ -33,6 +33,9 @@ export function getHomePageHandler(req: Request, res: Response) {
 
 // POST /
 export async function postNotificationHandler(req: Request, res: Response) {
+	// NOTE: this route is auth via jwt. we dont have access to req.session.user
+	//       we have access to apiKeyPayload which has appId, userId, and apiKeyVersion
+
 	if (req.get('Content-Type') !== 'application/json') {
 		return res.status(404).json({ message: 'not found' });
 	}

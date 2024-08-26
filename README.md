@@ -35,7 +35,8 @@ web 2.0 style notification systems for discord, email, and sms
 - [ ] adjust styles for mobile
 - [ ] encrypt all configs
 - [x] basic faqs
-- [ ] performance tuning
+- [ ] performance tuning - sql/handlers
+- [ ] infer types from validation to handler - 🤔 maybe use zod?
 
 # 📑 Docs
 

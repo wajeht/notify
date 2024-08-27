@@ -65,7 +65,7 @@ export async function sendNotification(data: NotificationJobData) {
 		await db('notifications').insert({
 			app_id: appId,
 			message: message,
-			details: JSON.stringify(details),
+			details: details,
 		});
 
 		await db('apps')

@@ -153,6 +153,7 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
 		const app = await db('apps')
 			.where({
 				id: decodedApiKeyPayload.appId,
+				user_id: decodedApiKeyPayload.userId,
 				api_key: apiKey,
 				is_active: true,
 				api_key_version: decodedApiKeyPayload.apiKeyVersion,

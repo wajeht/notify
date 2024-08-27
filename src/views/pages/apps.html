@@ -8,16 +8,14 @@
 
     <div style="display: flex; gap: 40px; align-items: center;">
 
-      <% if (apps.length) { %>
+      <% if (apps.length > 0 || path !== '/apps') { %>
         <div style="display: flex; gap: 20px; align-items: center;">
           <% if (path !== '/apps') { %>
             <a href="/apps">📱 All</a>
           <% } %>
-
           <% if (path !== '/apps?filter=inactive') { %>
             <a href="/apps?filter=inactive">🔴 Inactive</a>
           <% } %>
-
           <% if (path !== '/apps?filter=active') { %>
             <a href="/apps?filter=active">🟢 Active</a>
           <% } %>
@@ -74,7 +72,17 @@
 
     <% if (!apps.length) { %>
       <article style="border: dashed; padding: 20px; border-radius: 5px;">
-        <p>🚫 There are no apps currently</p>
+        <% if (path === '/apps') { %>
+          <p>🚫 There are no apps currently</p>
+        <% } %>
+
+        <% if (path === '/apps?filter=inactive') { %>
+          <p>🚫 There are no inactive apps currently</p>
+        <% } %>
+
+        <% if (path === '/apps?filter=active') { %>
+          <p>🚫 There are no active apps currently</p>
+        <% } %>
       </article>
     <% } %>
 

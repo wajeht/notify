@@ -6,7 +6,13 @@ import { sendSmsNotificationJob } from '../sms.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {
-		const { appId, userId, message, details } = data;
+		const { appId, userId, message } = data;
+
+		let details = data.details;
+
+		if (!details || typeof details !== 'object' || Array.isArray(details)) {
+			details = {};
+		}
 
 		const app = await db('apps').where({ id: appId, is_active: true }).first();
 

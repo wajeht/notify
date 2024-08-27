@@ -100,10 +100,18 @@
 
     <div style="flex: 1; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; border: dashed; padding: 20px; border-radius: 5px; height: fit-content; width: 66%;">
       <div><strong>📈 Max Alerts Allowed Per Month:</strong></div>
-      <div><%= app.max_monthly_alerts_allowed %></div>
+      <% if (state.user.is_admin) { %>
+        <div>♾️</div>
+      <% } else { %>
+        <div><%= app.max_monthly_alerts_allowed %></div>
+      <% } %>
 
       <div><strong>📊 Your Monthly Limit:</strong></div>
-      <div><%= app.user_monthly_limit_threshold ?? 'N/A' %></div>
+      <% if (state.user.is_admin) { %>
+        <div>♾️</div>
+      <% } else { %>
+        <div><%= app.user_monthly_limit_threshold ?? 'N/A' %></div>
+      <% } %>
 
       <div><strong>📧 Alerts Sent This Month:</strong></div>
       <div><%= app.alerts_sent_this_month %></div>

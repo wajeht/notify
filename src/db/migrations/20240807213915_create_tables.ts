@@ -112,7 +112,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
 			table.integer('app_id').unsigned().references('id').inTable('apps').onDelete('CASCADE');
 			table.text('message').notNullable();
-			table.jsonb('details').nullable();
+			table.string('details').nullable();
 			table.timestamps(true, true);
 
 			table.index(['app_id', 'created_at']);

@@ -285,7 +285,7 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 // POST '/apps/:id/notifications/test
 export async function postTestAppNotificationHandler(req: Request, res: Response) {
 	const { id } = req.params;
-	const { message } = req.body;
+	const { message, details } = req.body;
 
 	const app = await db.select('api_key', 'id', 'is_active').from('apps').where({ id }).first();
 
@@ -303,7 +303,7 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 			{
 				appId: app.id,
 				message,
-				details: null,
+				details,
 			},
 			{
 				headers: {

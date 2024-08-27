@@ -43,8 +43,13 @@
             <input type="text" id="message" name="message" required>
           </div>
 
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="message">Details:</label>
+            <textarea name="details" id="details"></textarea>
+          </div>
 
           <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
             <button type="submit">🚀 Test</button>
           </div>
         </form>

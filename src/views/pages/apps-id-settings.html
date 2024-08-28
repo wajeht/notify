@@ -33,7 +33,7 @@
         <p>The following actions are destructive and cannot be reversed.</p>
       </div>
 
-      <button onclick="document.getElementById('delete-app-modal').showModal()">🗑️ Delete</button>
+      <button onclick="document.getElementById('delete-app-modal').showModal()">🗑️ Delete <%= app.name %></button>
 
       <dialog id="delete-app-modal">
         <h2>⚠️ Confirm Deletion</h2>

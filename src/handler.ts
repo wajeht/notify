@@ -6,7 +6,13 @@ import { HttpError, UnauthorizedError } from './error';
 import { appConfig, oauthConfig } from './config';
 import { Request, Response } from 'express';
 import { sendNotificationJob } from './jobs/notification.job';
-import { extractDomain, getGithubOauthToken, getGithubUserEmails, secret } from './utils';
+import {
+	extractDomain,
+	formatDate,
+	getGithubOauthToken,
+	getGithubUserEmails,
+	secret,
+} from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -77,16 +83,20 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 
 // POST /settings/account
 export async function postSettingsAccountHandler(req: Request, res: Response) {
-	const { email, username } = req.body;
+	const { email, username, timezone } = req.body;
 	const userId = req.session?.user?.id;
 
 	const [user] = await db('users')
 		.update({
 			email,
 			username,
+			timezone,
 		})
 		.where({ id: userId })
 		.returning('*');
+
+	req.session.user = user;
+	req.session.save();
 
 	return res.redirect('/settings/account?toast=🔄 updated!');
 }
@@ -123,8 +133,9 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 
 // GET /notifications
 export async function getNotificationsPageHandler(req: Request, res: Response) {
-	const perPage = parseInt(req.query.perPage as string) || 10; // Number of items per page
-	const currentPage = parseInt(req.query.page as string) || 1; // Current page number
+	const perPage = parseInt(req.query.perPage as string) || 10;
+	const currentPage = parseInt(req.query.page as string) || 1;
+	const userTimezone = req.session?.user?.timezone;
 
 	const result = await db
 		.select('notifications.*')
@@ -135,8 +146,14 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 		.orderBy('created_at', 'desc')
 		.paginate({ perPage, currentPage, isLengthAware: true });
 
+	const formattedNotifications = result.data.map((notification) => ({
+		...notification,
+		created_at: formatDate(notification.created_at, userTimezone),
+		updated_at: formatDate(notification.updated_at, userTimezone),
+	}));
+
 	return res.render('notifications.html', {
-		notifications: result.data,
+		notifications: formattedNotifications,
 		pagination: result.pagination,
 		path: '/notifications',
 		layout: '../layouts/auth.html',
@@ -769,6 +786,7 @@ export async function getGithubRedirect(req: Request, res: Response) {
 				username: email?.split('@')[0],
 				email,
 				is_admin: appConfig.adminEmail === email,
+				timezone: 'UTC',
 			})
 			.returning('*');
 	}

@@ -44,6 +44,7 @@ export type GitHubOauthToken = {
 export type User = {
 	id: number;
 	username: string;
+	timezone: string;
 	email: string;
 	is_admin: boolean;
 	created_at: string;

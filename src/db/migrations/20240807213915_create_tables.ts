@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.increments('id').primary();
 			table.string('username').unique().notNullable();
 			table.string('email').unique().notNullable();
-			table.string('timezone').defaultTo('UTC');
+			table.string('timezone').defaultTo('UTC').notNullable();
 			table.boolean('is_admin').defaultTo(false);
 			table.integer('max_apps_allowed').defaultTo(5);
 			table.timestamps(true, true);

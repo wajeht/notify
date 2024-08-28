@@ -35,6 +35,22 @@
         <% } %>
       </div>
 
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="timezone">🌐 Timezone:</label>
+
+        <select id="timezone" name="timezone" required>
+          <option value="UTC" <%= (state.input.timezone ?? user.timezone) === 'UTC' ? 'selected' : '' %>>UTC</option>
+          <option value="America/New_York" <%= (state.input.timezone ?? user.timezone) === 'America/New_York' ? 'selected' : '' %>>Eastern Time</option>
+          <option value="America/Chicago" <%= (state.input.timezone ?? user.timezone) === 'America/Chicago' ? 'selected' : '' %>>Central Time</option>
+          <option value="America/Denver" <%= (state.input.timezone ?? user.timezone) === 'America/Denver' ? 'selected' : '' %>>Mountain Time</option>
+          <option value="America/Los_Angeles" <%= (state.input.timezone ?? user.timezone) === 'America/Los_Angeles' ? 'selected' : '' %>>Pacific Time</option>
+        </select>
+
+        <% if (state.errors.timezone) { %>
+          <small style="color: red;"><%= state.errors.timezone %></small>
+        <% } %>
+      </div>
+
       <button type="submit" style="width: 100%;">🔄 Update</button>
     </form>
   </div>

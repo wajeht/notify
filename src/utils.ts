@@ -1,14 +1,24 @@
 import qs from 'qs';
+import dayjs from 'dayjs';
 import axios from 'axios';
 import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
 import { Redis } from 'ioredis';
+import utc from 'dayjs/plugin/utc';
 import { Request } from 'express';
 import { db, redis } from './db/db';
 import { Queue, Worker, Job } from 'bullmq';
+import timezone from 'dayjs/plugin/timezone';
 import { appConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export function formatDate(date: Date, userTimezone: string = 'UTC'): string {
+	return dayjs(date).tz(userTimezone).format('YYYY-MM-DD hh:mm:ss A');
+}
 
 export function secret(secretSalt: string = appConfig.secretSalt) {
 	const algorithm = 'aes-256-gcm';

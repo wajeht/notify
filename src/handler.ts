@@ -1036,5 +1036,5 @@ export async function getGithubRedirect(req: Request, res: Response) {
 	req.session.user = foundUser;
 	req.session.save();
 
-	res.redirect('/apps');
+	res.redirect(`/apps?toast=${encodeURIComponent(`🙏 welcome back, ${foundUser.username}!`)}`);
 }

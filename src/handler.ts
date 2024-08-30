@@ -1026,6 +1026,11 @@ export async function getGithubRedirect(req: Request, res: Response) {
 				timezone: 'UTC',
 			})
 			.returning('*');
+
+		req.session.user = foundUser;
+		req.session.save();
+
+		return res.redirect(`/apps?toast=${encodeURIComponent('🎉 enjoy notify!')}`);
 	}
 
 	req.session.user = foundUser;

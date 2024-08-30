@@ -1,9 +1,9 @@
 import {
-	extractDomain,
+	secret,
 	formatDate,
+	extractDomain,
 	getGithubOauthToken,
 	getGithubUserEmails,
-	secret,
 } from './utils';
 import { Knex } from 'knex';
 import { db } from './db/db';
@@ -282,6 +282,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 // POST /apps/:id/delete
 export async function postDeleteAppHandler(req: Request, res: Response) {
 	await db('apps').where({ id: req.params.id }).del();
+
 	return res.redirect('/apps?toast=🗑️ deleted');
 }
 
@@ -511,7 +512,7 @@ export async function postUpdateAppChannelSMSHandler(req: Request, res: Response
 			});
 	});
 
-	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
+	return res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
@@ -536,7 +537,7 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 			});
 	});
 
-	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
+	return res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/email'
@@ -571,7 +572,7 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 			});
 	});
 
-	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
+	return res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // GET '/apps/:id/channels/import'
@@ -779,6 +780,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 // GET /apps/:id/channels/create
 export async function getNewAppChannelPageHandler(req: Request, res: Response) {
 	const [app] = await db.select('*').from('apps').where({ id: req.params.id });
+
 	return res.render('apps-id-channels-create.html', {
 		app,
 		layout: '../layouts/app.html',
@@ -1036,5 +1038,7 @@ export async function getGithubRedirect(req: Request, res: Response) {
 	req.session.user = foundUser;
 	req.session.save();
 
-	res.redirect(`/apps?toast=${encodeURIComponent(`🙏 welcome back, ${foundUser.username}!`)}`);
+	return res.redirect(
+		`/apps?toast=${encodeURIComponent(`🙏 welcome back, ${foundUser.username}!`)}`,
+	);
 }

@@ -2,21 +2,20 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h2>Apps 📱</h2>
+      <h2>Apps 📱 (<%= pagination.total %>)</h2>
       <p>Your apps 🗂️</p>
     </div>
 
-    <div style="display: flex; gap: 40px; align-items: center;">
-
-      <% if (apps.length > 0 || path !== '/apps') { %>
+    <div style="display: flex; align-items: center; gap: 40px; justify-content: center;">
+      <% if (pagination.total > 0 || filter) { %>
         <div style="display: flex; gap: 20px; align-items: center;">
-          <% if (path !== '/apps') { %>
+          <% if (filter) { %>
             <a href="/apps">📱 All</a>
           <% } %>
-          <% if (path !== '/apps?filter=inactive') { %>
+          <% if (filter !== 'inactive') { %>
             <a href="/apps?filter=inactive">🔴 Inactive</a>
           <% } %>
-          <% if (path !== '/apps?filter=active') { %>
+          <% if (filter !== 'active') { %>
             <a href="/apps?filter=active">🟢 Active</a>
           <% } %>
         </div>
@@ -28,89 +27,74 @@
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
-    <% if (apps.length) { %>
-      <% apps.forEach(app => { %>
-        <article style="border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px;">
+    <% apps.forEach(app => { %>
+      <article style="border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px;">
+        <div style="display: flex; align-items: center; gap: 10px; justify-content: space-between;">
+          <h3>
+            <a href="/apps/<%= app.id %>"><%= app.name %> 🔗</a>
+          </h3>
+          <span style="
+                display: inline-block;
+                padding: 0px 5px;
+                border-radius: 5px;
+                <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
+          >
+            <%= app.is_active ? '🟢 Active' : '🔴 Inactive' %>
+          </span>
+        </div>
 
-          <div style="display: flex; align-items: center; gap: 10px; justify-content: space-between;">
-            <h3>
-              <a href="/apps/<%= app.id %>"><%= app.name %> 🔗</a>
-            </h3>
-
-            <span style="
-                  display: inline-block;
-                  padding: 0px 5px;
-                  border-radius: 5px;
-                  <%= app.is_active ? 'color: green; border: 1px solid green;': 'color: red; border: 1px solid red;' %>"
-            >
-              <%= app.is_active ? '🟢 Active' : '🔴 Inactive' %>
-            </span>
-
+        <% if (app.description || app.url) { %>
+          <div>
+            <% if (app.url) { %>
+              <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer">🌐 <%= app.url %></a>
+            <% } %>
+            <% if (app.description) { %>
+              <p>📝 <%= app.description %></p>
+            <% } %>
           </div>
+        <% } %>
 
-          <% if (app.description || app.url) { %>
-            <div>
-              <% if (app.url) { %>
-                <a href="<%= app.url %>" target="_blank" rel="noopener noreferrer">🌐 <%= app.url %></a>
-              <% } %>
-
-              <% if (app.description) { %>
-                <p>📝 <%= app.description %></p>
-              <% } %>
-            </div>
-          <% } %>
-
-          <div style="display: flex; gap: 20px; align-items: center;">
-            <a href="/apps/<%= app.id %>/channels" title="active channels">📡 Channels <% if (app.channel_count > 0) { %>(<%= app.channel_count %>) <% } %></a>
-            <span>|</span>
-            <a href="/apps/<%= app.id %>/notifications" title="unread notifications">🔔 Notifications <% if (app.unread_notification_count > 0) { %> (<%= app.unread_notification_count %>) <% } %></a>
-          </div>
-
-        </article>
-      <% }) %>
-    <% } %>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <a href="/apps/<%= app.id %>/channels" title="active channels">📡 Channels <% if (app.channel_count > 0) { %>(<%= app.channel_count %>) <% } %></a>
+          <span>|</span>
+          <a href="/apps/<%= app.id %>/notifications" title="unread notifications">🔔 Notifications <% if (app.unread_notification_count > 0) { %> (<%= app.unread_notification_count %>) <% } %></a>
+        </div>
+      </article>
+    <% }) %>
 
     <% if (!apps.length) { %>
       <article style="border: dashed; padding: 20px; border-radius: 5px;">
-        <% if (path === '/apps') { %>
+        <% if (!filter) { %>
           <p>🚫 There are no apps currently</p>
-        <% } %>
-
-        <% if (path === '/apps?filter=inactive') { %>
+        <% } else if (filter === 'inactive') { %>
           <p>🚫 There are no inactive apps currently</p>
-        <% } %>
-
-        <% if (path === '/apps?filter=active') { %>
+        <% } else if (filter === 'active') { %>
           <p>🚫 There are no active apps currently</p>
         <% } %>
       </article>
     <% } %>
-
   </div>
 
   <% if (pagination.total > 10) { %>
     <div style="display: flex; justify-content: center; gap: 10px; align-items: center; padding: 20px;">
       <% if (pagination.currentPage > 1) { %>
-        <a href="<%= path %>?page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
-        <a href="<%= path %>?page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">⬅️ Previous</a>
+        <a href="<%= path %>&page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
+        <a href="<%= path %>&page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">⬅️ Previous</a>
       <% } %>
-
       <details style="position: relative;">
         <summary>📄 Page <%= pagination.currentPage %></summary>
         <div style="position: absolute; padding: 10px; width: max-content; display: flex; flex-direction: column; background-color: white; border: dashed; border-radius: 5px;">
           <% for (let i = 1; i <= pagination.lastPage; i++) { %>
             <% if (i !== pagination.currentPage) { %>
-              <a href="<%= path %>?page=<%= i %>&perPage=<%= pagination.perPage %>">Page <%= i %></a>
+              <a href="<%= path %>&page=<%= i %>&perPage=<%= pagination.perPage %>">Page <%= i %></a>
             <% } %>
           <% } %>
         </div>
       </details>
-
       <% if (pagination.currentPage < pagination.lastPage) { %>
-        <a href="<%= path %>?page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
-        <a href="<%= path %>?page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
+        <a href="<%= path %>&page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
+        <a href="<%= path %>&page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
       <% } %>
     </div>
   <% } %>
-
 </div>

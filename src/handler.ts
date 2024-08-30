@@ -192,12 +192,21 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 		isLengthAware: true,
 	});
 
-	const path = filter ? `/notifications?filter=${filter}` : '/notifications';
+	const basePath = '/notifications';
+
+	const queryParams = new URLSearchParams();
+
+	if (filter) {
+		queryParams.set('filter', filter);
+	}
+
+	const path = `${basePath}?${queryParams.toString()}`;
 
 	return res.render('notifications.html', {
 		notifications,
 		pagination,
 		path,
+		filter,
 		layout: '../layouts/auth.html',
 	});
 }
@@ -234,10 +243,19 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 		isLengthAware: true,
 	});
 
-	const path = filter ? `/apps?filter=${filter}` : '/apps';
+	const basePath = '/apps';
+
+	const queryParams = new URLSearchParams();
+
+	if (filter) {
+		queryParams.set('filter', filter);
+	}
+
+	const path = `${basePath}?${queryParams.toString()}`;
 
 	return res.render('apps.html', {
 		apps,
+		filter,
 		path,
 		pagination,
 		layout: '../layouts/auth.html',

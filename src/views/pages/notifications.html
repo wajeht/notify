@@ -2,7 +2,7 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h2>🔔 Notifications (<%= pagination.total %>) %></h2>
+      <h2>🔔 Notifications (<%= pagination.total %>)</h2>
       <p>All notifications</p>
     </div>
 
@@ -11,8 +11,8 @@
       <% if (pagination.total > 10) { %>
         <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
           <% if (pagination.currentPage > 1) { %>
-            <a href="<%= path %>?page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
-            <a href="<%= path %>?page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">⬅️ Previous</a>
+            <a href="<%= path %>&page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
+            <a href="<%= path %>&page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">⬅️ Previous</a>
           <% } %>
 
           <details style="position: relative;">
@@ -20,35 +20,35 @@
             <div style="position: absolute; padding: 10px; width: max-content; display: flex; flex-direction: column; background-color: white; border: dashed; border-radius: 5px;">
               <% for (let i = 1; i <= pagination.lastPage; i++) { %>
                 <% if (i !== pagination.currentPage) { %>
-                  <a href="<%= path %>?page=<%= i %>&perPage=<%= pagination.perPage %>">Page <%= i %></a>
+                  <a href="<%= path %>&page=<%= i %>&perPage=<%= pagination.perPage %>">Page <%= i %></a>
                 <% } %>
               <% } %>
             </div>
           </details>
 
           <% if (pagination.currentPage < pagination.lastPage) { %>
-            <a href="<%= path %>?page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
-            <a href="<%= path %>?page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
+            <a href="<%= path %>&page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
+            <a href="<%= path %>&page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
           <% } %>
         </div>
       <% } %>
 
-      <% if (pagination.total > 0 || path !== '/notifications') { %>
+      <% if (pagination.total > 0 || filter) { %>
         <div style="display: flex; gap: 20px; align-items: center;">
-          <% if (path !== '/notifications') { %>
+          <% if (filter) { %>
             <a href="/notifications">📱 All</a>
           <% } %>
-          <% if (path !== '/notifications?filter=unread') { %>
+          <% if (filter !== 'unread') { %>
             <a href="/notifications?filter=unread">🔴 unread</a>
           <% } %>
-          <% if (path !== '/apps?filter=read') { %>
+          <% if (filter !== 'read') { %>
             <a href="/notifications?filter=read">🟢 read</a>
           <% } %>
         </div>
       <% } %>
-
       <a href="#">✅ Mark all as read</a>
     </div>
+
   </div>
 
   <% notifications.forEach(n => { %>
@@ -81,15 +81,11 @@
 
   <% if (!notifications.length) { %>
     <div style="border-radius: 5px; border: dashed; padding: 20px; width: 32.5%;">
-      <% if (path === '/notifications') { %>
+      <% if (!filter) { %>
         <p>🚫 There are no notifications currently</p>
-      <% } %>
-
-      <% if (path === '/notifications?filter=unread') { %>
+      <% } else if (filter === 'unread') { %>
         <p>🚫 There are no unread notifications currently</p>
-      <% } %>
-
-      <% if (path === '/notifications?filter=read') { %>
+      <% } else if (filter === 'read') { %>
         <p>🚫 There are no read notifications currently</p>
       <% } %>
     </div>

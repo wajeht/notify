@@ -134,11 +134,12 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 
 // GET /notifications
 export async function getNotificationsPageHandler(req: Request, res: Response) {
+	const filter = req.query.filter as string;
 	const perPage = parseInt(req.query.perPage as string) || 10;
 	const currentPage = parseInt(req.query.page as string) || 1;
 	const userTimezone = req.session?.user?.timezone;
 
-	const result = await db
+	let query = db
 		.select(
 			'notifications.id',
 			'notifications.app_id',
@@ -177,13 +178,26 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 		.leftJoin('apps', 'apps.id', 'notifications.app_id')
 		.leftJoin('users', 'users.id', 'apps.user_id')
 		.where('users.id', req.session?.user?.id)
-		.orderBy('notifications.created_at', 'desc')
-		.paginate({ perPage, currentPage, isLengthAware: true });
+		.orderBy('notifications.created_at', 'desc');
+
+	if (filter === 'unread') {
+		query = query.whereNull('notifications.read_at');
+	} else if (filter === 'read') {
+		query = query.whereNotNull('notifications.read_at');
+	}
+
+	const { data: notifications, pagination } = await query.paginate({
+		perPage,
+		currentPage: currentPage,
+		isLengthAware: true,
+	});
+
+	const path = filter ? `/notifications?filter=${filter}` : '/notifications';
 
 	return res.render('notifications.html', {
-		notifications: result.data,
-		pagination: result.pagination,
-		path: '/notifications',
+		notifications,
+		pagination,
+		path,
 		layout: '../layouts/auth.html',
 	});
 }

@@ -38,12 +38,18 @@
   <% app.notifications.forEach(n => { %>
     <div style="border-radius: 5px; border: dashed; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
 
-      <div style="display: flex; align-items: baseline; gap: 20px;">
-        <p style="font-weight: bold;">
-          🗓️ <%= new Date(n.created_at).toLocaleString() %>
-        </p>
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+        <div style="display: flex; align-items: baseline; gap: 20px;">
+          <p style="font-weight: bold;">🗓️ <%= new Date(n.created_at).toLocaleString() %></p>
+          <p>💬 <%= n.message %></p>
+        </div>
 
-        <p>💬 <%= n.message %></p>
+        <% if (n.read_at === null) { %>
+          <form method="post" action="/apps/<%= n.app_id %>/notifications/<%= n.id %>/read">
+            <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+            <button class="no-style-btn">Mark as read</button>
+          </form>
+        <% } %>
       </div>
 
       <details>

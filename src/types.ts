@@ -55,7 +55,6 @@ export type EmailConfig = {
 	id: number;
 	app_channel_id: number;
 	name: string;
-	is_active: boolean;
 	host: string;
 	port: string;
 	alias: string;
@@ -69,7 +68,6 @@ export type SmsConfig = {
 	id: number;
 	app_channel_id: number;
 	name: string;
-	is_active: boolean;
 	account_sid: string;
 	auth_token: string;
 	from_phone_number: string;
@@ -82,7 +80,6 @@ export type DiscordConfig = {
 	id: number;
 	app_channel_id: number;
 	name: string;
-	is_active: boolean;
 	webhook_url: string;
 	created_at: string;
 	updated_at: string;

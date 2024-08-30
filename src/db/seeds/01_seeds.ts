@@ -74,6 +74,7 @@ export async function seed(knex: Knex): Promise<void> {
 		channelTypeIds.map((channelType) => ({
 			app_id: app.id,
 			channel_type_id: channelType.id,
+			is_active: faker.datatype.boolean(),
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),
 		})),
@@ -98,7 +99,6 @@ export async function seed(knex: Knex): Promise<void> {
 		host: 'mailhot',
 		port: 1025,
 		alias: 'noreply@jaw.dev',
-		is_active: faker.datatype.boolean(),
 		auth_email: 'noreply@jaw.dev',
 		auth_pass: 'password',
 		created_at: faker.date.past(),
@@ -122,7 +122,6 @@ export async function seed(knex: Knex): Promise<void> {
 		app_channel_id: channel.id,
 		account_sid: faker.string.alphanumeric(34),
 		auth_token: faker.string.alphanumeric(32),
-		is_active: faker.datatype.boolean(),
 		from_phone_number: faker.phone.number(),
 		phone_number: faker.phone.number(),
 		created_at: faker.date.past(),
@@ -145,7 +144,6 @@ export async function seed(knex: Knex): Promise<void> {
 	const discordConfigs = discordChannels.map((channel) => ({
 		name: `discord-${channel.id}`,
 		app_channel_id: channel.id,
-		is_active: faker.datatype.boolean(),
 		webhook_url: faker.internet.url(),
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
@@ -156,16 +154,23 @@ export async function seed(knex: Knex): Promise<void> {
 	// Seed notifications
 	const notifications = Array(50)
 		.fill(null)
-		.map(() => ({
-			id: faker.string.uuid(),
-			app_id: faker.helpers.arrayElement(appIds).id,
-			message: faker.lorem.sentence(),
-			details: JSON.stringify(
-				faker.helpers.objectEntry({ key: faker.word.sample(), value: faker.word.sample() }),
-			),
-			created_at: faker.date.past(),
-			updated_at: faker.date.recent(),
-		}));
+		.map(() => {
+			const createdAt = faker.date.past();
+			const updatedAt = faker.date.between({ from: createdAt, to: new Date() });
+			const isRead = faker.datatype.boolean();
+
+			return {
+				id: faker.string.uuid(),
+				app_id: faker.helpers.arrayElement(appIds).id,
+				message: faker.lorem.sentence(),
+				details: JSON.stringify(
+					faker.helpers.objectEntry({ key: faker.word.sample(), value: faker.word.sample() }),
+				),
+				created_at: createdAt,
+				updated_at: updatedAt,
+				read_at: isRead ? faker.date.between({ from: updatedAt, to: new Date() }) : null,
+			};
+		});
 
 	await knex('notifications').insert(notifications);
 }

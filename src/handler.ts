@@ -138,22 +138,40 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 	const userTimezone = req.session?.user?.timezone;
 
 	const result = await db
-		.select('notifications.*')
+		.select(
+			'notifications.id',
+			'notifications.app_id',
+			'apps.name as app_name',
+			'notifications.message',
+			'notifications.details',
+			db.raw(
+				`
+        to_char(
+          notifications.created_at AT TIME ZONE ?,
+          'MM/DD/YYYY HH12:MI:SS AM'
+        ) as created_at
+      `,
+				[userTimezone],
+			),
+			db.raw(
+				`
+        to_char(
+          notifications.updated_at AT TIME ZONE ?,
+          'MM/DD/YYYY HH12:MI:SS AM'
+        ) as updated_at
+      `,
+				[userTimezone],
+			),
+		)
 		.from('notifications')
 		.leftJoin('apps', 'apps.id', 'notifications.app_id')
 		.leftJoin('users', 'users.id', 'apps.user_id')
 		.where('users.id', req.session?.user?.id)
-		.orderBy('created_at', 'desc')
+		.orderBy('notifications.created_at', 'desc')
 		.paginate({ perPage, currentPage, isLengthAware: true });
 
-	const formattedNotifications = result.data.map((notification) => ({
-		...notification,
-		created_at: formatDate(notification.created_at, userTimezone),
-		updated_at: formatDate(notification.updated_at, userTimezone),
-	}));
-
 	return res.render('notifications.html', {
-		notifications: formattedNotifications,
+		notifications: result.data,
 		pagination: result.pagination,
 		path: '/notifications',
 		layout: '../layouts/auth.html',

@@ -206,9 +206,12 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 export async function getAppPageHandler(req: Request, res: Response) {
 	const [app] = (await db.select('*').from('apps').where({ id: req.params.id })).map((a) => ({
 		...a,
+		alerts_reset_date: formatDate(a.alerts_reset_date, req.session?.user?.timezone),
 		created_at: formatDate(a.created_at, req.session?.user?.timezone),
 		updated_at: formatDate(a.updated_at, req.session?.user?.timezone),
 	}));
+
+	console.log(app);
 	return res.render('apps-id.html', {
 		app,
 		layout: '../layouts/app.html',

@@ -117,7 +117,7 @@
       <div><%= app.alerts_sent_this_month %></div>
 
       <div><strong>⏳ Alerts Reset Date:</strong></div>
-      <div><%= new Date(app.alerts_reset_date).toLocaleString() %></div>
+      <div><%= app.alerts_reset_date %></div>
 
       <div style="display: flex; gap: 10px; align-items: center;">
         <a href="/apps/<%= app.id %>/edit">✏️ Edit</a>

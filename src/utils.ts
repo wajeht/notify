@@ -17,7 +17,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 export function formatDate(date: Date, userTimezone: string = 'UTC'): string {
-	return dayjs(date).tz(userTimezone).format('YYYY-MM-DD hh:mm:ss A');
+	return dayjs(date).tz(userTimezone).format('MM/DD/YYYY hh:mm:ss A');
 }
 
 export function secret(secretSalt: string = appConfig.secretSalt) {

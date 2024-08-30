@@ -574,7 +574,7 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
-export async function getExportAppChannelsHandler(req: Request, res: Response) {
+export async function postExportAppChannelsHandler(req: Request, res: Response) {
 	const appId = req.params.id;
 	const userId = req.session?.user?.id;
 
@@ -623,7 +623,7 @@ export async function getExportAppChannelsHandler(req: Request, res: Response) {
 
 	res.setHeader('Content-Type', 'application/json');
 
-	res.json(configs);
+	return res.send(JSON.stringify(configs, null, 2));
 }
 
 // GET /apps/:id/channels

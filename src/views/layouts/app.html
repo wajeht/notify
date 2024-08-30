@@ -21,10 +21,11 @@
 						</a>
 						<a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= /\/apps\/.*\/channels/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/channels/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/channels">
 							📡 Channels
+							<% if (state.active_channel_count > 0) { %> (<%= state.active_channel_count %>) <% } %>
 						</a>
 						<a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= /\/apps\/.*\/notifications/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/notifications/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/notifications">
 							🔔 Notifications
-							<% if (unread_app_notification_count > 0) { %> (<%= unread_app_notification_count %>) <% } %>
+							<% if (state.unread_app_notification_count > 0) { %> (<%= state.unread_app_notification_count %>) <% } %>
 						</a>
 						<a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= /\/apps\/.*\/settings/.test(path) ? 'bold' : 'normal' %>; <%= /\/apps\/.*\/settings/.test(path) ? 'text-decoration: underline' : null %>" href="/apps/<%= app.id %>/settings">
 							⚙️ Settings

@@ -47,9 +47,10 @@ export async function postNotificationHandler(req: Request, res: Response) {
 		return res.status(404).json({ message: 'not found' });
 	}
 
-	const { appId, message, details } = req.body;
+	const { message, details } = req.body;
 
 	const userId = req.apiKeyPayload?.userId as unknown as number;
+	const appId = req.apiKeyPayload?.appId as unknown as string;
 
 	await sendNotificationJob({ appId, message, details, userId });
 
@@ -396,7 +397,6 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 		await axios.post(
 			extractDomain(req),
 			{
-				appId: app.id,
 				message,
 				details,
 			},

@@ -66,7 +66,6 @@ app.<span style="color: rgb(111, 66, 193); font-weight: 400;">use</span>(<span s
       <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>: process.<span style="color: rgb(36, 41, 46); font-weight: 400;">env</span>.<span style="color: rgb(36, 41, 46); font-weight: 400;">NOTIFY_X_API_KEY</span>,
     },
     <span style="color: rgb(0, 92, 197); font-weight: 400;">body</span>: <span style="color: rgb(111, 66, 193); font-weight: 400;">JSON</span>.<span style="color: rgb(111, 66, 193); font-weight: 400;">stringify</span>({
-      <span style="color: rgb(0, 92, 197); font-weight: 400;">appId</span>: process.<span style="color: rgb(36, 41, 46); font-weight: 400;">env</span>.<span style="color: rgb(36, 41, 46); font-weight: 400;">NOTIFY_APP_ID</span>,
       <span style="color: rgb(0, 92, 197); font-weight: 400;">message</span>: err.<span style="color: rgb(36, 41, 46); font-weight: 400;">message</span>,
       <span style="color: rgb(0, 92, 197); font-weight: 400;">details</span>: err.<span style="color: rgb(36, 41, 46); font-weight: 400;">stack</span>,
     }),
@@ -88,7 +87,6 @@ app.<span style="color: rgb(111, 66, 193); font-weight: 400;">listen</span>(<spa
         <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>,
         <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span> =&gt; <span style="color: rgb(111, 66, 193); font-weight: 400;">env</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_X_API_KEY'</span>),
     ])-&gt;<span style="color: rgb(111, 66, 193); font-weight: 400;">post</span>(<span style="color: rgb(111, 66, 193); font-weight: 400;">env</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_URL'</span>), [
-        <span style="color: rgb(3, 47, 98); font-weight: 400;">'appId'</span> =&gt; <span style="color: rgb(111, 66, 193); font-weight: 400;">env</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_APP_ID'</span>),
         <span style="color: rgb(3, 47, 98); font-weight: 400;">'message'</span> =&gt; <span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span>-&gt;<span style="color: rgb(111, 66, 193); font-weight: 400;">getMessage</span>(),
         <span style="color: rgb(3, 47, 98); font-weight: 400;">'details'</span> =&gt; <span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span>-&gt;<span style="color: rgb(111, 66, 193); font-weight: 400;">getTraceAsString</span>(),
     ]);

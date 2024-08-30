@@ -194,7 +194,6 @@
     <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;"><% if (app.api_key) { %><span id="demoApiKeySpan">'••••••••••••••••••••••••••••••••••••••••••••••••'</span><% } else { %>'your_api_key'<% } %></span>
   },
   <span style="color: rgb(0, 92, 197); font-weight: 400;">body</span>: <span style="color: rgb(111, 66, 193); font-weight: 400;">JSON</span>.<span style="color: rgb(111, 66, 193); font-weight: 400;">stringify</span>({
-    <span style="color: rgb(0, 92, 197); font-weight: 400;">appId</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;"><%= app.id %></span>,
     <span style="color: rgb(0, 92, 197); font-weight: 400;">message</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'Your message here'</span>,
     <span style="color: rgb(0, 92, 197); font-weight: 400;">details</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'info'</span>
   })

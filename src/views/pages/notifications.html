@@ -2,11 +2,12 @@
 
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <div>
-      <h2>🔔 Notifications</h2>
+      <h2>🔔 Notifications (<%= pagination.total %>) %></h2>
       <p>All notifications</p>
     </div>
 
     <div style="display: flex; align-items: center; gap: 40px; justify-content: center;">
+
       <% if (pagination.total > 10) { %>
         <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
           <% if (pagination.currentPage > 1) { %>
@@ -28,6 +29,20 @@
           <% if (pagination.currentPage < pagination.lastPage) { %>
             <a href="<%= path %>?page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
             <a href="<%= path %>?page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
+          <% } %>
+        </div>
+      <% } %>
+
+      <% if (pagination.total > 0 || path !== '/notifications') { %>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <% if (path !== '/notifications') { %>
+            <a href="/notifications">📱 All</a>
+          <% } %>
+          <% if (path !== '/notifications?filter=unread') { %>
+            <a href="/notifications?filter=unread">🔴 unread</a>
+          <% } %>
+          <% if (path !== '/apps?filter=read') { %>
+            <a href="/notifications?filter=read">🟢 read</a>
           <% } %>
         </div>
       <% } %>
@@ -66,7 +81,17 @@
 
   <% if (!notifications.length) { %>
     <div style="border-radius: 5px; border: dashed; padding: 20px; width: 32.5%;">
-      <p>🚫 There are no notifications currently</p>
+      <% if (path === '/notifications') { %>
+        <p>🚫 There are no notifications currently</p>
+      <% } %>
+
+      <% if (path === '/notifications?filter=unread') { %>
+        <p>🚫 There are no unread notifications currently</p>
+      <% } %>
+
+      <% if (path === '/notifications?filter=read') { %>
+        <p>🚫 There are no read notifications currently</p>
+      <% } %>
     </div>
   <% } %>
 </div>

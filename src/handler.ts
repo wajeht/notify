@@ -204,10 +204,11 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id
 export async function getAppPageHandler(req: Request, res: Response) {
-	const [app] = await db
-		.select('*')
-		.from('apps')
-		.where({ id: parseInt(req.params.id!) });
+	const [app] = (await db.select('*').from('apps').where({ id: req.params.id })).map((a) => ({
+		...a,
+		created_at: formatDate(a.created_at, req.session?.user?.timezone),
+		updated_at: formatDate(a.updated_at, req.session?.user?.timezone),
+	}));
 	return res.render('apps-id.html', {
 		app,
 		layout: '../layouts/app.html',

@@ -1,11 +1,3 @@
-import { db } from './db/db';
-import jwt from 'jsonwebtoken';
-import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
-import axios, { AxiosError } from 'axios';
-import { HttpError, UnauthorizedError } from './error';
-import { appConfig, oauthConfig } from './config';
-import { Request, Response } from 'express';
-import { sendNotificationJob } from './jobs/notification.job';
 import {
 	extractDomain,
 	formatDate,
@@ -13,6 +5,15 @@ import {
 	getGithubUserEmails,
 	secret,
 } from './utils';
+import { Knex } from 'knex';
+import { db } from './db/db';
+import jwt from 'jsonwebtoken';
+import axios, { AxiosError } from 'axios';
+import { Request, Response } from 'express';
+import { appConfig, oauthConfig } from './config';
+import { HttpError, UnauthorizedError } from './error';
+import { sendNotificationJob } from './jobs/notification.job';
+import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -327,6 +328,21 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 	await db('notifications').where({ id: nid }).del();
 
 	return res.redirect(`/apps/${id}/notifications?toast=🗑️ deleted`);
+}
+
+// POST '/apps/:aid/notifications/:nid/read
+export async function postMarkNotificationAsReadHandler(req: Request, res: Response) {
+	const { aid, nid } = req.params;
+	const uid = req.session?.user?.id;
+
+	await db('notifications')
+		.where('id', nid)
+		.andWhere('app_id', function (query: Knex) {
+			query.select('id').from('apps').where('id', aid).andWhere('user_id', uid);
+		})
+		.update({ read_at: db.fn.now() });
+
+	return res.redirect('back');
 }
 
 // POST '/apps/:id/notifications/test

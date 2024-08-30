@@ -109,7 +109,8 @@ export async function up(knex: Knex): Promise<void> {
 			table.integer('app_id').unsigned().references('id').inTable('apps').onDelete('CASCADE');
 			table.text('message').notNullable();
 			table.text('details').nullable();
-			table.timestamp('read_at').nullable(), table.timestamps(true, true);
+			table.timestamp('read_at').nullable();
+			table.timestamps(true, true);
 
 			table.index(['app_id', 'created_at']);
 		});

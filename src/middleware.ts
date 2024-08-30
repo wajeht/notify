@@ -1,5 +1,5 @@
 import helmet from 'helmet';
-import { redis } from './db/db';
+import { db, redis } from './db/db';
 import { csrfSync } from 'csrf-sync';
 import session from 'express-session';
 import { verifyApiKey } from './utils';
@@ -185,6 +185,18 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 				warning: req.flash('warning'),
 			},
 		};
+
+		if (req.session?.user) {
+			// TODO: potentially cache with redis
+			// @ts-expect-error
+			const { unread_notification_count } = await db('notifications')
+				.count('* as unread_notification_count')
+				.leftJoin('apps', 'notifications.app_id', 'apps.id')
+				.where('apps.user_id', req.session?.user.id)
+				.whereNull('notifications.read_at')
+				.first();
+			res.locals.state['unread_notification_count'] = unread_notification_count;
+		}
 
 		// Clear session input and errors after setting locals
 		// This ensures they're available for the current request only

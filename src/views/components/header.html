@@ -7,7 +7,7 @@
   <nav style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 20px;">
       <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/apps' ? 'bold' : 'normal' %>; <%= path === '/apps' ? 'text-decoration: underline;' : null %>" href="/apps">📱 Apps</a>
-      <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'underline' : 'none' %>" href="/notifications">🔔 Notifications</a>
+      <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/notifications' ? 'bold' : 'normal' %>; text-decoration: <%= path === '/notifications' ? 'underline' : 'none' %>" href="/notifications">🔔 Notifications <% if (state.unread_notification_count > 0) { %>(<%= state.unread_notification_count %>) <% } %></a>
     </div>
 
     <details style="position: relative;">

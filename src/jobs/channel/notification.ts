@@ -28,7 +28,13 @@ export async function sendNotification(data: NotificationJobData) {
 		const appChannels = await db('app_channels')
 			.join('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
 			.where('app_channels.app_id', appId)
+			.andWhere({ 'app_channels.is_active': true })
 			.select('channel_types.name as channel_type', 'app_channels.id as app_channel_id');
+
+		if (!appChannels.length) {
+			console.log('no active channels for app', app.id);
+			return;
+		}
 
 		for (const channel of appChannels) {
 			let configs;
@@ -37,19 +43,16 @@ export async function sendNotification(data: NotificationJobData) {
 				case 'discord':
 					configs = await db('discord_configs').where({
 						app_channel_id: channel.app_channel_id,
-						is_active: true,
 					});
 					break;
 				case 'sms':
 					configs = await db('sms_configs').where({
 						app_channel_id: channel.app_channel_id,
-						is_active: true,
 					});
 					break;
 				case 'email':
 					configs = await db('email_configs').where({
 						app_channel_id: channel.app_channel_id,
-						is_active: true,
 					});
 					break;
 				default:

@@ -49,6 +49,7 @@ export async function up(knex: Knex): Promise<void> {
 				.references('id')
 				.inTable('channel_types')
 				.onDelete('CASCADE');
+			table.boolean('is_active').defaultTo(true);
 			table.timestamps(true, true);
 
 			table.index(['app_id', 'channel_type_id']);
@@ -62,7 +63,6 @@ export async function up(knex: Knex): Promise<void> {
 				.inTable('app_channels')
 				.onDelete('CASCADE');
 			table.string('name').notNullable();
-			table.boolean('is_active').defaultTo(true);
 			table.string('host').notNullable();
 			table.string('port').notNullable();
 			table.string('alias').notNullable();
@@ -70,7 +70,6 @@ export async function up(knex: Knex): Promise<void> {
 			table.string('auth_pass').notNullable();
 			table.timestamps(true, true);
 
-			table.index(['app_channel_id', 'is_active']);
 			table.index('auth_email');
 		})
 		.createTable('sms_configs', (table) => {
@@ -82,14 +81,12 @@ export async function up(knex: Knex): Promise<void> {
 				.inTable('app_channels')
 				.onDelete('CASCADE');
 			table.string('name').notNullable();
-			table.boolean('is_active').defaultTo(true);
 			table.string('account_sid').notNullable();
 			table.string('auth_token').notNullable();
 			table.string('from_phone_number').notNullable();
 			table.string('phone_number').notNullable();
 			table.timestamps(true, true);
 
-			table.index(['app_channel_id', 'is_active']);
 			table.index('account_sid');
 			table.index('phone_number');
 		})
@@ -102,11 +99,9 @@ export async function up(knex: Knex): Promise<void> {
 				.inTable('app_channels')
 				.onDelete('CASCADE');
 			table.string('name').notNullable();
-			table.boolean('is_active').defaultTo(true);
 			table.string('webhook_url').notNullable();
 			table.timestamps(true, true);
 
-			table.index(['app_channel_id', 'is_active']);
 			table.index('webhook_url');
 		})
 		.createTable('notifications', (table) => {
@@ -114,7 +109,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.integer('app_id').unsigned().references('id').inTable('apps').onDelete('CASCADE');
 			table.text('message').notNullable();
 			table.text('details').nullable();
-			table.timestamps(true, true);
+			table.timestamp('read_at').nullable(), table.timestamps(true, true);
 
 			table.index(['app_id', 'created_at']);
 		});

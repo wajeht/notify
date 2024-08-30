@@ -204,6 +204,10 @@ export function errorMiddleware() {
 		res: Response,
 		next: NextFunction,
 	) => {
+		if (appConfig.env !== 'production') {
+			console.log(error);
+		}
+
 		return res.status(error.statusCode || 500).render('error.html', {
 			statusCode: error.statusCode || 500,
 			message: error.message,

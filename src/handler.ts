@@ -147,6 +147,15 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 			db.raw(
 				`
         to_char(
+          notifications.read_at AT TIME ZONE ?,
+          'MM/DD/YYYY HH12:MI:SS AM'
+        ) as read_at
+      `,
+				[userTimezone],
+			),
+			db.raw(
+				`
+        to_char(
           notifications.created_at AT TIME ZONE ?,
           'MM/DD/YYYY HH12:MI:SS AM'
         ) as created_at
@@ -188,7 +197,7 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 		.select(
 			'apps.*',
 			db.raw(
-				'(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id) as channel_count',
+				'(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id AND app_channels.is_active = true ) as channel_count',
 			),
 			db.raw(
 				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
@@ -363,10 +372,7 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 export async function getAppChannelEditPageHandler(req: Request, res: Response) {
 	const { id, cid, cfid } = req.params;
 
-	const [app] = await db
-		.select('*')
-		.from('apps')
-		.where({ id: parseInt(req.params.id!) });
+	const [app] = await db.select('*').from('apps').where({ id });
 
 	const channel = await db('app_channels')
 		.select('app_channels.*', 'channel_types.name as channel_type_name')
@@ -429,7 +435,7 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/sms'
 export async function postUpdateAppChannelSMSHandler(req: Request, res: Response) {
-	const { id, cfid } = req.params;
+	const { id, cfid, cid } = req.params;
 
 	// eslint-disable-next-line prefer-const
 	let { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
@@ -439,43 +445,55 @@ export async function postUpdateAppChannelSMSHandler(req: Request, res: Response
 	from_phone_number = secret().encrypt(from_phone_number);
 	phone_number = secret().encrypt(phone_number);
 
-	await db('sms_configs')
-		.where({ id: cfid })
-		.update({
+	await db.transaction(async (trx) => {
+		await trx('sms_configs').where({ id: cfid }).update({
 			name,
 			account_sid,
 			auth_token,
 			from_phone_number,
 			phone_number,
-			is_active: is_active === 'on',
 			updated_at: db.fn.now(),
 		});
+
+		await trx('app_channels')
+			.where({ id: cid })
+			.update({
+				is_active: is_active === 'on',
+				updated_at: trx.fn.now(),
+			});
+	});
 
 	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
 export async function postUpdateAppChannelDiscordHandler(req: Request, res: Response) {
-	const { id, cfid } = req.params;
+	const { id, cfid, cid } = req.params;
 	const { name, is_active, webhook_url } = req.body;
 
 	const hashedWebhookUrl = secret().encrypt(webhook_url);
 
-	await db('discord_configs')
-		.where({ id: cfid })
-		.update({
+	await db.transaction(async (trx) => {
+		await trx('discord_configs').where({ id: cfid }).update({
 			webhook_url: hashedWebhookUrl,
 			name,
-			is_active: is_active === 'on',
-			updated_at: db.fn.now(),
+			updated_at: trx.fn.now(),
 		});
+
+		await trx('app_channels')
+			.where({ id: cid })
+			.update({
+				is_active: is_active === 'on',
+				updated_at: trx.fn.now(),
+			});
+	});
 
 	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
 // POST '/apps/:aid/channels/:cid/configs/:cfid/email'
 export async function postUpdateAppChannelEmailHandler(req: Request, res: Response) {
-	const { id, cfid } = req.params;
+	const { id, cfid, cid } = req.params;
 
 	// eslint-disable-next-line prefer-const
 	let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
@@ -486,18 +504,24 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 	auth_email = secret().encrypt(auth_email);
 	auth_pass = secret().encrypt(auth_pass);
 
-	await db('email_configs')
-		.where({ id: cfid })
-		.update({
+	await db.transaction(async (trx) => {
+		await trx('email_configs').where({ id: cfid }).update({
 			name,
 			host,
 			port,
 			alias,
 			auth_email,
 			auth_pass,
-			is_active: is_active === 'on',
 			updated_at: db.fn.now(),
 		});
+
+		await trx('app_channels')
+			.where({ id: cid })
+			.update({
+				is_active: is_active === 'on',
+				updated_at: trx.fn.now(),
+			});
+	});
 
 	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
@@ -519,7 +543,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
               json_build_object(
                 'id', email_configs.id,
                 'name', email_configs.name,
-                'is_active', email_configs.is_active,
+                'is_active', app_channels.is_active,
                 'host', email_configs.host,
                 'port', email_configs.port,
                 'alias', email_configs.alias,
@@ -532,7 +556,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
               json_build_object(
                 'id', sms_configs.id,
                 'name', sms_configs.name,
-                'is_active', sms_configs.is_active,
+                'is_active', app_channels.is_active,
                 'account_sid', sms_configs.account_sid,
                 'auth_token', sms_configs.auth_token,
                 'from_phone_number', sms_configs.from_phone_number,
@@ -544,7 +568,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
               json_build_object(
                 'id', discord_configs.id,
                 'name', discord_configs.name,
-                'is_active', discord_configs.is_active,
+                'is_active', app_channels.is_active,
                 'webhook_url', discord_configs.webhook_url,
                 'created_at', discord_configs.created_at,
                 'updated_at', discord_configs.updated_at
@@ -591,10 +615,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id/channels/create
 export async function getNewAppChannelPageHandler(req: Request, res: Response) {
-	const [app] = await db
-		.select('*')
-		.from('apps')
-		.where({ id: parseInt(req.params.id!) });
+	const [app] = await db.select('*').from('apps').where({ id: req.params.id });
 	return res.render('apps-id-channels-create.html', {
 		app,
 		layout: '../layouts/app.html',
@@ -607,26 +628,28 @@ export async function postCreateAppDiscordChannelConfigHandler(req: Request, res
 	const { id } = req.params;
 	const { name, is_active, webhook_url } = req.body;
 
-	const channel_type = await db
-		.select('id')
-		.from('channel_types')
-		.where({ name: 'discord' })
-		.first();
+	await db.transaction(async (trx) => {
+		const channel_type = await trx
+			.select('id')
+			.from('channel_types')
+			.where({ name: 'discord' })
+			.first();
 
-	const [app_channel] = await db('app_channels')
-		.insert({
-			app_id: id,
-			channel_type_id: channel_type.id,
-		})
-		.returning('*');
+		const [app_channel] = await trx('app_channels')
+			.insert({
+				app_id: id,
+				channel_type_id: channel_type.id,
+				is_active: is_active === 'on',
+			})
+			.returning('*');
 
-	const hashedWebhookUrl = secret().encrypt(webhook_url);
+		const hashedWebhookUrl = secret().encrypt(webhook_url);
 
-	await db('discord_configs').insert({
-		app_channel_id: app_channel.id,
-		webhook_url: hashedWebhookUrl,
-		name,
-		is_active: is_active === 'on',
+		await trx('discord_configs').insert({
+			app_channel_id: app_channel.id,
+			webhook_url: hashedWebhookUrl,
+			name,
+		});
 	});
 
 	return res.redirect(`/apps/${id}/channels?toast=🎉 created`);
@@ -637,23 +660,29 @@ export async function postCreateAppSMSChannelConfigHandler(req: Request, res: Re
 	const { id } = req.params;
 	const { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
 
-	const channel_type = await db.select('id').from('channel_types').where({ name: 'sms' }).first();
+	await db.transaction(async (trx) => {
+		const channel_type = await trx
+			.select('id')
+			.from('channel_types')
+			.where({ name: 'sms' })
+			.first();
 
-	const [app_channel] = await db('app_channels')
-		.insert({
-			app_id: id,
-			channel_type_id: channel_type.id,
-		})
-		.returning('*');
+		const [app_channel] = await trx('app_channels')
+			.insert({
+				app_id: id,
+				channel_type_id: channel_type.id,
+				is_active: is_active === 'on',
+			})
+			.returning('*');
 
-	await db('sms_configs').insert({
-		app_channel_id: app_channel.id,
-		name,
-		account_sid: secret().encrypt(account_sid),
-		auth_token: secret().encrypt(auth_token),
-		from_phone_number: secret().encrypt(from_phone_number),
-		phone_number: secret().encrypt(phone_number),
-		is_active: is_active === 'on',
+		await trx('sms_configs').insert({
+			app_channel_id: app_channel.id,
+			name,
+			account_sid: secret().encrypt(account_sid),
+			auth_token: secret().encrypt(auth_token),
+			from_phone_number: secret().encrypt(from_phone_number),
+			phone_number: secret().encrypt(phone_number),
+		});
 	});
 
 	return res.redirect(`/apps/${id}/channels?toast=🎉 created`);
@@ -666,30 +695,36 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 	// eslint-disable-next-line prefer-const
 	let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
 
-	const channel_type = await db.select('id').from('channel_types').where({ name: 'email' }).first();
+	await db.transaction(async (trx) => {
+		const channel_type = await trx
+			.select('id')
+			.from('channel_types')
+			.where({ name: 'email' })
+			.first();
 
-	const [app_channel] = await db('app_channels')
-		.insert({
-			app_id: id,
-			channel_type_id: channel_type.id,
-		})
-		.returning('*');
+		const [app_channel] = await trx('app_channels')
+			.insert({
+				app_id: id,
+				channel_type_id: channel_type.id,
+				is_active: is_active === 'on',
+			})
+			.returning('*');
 
-	host = secret().encrypt(host);
-	port = secret().encrypt(port);
-	alias = secret().encrypt(alias);
-	auth_email = secret().encrypt(auth_email);
-	auth_pass = secret().encrypt(auth_pass);
+		host = secret().encrypt(host);
+		port = secret().encrypt(port);
+		alias = secret().encrypt(alias);
+		auth_email = secret().encrypt(auth_email);
+		auth_pass = secret().encrypt(auth_pass);
 
-	await db('email_configs').insert({
-		app_channel_id: app_channel.id,
-		name,
-		host,
-		port,
-		alias,
-		auth_email,
-		auth_pass,
-		is_active: is_active === 'on',
+		await trx('email_configs').insert({
+			app_channel_id: app_channel.id,
+			name,
+			host,
+			port,
+			alias,
+			auth_email,
+			auth_pass,
+		});
 	});
 
 	return res.redirect(`/apps/${id}/channels?toast=🎉 created`);

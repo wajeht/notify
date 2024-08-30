@@ -61,9 +61,9 @@
           <% } %>
 
           <div style="display: flex; gap: 20px; align-items: center;">
-            <a href="/apps/<%= app.id %>/channels">Channels 📡️ (<%= app.channel_count %>)</a>
+            <a href="/apps/<%= app.id %>/channels" title="active channels">Channels 📡️ (<%= app.channel_count %>)</a>
             <span>|</span>
-            <a href="/apps/<%= app.id %>/notifications">Notifications 🔔 (<%= app.notification_count %>)</a>
+            <a href="/apps/<%= app.id %>/notifications" title="unread notifications">Notifications 🔔 (<%= app.notification_count %>)</a>
           </div>
 
         </article>

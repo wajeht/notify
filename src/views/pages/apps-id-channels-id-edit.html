@@ -42,7 +42,7 @@
 
         <div style="display: flex; align-items: center; gap: 5px;">
           <label for="is_active_email">✅ Active</label>
-          <input type="checkbox" id="is_active_email" name="is_active" <%= config.is_active ? 'checked' : '' %>>
+          <input type="checkbox" id="is_active_email" name="is_active" <%= channel.is_active ? 'checked' : '' %>>
         </div>
 
         <button type="submit">🔄 Update</button>
@@ -65,7 +65,7 @@
 
         <div style="display: flex; align-items: center; gap: 5px;">
           <label for="is_active_discord">✅ Active</label>
-          <input type="checkbox" id="is_active_discord" name="is_active" <%= config.is_active ? 'checked' : '' %>>
+          <input type="checkbox" id="is_active_discord" name="is_active" <%= channel.is_active ? 'checked' : '' %>>
         </div>
 
         <button type="submit">🔄 Update</button>
@@ -103,7 +103,7 @@
 
         <div style="display: flex; align-items: center; gap: 5px;">
           <label for="is_active_sms">✅ Active</label>
-          <input type="checkbox" id="is_active_sms" name="is_active" <%= config.is_active ? 'checked' : '' %>>
+          <input type="checkbox" id="is_active_sms" name="is_active" <%= channel.is_active ? 'checked' : '' %>>
         </div>
 
         <button type="submit">🔄 Update</button>

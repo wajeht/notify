@@ -23,7 +23,7 @@
   });
 
   function showTab(language) {
-    document.querySelectorAll('#express, #laravel, #go').forEach(tab => {
+    document.querySelectorAll('#express, #laravel, #go, #rails, #django').forEach(tab => {
       tab.style.display = 'none';
     });
 
@@ -50,6 +50,9 @@
       <div style="display: flex; padding: 20px 20px 0px 20px; gap: 20px;">
         <button onclick="showTab('express')" style="flex: 1;">Express.js</button>
         <button onclick="showTab('laravel')" style="flex: 1;">Laravel</button>
+        <button onclick="showTab('django')" style="flex: 1;">Django</button>
+        <button onclick="showTab('rails')" style="flex: 1;">Rails</button>
+        <button onclick="showTab('go')" style="flex: 1;">Go</button>
       </div>
 
       <div id="express" style="display: block; padding: 20px; width: 100%;">
@@ -91,6 +94,130 @@ app.<span style="color: rgb(111, 66, 193); font-weight: 400;">listen</span>(<spa
 
     <span style="color: rgb(227, 98, 9); font-weight: 400;">parent</span>::<span style="color: rgb(111, 66, 193); font-weight: 400;">report</span>(<span style="color: rgb(0, 92, 197); font-weight: 400;">$exception</span>);
 }</pre>
+      </div>
+
+      <div id="go" style="display: none; padding: 20px; width: 100%;">
+        <pre style="padding: 20px;"><span style="color: rgb(215, 58, 73); font-weight: 400;">package</span> main
+
+<span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> (
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">"bytes"</span>
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">"encoding/json"</span>
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">"log"</span>
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">"net/http"</span>
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">"os"</span>
+)
+
+<span style="color: rgb(215, 58, 73); font-weight: 400;">func</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">notifyError</span>(err error) {
+    payload := <span style="color: rgb(215, 58, 73); font-weight: 400;">map</span>[<span style="color: rgb(215, 58, 73); font-weight: 400;">string</span>]<span style="color: rgb(215, 58, 73); font-weight: 400;">string</span>{
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">"message"</span>: err.Error(),
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">"details"</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">""</span>, <span style="color: rgb(106, 115, 125); font-weight: 400;">// You might want to add stack trace here</span>
+    }
+
+    jsonPayload, _ := json.Marshal(payload)
+
+    req, _ := http.NewRequest(<span style="color: rgb(3, 47, 98); font-weight: 400;">"POST"</span>, os.Getenv(<span style="color: rgb(3, 47, 98); font-weight: 400;">"NOTIFY_URL"</span>), bytes.NewBuffer(jsonPayload))
+    req.Header.Set(<span style="color: rgb(3, 47, 98); font-weight: 400;">"Content-Type"</span>, <span style="color: rgb(3, 47, 98); font-weight: 400;">"application/json"</span>)
+    req.Header.Set(<span style="color: rgb(3, 47, 98); font-weight: 400;">"X-API-KEY"</span>, os.Getenv(<span style="color: rgb(3, 47, 98); font-weight: 400;">"NOTIFY_X_API_KEY"</span>))
+
+    client := &amp;http.Client{}
+    resp, err := client.Do(req)
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">if</span> err != <span style="color: rgb(0, 92, 197); font-weight: 400;">nil</span> {
+        log.Println(<span style="color: rgb(3, 47, 98); font-weight: 400;">"Error sending notification:"</span>, err)
+    }
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">defer</span> resp.Body.Close()
+}
+
+<span style="color: rgb(215, 58, 73); font-weight: 400;">func</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">main</span>() {
+    <span style="color: rgb(106, 115, 125); font-weight: 400;">// Use notifyError in your error handling</span>
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">if</span> err := someFunction(); err != <span style="color: rgb(0, 92, 197); font-weight: 400;">nil</span> {
+        notifyError(err)
+    }
+}</pre>
+      </div>
+
+      <div id="django" style="display: none; padding: 20px; width: 100%;">
+        <pre style="padding: 20px;"><span style="color: rgb(106, 115, 125); font-weight: 400;"># In your Django project's settings.py</span>
+<span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> os
+
+NOTIFY_URL = os.environ.get(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_URL'</span>)
+NOTIFY_X_API_KEY = os.environ.get(<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_X_API_KEY'</span>)
+
+<span style="color: rgb(106, 115, 125); font-weight: 400;"># In your Django app's middleware.py</span>
+<span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> json
+<span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> traceback
+<span style="color: rgb(215, 58, 73); font-weight: 400;">from</span> django.conf <span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> settings
+<span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> requests
+
+<span style="color: rgb(215, 58, 73); font-weight: 400;">class</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">NotifyMiddleware</span>:
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">def</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">__init__</span>(self, get_response):
+        self.get_response = get_response
+
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">def</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">__call__</span>(self, request):
+        response = self.get_response(request)
+        <span style="color: rgb(215, 58, 73); font-weight: 400;">return</span> response
+
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">def</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">process_exception</span>(self, request, exception):
+        payload = {
+            <span style="color: rgb(3, 47, 98); font-weight: 400;">'message'</span>: <span style="color: rgb(111, 66, 193); font-weight: 400;">str</span>(exception),
+            <span style="color: rgb(3, 47, 98); font-weight: 400;">'details'</span>: traceback.format_exc()
+        }
+
+        headers = {
+            <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>,
+            <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>: settings.NOTIFY_X_API_KEY
+        }
+
+        requests.post(settings.NOTIFY_URL, json=payload, headers=headers)
+
+<span style="color: rgb(106, 115, 125); font-weight: 400;"># In your Django project's settings.py</span>
+MIDDLEWARE = [
+    <span style="color: rgb(106, 115, 125); font-weight: 400;"># ... other middleware classes ...</span>
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">'your_app.middleware.NotifyMiddleware'</span>,
+]</pre>
+      </div>
+
+      <div id="rails" style="display: none; padding: 20px; width: 100%;">
+        <pre style="padding: 20px;"><span style="color: rgb(106, 115, 125); font-weight: 400;"># In config/initializers/notify.rb</span>
+<span style="color: rgb(215, 58, 73); font-weight: 400;">require</span> <span style="color: rgb(3, 47, 98); font-weight: 400;">'net/http'</span>
+<span style="color: rgb(215, 58, 73); font-weight: 400;">require</span> <span style="color: rgb(3, 47, 98); font-weight: 400;">'json'</span>
+
+<span style="color: rgb(215, 58, 73); font-weight: 400;">module</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">Notify</span>
+  <span style="color: rgb(215, 58, 73); font-weight: 400;">class</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">&lt;&lt; self</span>
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">def</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">notify_error</span>(exception)
+      payload = {
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">message:</span> exception.message,
+        <span style="color: rgb(3, 47, 98); font-weight: 400;">details:</span> exception.backtrace.join(<span style="color: rgb(3, 47, 98); font-weight: 400;">"\n"</span>)
+      }
+
+      uri = URI(ENV[<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_URL'</span>])
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = (uri.scheme == <span style="color: rgb(3, 47, 98); font-weight: 400;">'https'</span>)
+
+      request = Net::HTTP::Post.new(uri.path, <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>)
+      request[<span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>] = ENV[<span style="color: rgb(3, 47, 98); font-weight: 400;">'NOTIFY_X_API_KEY'</span>]
+      request.body = payload.to_json
+
+      response = http.request(request)
+      Rails.logger.info(<span style="color: rgb(3, 47, 98); font-weight: 400;">"Notify response: #{response.code} #{response.message}"</span>)
+    <span style="color: rgb(215, 58, 73); font-weight: 400;">end</span>
+  <span style="color: rgb(215, 58, 73); font-weight: 400;">end</span>
+<span style="color: rgb(215, 58, 73); font-weight: 400;">end</span>
+
+<span style="color: rgb(106, 115, 125); font-weight: 400;"># In config/environments/production.rb</span>
+Rails.application.configure <span style="color: rgb(215, 58, 73); font-weight: 400;">do</span>
+  <span style="color: rgb(106, 115, 125); font-weight: 400;"># ... other configuration ...</span>
+
+  config.middleware.use ExceptionNotification::Rack,
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">:email</span> =&gt; {
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">:email_prefix</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">"[ERROR] "</span>,
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">:sender_address</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">%{"notifier" &lt;notifier@example.com&gt;}</span>,
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">:exception_recipients</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">%w{exceptions@example.com}</span>
+    },
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">:notify</span> =&gt; {
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">:base_env</span> =&gt; <span style="color: rgb(3, 47, 98); font-weight: 400;">Rails.env</span>,
+      <span style="color: rgb(3, 47, 98); font-weight: 400;">:callback</span> =&gt; ->(exception, options) { Notify.notify_error(exception) }
+    }
+<span style="color: rgb(215, 58, 73); font-weight: 400;">end</span></pre>
       </div>
     </div>
   </section>

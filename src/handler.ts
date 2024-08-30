@@ -559,8 +559,8 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 			updated_at: formatDate(c.updated_at, req.session?.user?.timezone),
 			config: {
 				...c.config,
-				created_at: formatDate(c.created_at, req.session?.user?.timezone),
-				updated_at: formatDate(c.updated_at, req.session?.user?.timezone),
+				created_at: formatDate(c.config.created_at, req.session?.user?.timezone),
+				updated_at: formatDate(c.config.updated_at, req.session?.user?.timezone),
 			},
 		})),
 	};

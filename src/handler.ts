@@ -201,7 +201,7 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 				'(SELECT COUNT(*) FROM app_channels WHERE app_channels.app_id = apps.id AND app_channels.is_active = true ) as channel_count',
 			),
 			db.raw(
-				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id) as notification_count',
+				'(SELECT COUNT(*) FROM notifications WHERE notifications.app_id = apps.id AND notifications.read_at IS NULL) as unread_notification_count',
 			),
 		)
 		.from('apps')

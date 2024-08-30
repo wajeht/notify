@@ -239,7 +239,17 @@ export async function getAppPageHandler(req: Request, res: Response) {
 		updated_at: formatDate(a.updated_at, req.session?.user?.timezone),
 	}));
 
+	// @ts-expect-error
+	const { unread_app_notification_count } = await db('notifications')
+		.count('* as unread_app_notification_count')
+		.leftJoin('apps', 'notifications.app_id', 'apps.id')
+		.where('apps.user_id', req.session?.user?.id)
+		.andWhere({ 'apps.id': app.id })
+		.whereNull('notifications.read_at')
+		.first();
+
 	return res.render('apps-id.html', {
+		unread_app_notification_count,
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}`,
@@ -622,8 +632,18 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 		})),
 	};
 
+	// @ts-expect-error
+	const { unread_app_notification_count } = await db('notifications')
+		.count('* as unread_app_notification_count')
+		.leftJoin('apps', 'notifications.app_id', 'apps.id')
+		.where('apps.user_id', req.session?.user?.id)
+		.andWhere({ 'apps.id': app.id })
+		.whereNull('notifications.read_at')
+		.first();
+
 	return res.render('apps-id-channels.html', {
 		app,
+		unread_app_notification_count,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}/channels`,
 	});
@@ -751,8 +771,18 @@ export async function getAppSettingsPageHandler(req: Request, res: Response) {
 	const { id } = req.params;
 	const app = await db.select('*').from('apps').where({ id }).first();
 
+	// @ts-expect-error
+	const { unread_app_notification_count } = await db('notifications')
+		.count('* as unread_app_notification_count')
+		.leftJoin('apps', 'notifications.app_id', 'apps.id')
+		.where('apps.user_id', req.session?.user?.id)
+		.andWhere({ 'apps.id': app.id })
+		.whereNull('notifications.read_at')
+		.first();
+
 	return res.render('apps-id-settings.html', {
 		app,
+		unread_app_notification_count,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}/settings`,
 	});
@@ -765,6 +795,15 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 	const currentPage = parseInt(req.query.page as string) || 1;
 
 	const app = await db.select('apps.*').from('apps').where('apps.id', appId).first();
+
+	// @ts-expect-error
+	const { unread_app_notification_count } = await db('notifications')
+		.count('* as unread_app_notification_count')
+		.leftJoin('apps', 'notifications.app_id', 'apps.id')
+		.where('apps.user_id', req.session?.user?.id)
+		.andWhere({ 'apps.id': appId })
+		.whereNull('notifications.read_at')
+		.first();
 
 	const result = await db('notifications')
 		.where('app_id', appId)
@@ -782,6 +821,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 
 	return res.render('apps-id-notifications.html', {
 		app: notifications,
+		unread_app_notification_count,
 		pagination: result.pagination,
 		layout: '../layouts/app.html',
 		path: `/apps/${appId}/notifications`,

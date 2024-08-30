@@ -484,7 +484,7 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
-	const app = await db
+	let app = await db
 		.select(
 			'apps.*',
 			db.raw(`
@@ -547,6 +547,20 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 		.where('apps.id', req.params.id)
 		.groupBy('apps.id')
 		.first();
+
+	app = {
+		...app,
+		channels: app.channels.map((c: any) => ({
+			...c,
+			created_at: formatDate(c.created_at, req.session?.user?.timezone),
+			updated_at: formatDate(c.updated_at, req.session?.user?.timezone),
+			config: {
+				...c.config,
+				created_at: formatDate(c.created_at, req.session?.user?.timezone),
+				updated_at: formatDate(c.updated_at, req.session?.user?.timezone),
+			},
+		})),
+	};
 
 	return res.render('apps-id-channels.html', {
 		app,

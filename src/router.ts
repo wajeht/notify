@@ -12,6 +12,7 @@ import {
 	getHealthzHandler,
 	postNotificationHandler,
 	postExportAppChannelsHandler,
+	getImportAppChannelsPageHandle,
 	getHomePageHandler,
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
@@ -164,6 +165,13 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getAppChannelsPageHandler),
+);
+
+router.get(
+	'/apps/:id/channels/import',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getImportAppChannelsPageHandle),
 );
 
 router.post(

@@ -6,7 +6,10 @@
       <p>Manage your communication channels</p>
     </div>
 
-    <a href="/apps/<%= app.id %>/channels/create" style="white-space: nowrap;">➕ Create a new channel</a>
+    <div style="display: flex; gap: 40px; align-items: center;">
+      <a href="/apps/<%= app.id %>/channels/create" style="white-space: nowrap;">➕ Create a new channel</a>
+      <a href="/apps/<%= app.id %>/channels/import" style="white-space: nowrap;">⬆️ Import configs</a>
+    </div>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">

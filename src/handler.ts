@@ -585,6 +585,57 @@ export async function getImportAppChannelsPageHandle(req: Request, res: Response
 	});
 }
 
+// POST '/apps/:id/channels/import'
+export async function postImportAppChannelsConfigHandle(req: Request, res: Response) {
+	const appId = req.params.id;
+	const userId = req.session?.user?.id;
+	const { config } = req.body;
+
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id: appId })
+		.andWhere({ user_id: userId })
+		.first();
+
+	const channelsToImport = JSON.parse(config);
+
+	await db.transaction(async (trx) => {
+		for (const channel of channelsToImport) {
+			const { channel_type_name, config } = channel;
+
+			const channelType = await trx('channel_types').where({ name: channel_type_name }).first();
+
+			if (!channelType) {
+				throw new Error(`Invalid channel type: ${channel_type_name}`);
+			}
+
+			const [appChannel] = await trx('app_channels')
+				.insert({
+					app_id: appId,
+					channel_type_id: channelType.id,
+				})
+				.returning('*');
+
+			const encryptedConfig = Object.entries(config).reduce((acc, [key, value]) => {
+				if (key !== 'name' && typeof value === 'string') {
+					acc[key] = secret().encrypt(value);
+				} else {
+					acc[key] = value;
+				}
+				return acc;
+			}, {} as any);
+
+			await trx(`${channel_type_name}_configs`).insert({
+				app_channel_id: appChannel.id,
+				...encryptedConfig,
+			});
+		}
+	});
+
+	return res.redirect(`/apps/${app.id}/channels?toast=imported`);
+}
+
 // POST '/apps/:id/channels/export'
 export async function postExportAppChannelsHandler(req: Request, res: Response) {
 	const appId = req.params.id;

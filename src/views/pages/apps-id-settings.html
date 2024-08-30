@@ -18,11 +18,10 @@
         <p>Export all configs for <%= app.name %></p>
       </div>
 
-      <!-- <form action="#" method="POST">
+      <form action="/apps/<%= app.id %>/channels/export" method="POST">
         <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
-        <button type="submit" style="width: 100%;">Export</button>
-      </form> -->
-      <button onclick="alert('Coming soon! 🚀')">⬇️ Export</button>
+        <button type="submit" style="width: 100%;">⬇️ Export</button>
+      </form>
     </div>
 
     <div

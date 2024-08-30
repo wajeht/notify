@@ -11,7 +11,7 @@ import {
 import {
 	getHealthzHandler,
 	postNotificationHandler,
-	getExportAppChannelsHandler,
+	postExportAppChannelsHandler,
 	getHomePageHandler,
 	getTermsOfServicePageHandler,
 	getSettingsPageHandler,
@@ -166,11 +166,11 @@ router.get(
 	catchAsyncErrorMiddleware(getAppChannelsPageHandler),
 );
 
-router.get(
+router.post(
 	'/apps/:id/channels/export',
 	authenticationMiddleware,
 	csrfMiddleware,
-	catchAsyncErrorMiddleware(getExportAppChannelsHandler),
+	catchAsyncErrorMiddleware(postExportAppChannelsHandler),
 );
 
 router.get(

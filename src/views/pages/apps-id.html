@@ -8,6 +8,15 @@
     }
   }
 
+  function viewDemoCodeApiKey() {
+    const demoApiKeySpan = document.getElementById('demoApiKeySpan');
+    if (demoApiKeySpan.textContent === "'••••••••••••••••••••••••••••••••••••••••••••••••'") {
+      demoApiKeySpan.textContent = "'<%= app.api_key %>'";
+    } else {
+      demoApiKeySpan.textContent = "'••••••••••••••••••••••••••••••••••••••••••••••••'";
+    }
+  }
+
   function copyApiKey() {
     const apiKey = '<%= app.api_key %>';
     navigator.clipboard.writeText(apiKey).then(() => {
@@ -16,9 +25,15 @@
   }
 
   function copyDemoCode() {
-    const demoCode = document.getElementById('demoCode').innerText;
+    const apiKey = "'<%= app.api_key %>'";
+    let demoCode = document.getElementById('demoCode').innerText;
+
+    if (apiKey.length)  {
+      demoCode = demoCode.replace("'••••••••••••••••••••••••••••••••••••••••••••••••'", apiKey)
+    }
+
     navigator.clipboard.writeText(demoCode).then(() => {
-      alert('📋 Demo code copied to clipboard!');
+      createToast('copied!')
     });
   }
 </script>
@@ -163,19 +178,25 @@
 
       <div>
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <strong>💻 Example</strong>
-          <button onclick="copyDemoCode()" class="no-style-btn">📋 Copy</button>
+          <strong>💻 Javascript example</strong>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <% if (app.api_key) { %>
+              <button onclick="viewDemoCodeApiKey()" class="no-style-btn">👁️ View</button>
+            <% } %>
+            <button onclick="copyDemoCode()" class="no-style-btn">📋 Copy</button>
+          </div>
         </div>
 <pre id="demoCode"><span style="color: rgb(215, 58, 73); font-weight: 400;">await</span> <span style="color: rgb(111, 66, 193); font-weight: 400;">fetch</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'https://notify.jaw.dev'</span>, {
   <span style="color: rgb(0, 92, 197); font-weight: 400;">method</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'POST'</span>,
   <span style="color: rgb(0, 92, 197); font-weight: 400;">headers</span>: {
     <span style="color: rgb(3, 47, 98); font-weight: 400;">'Content-Type'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'application/json'</span>,
-    <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'your_api_key_here'</span>
+    <span style="color: rgb(3, 47, 98); font-weight: 400;">'X-API-KEY'</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;"><% if (app.api_key) { %><span id="demoApiKeySpan">'••••••••••••••••••••••••••••••••••••••••••••••••'</span><% } else { %>'your_api_key'<% } %></span>
   },
   <span style="color: rgb(0, 92, 197); font-weight: 400;">body</span>: <span style="color: rgb(111, 66, 193); font-weight: 400;">JSON</span>.<span style="color: rgb(111, 66, 193); font-weight: 400;">stringify</span>({
-    <span style="color: rgb(0, 92, 197); font-weight: 400;">appId</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'your_appId_here'</span>,
+    <span style="color: rgb(0, 92, 197); font-weight: 400;">appId</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;"><%= app.id %></span>,
     <span style="color: rgb(0, 92, 197); font-weight: 400;">message</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'Your message here'</span>,
-    <span style="color: rgb(0, 92, 197); font-weight: 400;">type</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'info'</span>
+    <span style="color: rgb(0, 92, 197); font-weight: 400;">details</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'info'</span>
   })
 })</pre>
       </div>

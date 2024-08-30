@@ -229,7 +229,6 @@ export async function getAppPageHandler(req: Request, res: Response) {
 		updated_at: formatDate(a.updated_at, req.session?.user?.timezone),
 	}));
 
-	console.log(app);
 	return res.render('apps-id.html', {
 		app,
 		layout: '../layouts/app.html',

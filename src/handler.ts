@@ -574,6 +574,58 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
+export async function getExportAppChannelsHandler(req: Request, res: Response) {
+	const appId = req.params.id;
+	const userId = req.session?.user?.id;
+
+	const channels = await db
+		.select('channel_types.name as channel_type_name', 'app_channels.id as app_channel_id')
+		.from('app_channels')
+		.leftJoin('channel_types', 'channel_types.id', 'app_channels.channel_type_id')
+		.leftJoin('apps', 'apps.id', 'app_channels.app_id')
+		.where({ app_id: appId, 'apps.user_id': userId });
+
+	const configs = await Promise.all(
+		channels.map(async (channel) => {
+			const { channel_type_name, app_channel_id } = channel;
+			if (['discord', 'sms', 'email'].includes(channel_type_name)) {
+				const config = await db
+					.select('*')
+					.from(`${channel_type_name}_configs`)
+					.where({ app_channel_id })
+					.first();
+
+				if (config) {
+					const { created_at, updated_at, app_channel_id, id, name, ...cleanedConfig } = config;
+
+					const decryptedConfig = Object.entries(cleanedConfig).reduce((acc, [key, value]) => {
+						if (typeof value === 'string') {
+							acc[key] = secret().decrypt(value);
+						} else {
+							acc[key] = value;
+						}
+						return acc;
+					}, {} as any);
+
+					decryptedConfig.name = name;
+					return { channel_type_name, config: decryptedConfig };
+				}
+			}
+			return { channel_type_name, app_channel_id };
+		}),
+	);
+
+	const app = await db.select('name').from('apps').where({ id: appId, user_id: userId }).first();
+
+	const filename = `${app.name.replace(/\s+/g, '-').toLowerCase()}-channels-export.json`;
+
+	res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+	res.setHeader('Content-Type', 'application/json');
+
+	res.json(configs);
+}
+
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	let app = await db

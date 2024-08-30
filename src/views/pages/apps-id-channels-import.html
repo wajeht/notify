@@ -1,0 +1,120 @@
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('importForm');
+    const exampleButton = document.getElementById('exampleButton');
+    const examplePre = document.getElementById('examplePre');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const configInput = document.getElementById('config').value;
+      try {
+        const parsedConfig = JSON.parse(configInput);
+        if (!Array.isArray(parsedConfig)) {
+          throw new Error('Input must be an array of channel configurations');
+        }
+        for (const channel of parsedConfig) {
+          if (!channel.channel_type_name || !channel.config || typeof channel.config !== 'object') {
+            throw new Error('Each channel must have a channel_type_name and a config object');
+          }
+          if (!['email', 'sms', 'discord'].includes(channel.channel_type_name)) {
+            throw new Error(`Invalid channel type: ${channel.channel_type_name}`);
+          }
+          if (!channel.config.name) {
+            throw new Error('Each channel config must have a name');
+          }
+        }
+        this.submit();
+      } catch (error) {
+        createToast(error.message);
+      }
+    });
+
+    exampleButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      examplePre.style.display = examplePre.style.display === 'none' ? 'block' : 'none';
+      exampleButton.textContent = examplePre.style.display === 'none' ? 'Click here to view example' : 'Hide example';
+    });
+  });
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+  <div>
+    <h2>📡 Channels / Import</h2>
+    <p>Channel import</p>
+  </div>
+  <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 66%; display: flex; flex-direction: column; gap: 20px;">
+    <form id="importForm" style="display:flex; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/import" method="POST">
+      <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="example">📋 Example:
+          <button type="button" id="exampleButton" class="no-style-btn">Click here to view example</button>
+        </label>
+        <pre id="examplePre" style="display: none;">
+[
+  {
+    "channel_type_name": "email",
+    "config": {
+      "host": "pijamaf@mailinator.com",
+      "port": "64",
+      "alias": "nydemate@mailinator.com",
+      "auth_email": "xexiweb@mailinator.com",
+      "auth_pass": "Pa$$w0rd!",
+      "name": "Daria Goodman"
+    }
+  },
+  {
+    "channel_type_name": "sms",
+    "config": {
+      "account_sid": "Sunt porro voluptas ",
+      "auth_token": "Vel dolore quia proi",
+      "from_phone_number": "+1 (458) 409-1359",
+      "phone_number": "+1 (114) 541-5952",
+      "name": "Paul Cobb"
+    }
+  },
+  {
+    "channel_type_name": "discord",
+    "config": {
+      "webhook_url": "https://www.bomohewihi.cm",
+      "name": "Noble Glover"
+    }
+  }
+]</pre>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="config">🔧 Config:</label>
+        <textarea name="config" id="config" rows="4" placeholder="Paste your JSON configuration here" rows="20" style="width: 100%; height: 500px;">[
+  {
+    "channel_type_name": "email",
+    "config": {
+      "host": "pijamaf@mailinator.com",
+      "port": "64",
+      "alias": "nydemate@mailinator.com",
+      "auth_email": "xexiweb@mailinator.com",
+      "auth_pass": "Pa$$w0rd!",
+      "name": "Daria Goodman"
+    }
+  },
+  {
+    "channel_type_name": "sms",
+    "config": {
+      "account_sid": "Sunt porro voluptas ",
+      "auth_token": "Vel dolore quia proi",
+      "from_phone_number": "+1 (458) 409-1359",
+      "phone_number": "+1 (114) 541-5952",
+      "name": "Paul Cobb"
+    }
+  },
+  {
+    "channel_type_name": "discord",
+    "config": {
+      "webhook_url": "https://www.bomohewihi.cm",
+      "name": "Noble Glover"
+    }
+  }
+]</textarea>
+      </div>
+      <button type="submit">⬆️ Import</button>
+    </form>
+  </div>
+</div>

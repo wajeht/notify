@@ -574,6 +574,18 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 	res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
+// GET '/apps/:id/channels/import'
+export async function getImportAppChannelsPageHandle(req: Request, res: Response) {
+	const app = await db.select('*').from('apps').where({ id: req.params.id }).first();
+
+	return res.render('apps-id-channels-import.html', {
+		app,
+		layout: '../layouts/app.html',
+		path: `/apps/${app.id}/channels`,
+	});
+}
+
+// POST '/apps/:id/channels/export'
 export async function postExportAppChannelsHandler(req: Request, res: Response) {
 	const appId = req.params.id;
 	const userId = req.session?.user?.id;

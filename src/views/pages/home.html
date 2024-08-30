@@ -53,8 +53,7 @@
       </div>
 
       <div id="express" style="display: block; padding: 20px; width: 100%;">
-        <pre
-          style="padding: 20px;"><span style="color: rgb(215, 58, 73); font-weight: 400;">const</span> express = <span style="color: rgb(227, 98, 9); font-weight: 400;">require</span>(<span style="color: rgb(3, 47, 98); font-weight: 400;">'express'</span>);
+        <pre><span style="color: rgb(215, 58, 73); font-weight: 400;">import</span> express <span style="color: rgb(215, 58, 73); font-weight: 400;">from</span> <span style="color: rgb(3, 47, 98); font-weight: 400;">'express'</span>;
 <span style="color: rgb(215, 58, 73); font-weight: 400;">const</span> app = <span style="color: rgb(111, 66, 193); font-weight: 400;">express</span>();
 
 <span style="color: rgb(106, 115, 125); font-weight: 400;">// at the very last</span>
@@ -70,7 +69,6 @@ app.<span style="color: rgb(111, 66, 193); font-weight: 400;">use</span>(<span s
       <span style="color: rgb(0, 92, 197); font-weight: 400;">details</span>: err.<span style="color: rgb(36, 41, 46); font-weight: 400;">stack</span>,
     }),
   });
-
   res.<span style="color: rgb(111, 66, 193); font-weight: 400;">status</span>(<span style="color: rgb(0, 92, 197); font-weight: 400;">500</span>).<span style="color: rgb(111, 66, 193); font-weight: 400;">json</span>({ <span style="color: rgb(0, 92, 197); font-weight: 400;">error</span>: <span style="color: rgb(3, 47, 98); font-weight: 400;">'An error occurred'</span> });
 });
 

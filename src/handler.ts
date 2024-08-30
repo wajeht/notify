@@ -705,7 +705,11 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 
 	const notifications = {
 		...app,
-		notifications: result.data,
+		notifications: result.data.map((n: any) => ({
+			...n,
+			created_at: formatDate(n.created_at, req.session?.user?.timezone),
+			updated_at: formatDate(n.updated_at, req.session?.user?.timezone),
+		})),
 	};
 
 	return res.render('apps-id-notifications.html', {

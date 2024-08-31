@@ -379,7 +379,7 @@ export async function postMarkNotificationAsReadHandler(req: Request, res: Respo
 	return res.redirect('back');
 }
 
-// POST '/apps/:aid/notifications/read-all
+// POST '/apps/:aid/notifications/read-all'
 export async function postMarkAllNotificationsAsReadHandler(req: Request, res: Response) {
 	const { aid } = req.params;
 	const uid = req.session?.user?.id;
@@ -392,6 +392,21 @@ export async function postMarkAllNotificationsAsReadHandler(req: Request, res: R
 
 	return res.redirect(
 		`/apps/${aid}/notifications?toast=${encodeURIComponent(`🎉 marked all as read!`)}`,
+	);
+}
+
+// POST '/notifications/read'
+export async function postMarkAllUserNotificationsAsReadHandler(req: Request, res: Response) {
+	const uid = req.session?.user?.id;
+
+	await db('notifications')
+		.whereIn('app_id', function (query: Knex.QueryBuilder) {
+			query.select('id').from('apps').where('user_id', uid);
+		})
+		.update({ read_at: db.fn.now() });
+
+	return res.redirect(
+		`/notifications?toast=${encodeURIComponent(`🎉 marked all notifications as read!`)}`,
 	);
 }
 

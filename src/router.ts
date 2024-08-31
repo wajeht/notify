@@ -31,6 +31,7 @@ import {
 	postCreateAppSMSChannelConfigHandler,
 	postMarkNotificationAsReadHandler,
 	postMarkAllNotificationsAsReadHandler,
+	postMarkAllUserNotificationsAsReadHandler,
 	postCreateAppEmailChannelConfigHandler,
 	postDeleteAppChannelHandler,
 	getAppChannelEditPageHandler,
@@ -111,6 +112,13 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getNotificationsPageHandler),
+);
+
+router.post(
+	'/notifications/read',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postMarkAllUserNotificationsAsReadHandler),
 );
 
 router.get(

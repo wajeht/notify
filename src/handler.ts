@@ -680,6 +680,12 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 		.leftJoin('apps', 'apps.id', 'app_channels.app_id')
 		.where({ app_id: appId, 'apps.user_id': userId });
 
+	if (!channels.length) {
+		return res.redirect(
+			`/apps/${appId}/settings?toast=${encodeURIComponent('there are no configs!')}`,
+		);
+	}
+
 	const configs = await Promise.all(
 		channels.map(async (channel) => {
 			const { channel_type_name, app_channel_id } = channel;

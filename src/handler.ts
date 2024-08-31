@@ -5,7 +5,6 @@ import {
 	extractDomain,
 	getGithubOauthToken,
 	getGithubUserEmails,
-	sendGeneralEmail,
 } from './utils';
 import { Knex } from 'knex';
 import { db } from './db/db';
@@ -16,6 +15,7 @@ import { appConfig, oauthConfig } from './config';
 import { HttpError, UnauthorizedError } from './error';
 import { sendNotificationJob } from './jobs/notification.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
+import { sendGeneralEmailJob } from './jobs/general-email.job';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -123,8 +123,7 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 
 	await db('users').where({ id: user?.id }).delete();
 
-	// TODO: put this in job queue
-	await sendGeneralEmail({
+	await sendGeneralEmailJob({
 		email: user?.email as string,
 		subject: '🔔 Notify!',
 		username: user?.username as string,
@@ -1085,8 +1084,7 @@ export async function getGithubRedirect(req: Request, res: Response) {
 		req.session.user = foundUser;
 		req.session.save();
 
-		// TODO: put this in job queue
-		await sendGeneralEmail({
+		await sendGeneralEmailJob({
 			email: foundUser.email,
 			subject: 'Welcome to 🔔 Notify!',
 			username: foundUser.username,

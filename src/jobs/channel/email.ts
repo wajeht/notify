@@ -27,7 +27,7 @@ function template(username: string, message: string, details: Record<string, any
               </div>
               <div style="border:1px dashed black;border-radius:5px;padding:16px 24px 16px 24px">
                 <div style="font-weight:normal;padding:16px 24px 16px 24px">
-                  Hello, ${username}
+                  Hello ${username},
                 </div>
                 <div style="font-weight:normal;padding:16px 24px 16px 24px">
                   ${message}

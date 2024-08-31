@@ -28,8 +28,8 @@ server.on('error', (error: NodeJS.ErrnoException) => {
 		throw error;
 	}
 
-	const bind: string =
-		typeof appConfig.port === 'string' ? 'Pipe ' + appConfig.port : 'Port ' + appConfig.port;
+	// prettier-ignore
+	const bind: string = typeof appConfig.port === 'string' ? 'Pipe ' + appConfig.port : 'Port ' + appConfig.port;
 
 	switch (error.code) {
 		case 'EACCES':

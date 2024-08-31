@@ -967,7 +967,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 		...app,
 		notifications: result.data.map((n: any) => ({
 			...n,
-			read_at: formatDate(n.read_at, req.session?.user?.timezone),
+			read_at: n.read_at === null ? n.read_at : formatDate(n.read_at, req.session?.user?.timezone),
 			created_at: formatDate(n.created_at, req.session?.user?.timezone),
 			updated_at: formatDate(n.updated_at, req.session?.user?.timezone),
 		})),

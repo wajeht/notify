@@ -62,7 +62,12 @@ export function setupJob<T extends Record<string, any>>(
 
 	new Worker<T>(jobName, processJob, { connection: redisConnection });
 
-	return (data: T) => queue.add(jobName, data);
+	return (data: T, repeat?: { cron: string }) => {
+		if (repeat) {
+			return queue.add(jobName, data, { repeat: { pattern: repeat.cron } });
+		}
+		return queue.add(jobName, data);
+	};
 }
 
 export function extractDomain(req: Request): string {

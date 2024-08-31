@@ -1,0 +1,40 @@
+import dayjs from 'dayjs';
+import { db } from '../db/db';
+import utc from 'dayjs/plugin/utc';
+import { setupJob } from '../utils';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export const resetUserMonthlyAlertLimitJob = setupJob<any>(
+	'resetUserMonthlyAlertLimitJob',
+	async (job) => {
+		try {
+			const apps = await db.select('*').from('apps').leftJoin('users', 'users.id', 'apps.user_id');
+
+			for (const app of apps) {
+				const now = dayjs().tz(app.timezone);
+				const resetDate = dayjs(app.alerts_reset_date).tz(app.timezone);
+
+				if (now.isAfter(resetDate)) {
+					await db.transaction(async (trx) => {
+						await trx('apps')
+							.where('id', app.id)
+							.update({
+								alerts_sent_this_month: 0,
+								alerts_reset_date: now.add(1, 'month').startOf('month').toDate(),
+							});
+
+						console.log(`Reset alert count for app ${app.id} (${app.name})`);
+					});
+				}
+			}
+
+			console.log('Completed resetUserMonthlyAlertLimitJob successfully');
+		} catch (error) {
+			console.error('Failed to process resetUserMonthlyAlertLimitJob:', error);
+			// throw error;
+		}
+	},
+);

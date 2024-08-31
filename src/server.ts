@@ -4,6 +4,7 @@ import { AddressInfo } from 'net';
 import { appConfig } from './config';
 import { db, redis } from './db/db';
 import { runMigrations } from './utils';
+import { resetUserMonthlyAlertLimitJob } from 'jobs/reset-user-monthly-alert-limit.job';
 
 const server: Server = app.listen(appConfig.port);
 
@@ -16,6 +17,9 @@ server.on('listening', async () => {
 	if (appConfig.env === 'production') {
 		await runMigrations();
 	}
+
+	// crons
+	await resetUserMonthlyAlertLimitJob({}, { cron: '0 0 * * *' }); // daily at midnight
 });
 
 server.on('error', (error: NodeJS.ErrnoException) => {

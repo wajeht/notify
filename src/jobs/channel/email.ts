@@ -40,7 +40,7 @@ function template(username: string, message: string, details: Record<string, any
               </div>
               <div style="background-color:#fbfafa;padding:16px 24px 16px 24px">
                 <div style="font-weight:normal;text-align:center;padding:16px 24px 16px 24px">
-                  <p style="text-decoration: none">Copyright © ${new Date().getFullYear()}. Made with ❤️ by <a href="https://github.com/wajeht" title="https://github.com/wajeht" target="_blank">wajeht</a></p>
+                  <p>Copyright © ${new Date().getFullYear()}. Made with ❤️ by <a style="text-decoration: none" href="https://github.com/wajeht" title="https://github.com/wajeht" target="_blank">wajeht</a></p>
                 </div>
               </div>
             </td>

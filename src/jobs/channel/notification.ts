@@ -61,7 +61,13 @@ export async function sendNotification(data: NotificationJobData) {
 			}
 
 			for (const config of configs) {
-				await dispatchNotificationJob(channel.channel_type, config, message, details);
+				await dispatchNotificationJob(
+					channel.channel_type,
+					config,
+					user.username,
+					message,
+					details,
+				);
 			}
 		}
 
@@ -85,6 +91,7 @@ export async function sendNotification(data: NotificationJobData) {
 async function dispatchNotificationJob(
 	channelType: 'discord' | 'email' | 'sms',
 	config: any,
+	username: string,
 	message: string,
 	details: any,
 ) {
@@ -93,7 +100,7 @@ async function dispatchNotificationJob(
 			case 'discord':
 				return await sendDiscordNotificationJob({ config, message, details });
 			case 'email':
-				return await sendEmailNotificationJob({ config, message, details });
+				return await sendEmailNotificationJob({ config, username, message, details });
 			case 'sms':
 				return await sendSmsNotificationJob({ config, message, details });
 			default:

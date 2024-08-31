@@ -1,11 +1,5 @@
-import dayjs from 'dayjs';
 import { db } from '../db/db';
-import utc from 'dayjs/plugin/utc';
-import { setupJob } from '../utils';
-import timezone from 'dayjs/plugin/timezone';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import { setupJob, dayjs } from '../utils';
 
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',

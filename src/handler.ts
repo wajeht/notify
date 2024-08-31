@@ -1,25 +1,20 @@
 import {
+	dayjs,
 	secret,
 	formatDate,
 	extractDomain,
 	getGithubOauthToken,
 	getGithubUserEmails,
 } from './utils';
-import dayjs from 'dayjs';
 import { Knex } from 'knex';
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
-import utc from 'dayjs/plugin/utc';
 import axios, { AxiosError } from 'axios';
 import { Request, Response } from 'express';
-import timezone from 'dayjs/plugin/timezone';
 import { appConfig, oauthConfig } from './config';
 import { HttpError, UnauthorizedError } from './error';
 import { sendNotificationJob } from './jobs/notification.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {

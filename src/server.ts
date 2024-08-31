@@ -10,8 +10,9 @@ const server: Server = app.listen(appConfig.port);
 
 server.on('listening', async () => {
 	const addr: string | AddressInfo | null = server.address();
-	const bind: string =
-		typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
+	// prettier-ignore
+	const bind: string = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
+
 	console.info(`Server is listening on ${bind}`);
 
 	if (appConfig.env === 'production') {

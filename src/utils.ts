@@ -5,12 +5,13 @@ import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
 import { Redis } from 'ioredis';
-import utc from 'dayjs/plugin/utc';
 import { Request } from 'express';
+import utc from 'dayjs/plugin/utc';
+import nodemailer from 'nodemailer';
 import { db, redis } from './db/db';
 import { Queue, Worker, Job } from 'bullmq';
 import timezone from 'dayjs/plugin/timezone';
-import { appConfig, oauthConfig } from './config';
+import { appConfig, emailConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
 
 dayjs.extend(utc);
@@ -181,5 +182,40 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
 	} catch (error) {
 		console.error('failed to verify api key ', error);
 		return null;
+	}
+}
+
+export async function sendEmail<T extends Record<string, any>>({
+	to,
+	subject,
+	template,
+	data,
+}: {
+	to: string;
+	subject: string;
+	template: (props: T) => string;
+	data: T;
+}): Promise<void> {
+	try {
+		const transporter = nodemailer.createTransport({
+			host: emailConfig.host,
+			port: emailConfig.port,
+			auth: {
+				user: emailConfig.auth.user,
+				pass: emailConfig.auth.pass,
+			},
+		});
+
+		await transporter.sendMail({
+			from: emailConfig.alias,
+			to,
+			subject,
+			html: template(data),
+		});
+
+		console.info('email sent successfully to:', to);
+	} catch (error) {
+		console.error('error while sending email:', error);
+		throw error;
 	}
 }

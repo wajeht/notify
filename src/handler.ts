@@ -5,7 +5,7 @@ import {
 	extractDomain,
 	getGithubOauthToken,
 	getGithubUserEmails,
-	sendWelcomeEmail,
+	sendGeneralEmail,
 } from './utils';
 import { Knex } from 'knex';
 import { db } from './db/db';
@@ -119,9 +119,17 @@ export async function getSettingsDangerZonePageHandler(req: Request, res: Respon
 
 // POST /settings/danger-zone/delete
 export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Response) {
-	const userId = req.session?.user?.id;
+	const user = req.session?.user;
 
-	await db('users').where({ id: userId }).delete();
+	// TODO: put this in job queue
+	await sendGeneralEmail({
+		email: user?.email as string,
+		subject: '🔔 Notify!',
+		username: user?.username as string,
+		message: 'Sorry to see you go. Let us know if we can help you with anything!',
+	});
+
+	await db('users').where({ id: user?.id }).delete();
 
 	if (req.session && req.session?.user) {
 		req.session.user = undefined;
@@ -1078,7 +1086,12 @@ export async function getGithubRedirect(req: Request, res: Response) {
 		req.session.save();
 
 		// TODO: put this in job queue
-		await sendWelcomeEmail({ email: foundUser.email, username: foundUser.username });
+		await sendGeneralEmail({
+			email: foundUser.email,
+			subject: 'Welcome to 🔔 Notify!',
+			username: foundUser.username,
+			message: 'Thanks for using Notify. Let us know if we can help you with anything!',
+		});
 
 		return res.redirect(`/apps?toast=${encodeURIComponent('🎉 enjoy notify!')}`);
 	}

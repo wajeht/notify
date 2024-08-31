@@ -223,24 +223,34 @@ export async function sendEmail({
 	}
 }
 
-export async function sendWelcomeEmail({ email, username }: { email: string; username: string }) {
+export async function sendGeneralEmail({
+	email,
+	username,
+	subject = '🔔 Notify',
+	message,
+}: {
+	email: string;
+	username: string;
+	subject: string;
+	message: string;
+}) {
 	try {
 		const templateContent = await fs.readFile(
-			path.join(__dirname, 'views', 'emails', 'welcome.html'),
+			path.join(__dirname, 'views', 'emails', 'general.html'),
 			'utf-8',
 		);
 
-		const html = ejs.render(templateContent, { username });
+		const html = ejs.render(templateContent, { username, message });
 
 		await sendEmail({
 			to: email,
-			subject: 'Welcome to 🔔 Notify',
+			subject,
 			html,
 		});
 
-		console.log('welcome email sent successfully');
+		console.log('email sent successfully');
 	} catch (error) {
-		console.error('failed to send welcome email:', error);
+		console.error('failed to send email:', error);
 		// throw error
 	}
 }

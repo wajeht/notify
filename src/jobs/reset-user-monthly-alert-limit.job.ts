@@ -11,6 +11,8 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',
 	async (job) => {
 		try {
+			console.log('[resetUserMonthlyAlertLimitJob] Started');
+
 			const apps = await db.select('*').from('apps').leftJoin('users', 'users.id', 'apps.user_id');
 
 			for (const app of apps) {
@@ -26,14 +28,20 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 								alerts_reset_date: now.add(1, 'month').startOf('month').toDate(),
 							});
 
-						console.log(`Reset alert count for app ${app.id} (${app.name})`);
+						console.log(
+							`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id} (${app.name})`,
+						);
 					});
 				}
+
+				console.log(
+					`[resetUserMonthlyAlertLimitJob] Skipped reset for app ${app.id} (${app.name})`,
+				);
 			}
 
-			console.log('Completed resetUserMonthlyAlertLimitJob successfully');
+			console.log('[resetUserMonthlyAlertLimitJob] Finished');
 		} catch (error) {
-			console.error('Failed to process resetUserMonthlyAlertLimitJob:', error);
+			console.error('[resetUserMonthlyAlertLimitJob] Failed to process:', error);
 			// throw error;
 		}
 	},

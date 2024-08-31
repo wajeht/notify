@@ -5,44 +5,59 @@ import { sendGeneralEmailJob } from './general-email.job';
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',
 	async (job) => {
+		console.log('[resetUserMonthlyAlertLimitJob] Started');
 		try {
-			console.log('[resetUserMonthlyAlertLimitJob] Started');
+			const appsToReset = await db
+				.select(
+					'apps.id',
+					'apps.name',
+					'apps.alerts_reset_date',
+					'users.timezone',
+					'users.email',
+					'users.username',
+				)
+				.from('apps')
+				.innerJoin('users', 'users.id', 'apps.user_id')
+				.where('apps.alerts_reset_date', '<=', dayjs().toDate());
 
-			const apps = await db.select('*').from('apps').leftJoin('users', 'users.id', 'apps.user_id');
+			if (appsToReset.length === 0) {
+				console.log('no apps to reset today. exiting resetUserMonthlyAlertLimitJob');
+				return;
+			}
 
-			for (const app of apps) {
+			const resetPromises = appsToReset.map(async (app) => {
 				const now = dayjs().tz(app.timezone);
-				const resetDate = dayjs(app.alerts_reset_date).tz(app.timezone);
+				const nextResetDate = now.add(1, 'month').startOf('month').toDate();
 
-				if (now.isAfter(resetDate)) {
+				try {
 					await db.transaction(async (trx) => {
-						const nextResetDate = now.add(1, 'month').startOf('month').toDate();
 						await trx('apps').where('id', app.id).update({
 							alerts_sent_this_month: 0,
 							alerts_reset_date: nextResetDate,
 						});
 
-						const user = await db.select('*').from('users').where({ id: app.user_id }).first();
-
 						await sendGeneralEmailJob({
-							email: user.email,
+							email: app.email,
 							subject: 'Monthly Alert Limit Reset',
-							username: user.username,
+							username: app.username,
 							message: `Your monthly alert limit for the app "${app.name}" has been reset on ${now.format('MMMM D, YYYY')}.
-													Your alert count has been set back to 0, and you can now send new alerts for this month.
-													The next reset will occur on ${nextResetDate}.`,
+                        Your alert count has been set back to 0, and you can now send new alerts for this month.
+                        The next reset will occur on ${dayjs(nextResetDate).format('MMMM D, YYYY')}.`,
 						});
 
 						console.log(
 							`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id} (${app.name})`,
 						);
 					});
+				} catch (error) {
+					console.error(
+						`[resetUserMonthlyAlertLimitJob] Failed to reset app ${app.id} (${app.name}):`,
+						error,
+					);
 				}
+			});
 
-				console.log(
-					`[resetUserMonthlyAlertLimitJob] Skipped reset for app ${app.id} (${app.name})`,
-				);
-			}
+			await Promise.all(resetPromises);
 
 			console.log('[resetUserMonthlyAlertLimitJob] Finished');
 		} catch (error) {

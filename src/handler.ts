@@ -121,6 +121,8 @@ export async function getSettingsDangerZonePageHandler(req: Request, res: Respon
 export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Response) {
 	const user = req.session?.user;
 
+	await db('users').where({ id: user?.id }).delete();
+
 	// TODO: put this in job queue
 	await sendGeneralEmail({
 		email: user?.email as string,
@@ -128,8 +130,6 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 		username: user?.username as string,
 		message: 'Sorry to see you go. Let us know if we can help you with anything!',
 	});
-
-	await db('users').where({ id: user?.id }).delete();
 
 	if (req.session && req.session?.user) {
 		req.session.user = undefined;

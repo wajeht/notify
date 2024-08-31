@@ -680,7 +680,7 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 		.leftJoin('apps', 'apps.id', 'app_channels.app_id')
 		.where({ app_id: appId, 'apps.user_id': userId });
 
-	if (!channels.length) {
+	if (channels.length === 0) {
 		return res.redirect(
 			`/apps/${appId}/settings?toast=${encodeURIComponent('there are no configs!')}`,
 		);

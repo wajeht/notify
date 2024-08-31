@@ -260,7 +260,7 @@ export function catchAsyncErrorMiddleware<P = any, ResBody = any, ReqBody = any,
 		req: Request<P, ResBody, ReqBody, ReqQuery>,
 		res: Response<ResBody>,
 		next: NextFunction,
-	) => Response | Promise<Response<any>> | void | Promise<void>,
+	) => Response | Promise<Response<any> | void> | void | Promise<void>,
 ): (
 	req: Request<P, ResBody, ReqBody, ReqQuery>,
 	res: Response<ResBody>,

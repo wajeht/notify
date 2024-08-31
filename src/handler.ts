@@ -5,6 +5,7 @@ import {
 	extractDomain,
 	getGithubOauthToken,
 	getGithubUserEmails,
+	sendWelcomeEmail,
 } from './utils';
 import { Knex } from 'knex';
 import { db } from './db/db';
@@ -1075,6 +1076,9 @@ export async function getGithubRedirect(req: Request, res: Response) {
 
 		req.session.user = foundUser;
 		req.session.save();
+
+		// TODO: put this in job queue
+		await sendWelcomeEmail({ email: foundUser.email, username: foundUser.username });
 
 		return res.redirect(`/apps?toast=${encodeURIComponent('🎉 enjoy notify!')}`);
 	}

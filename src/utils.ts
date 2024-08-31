@@ -1,9 +1,11 @@
 import qs from 'qs';
-import dayjsModule from 'dayjs';
+import ejs from 'ejs';
 import axios from 'axios';
 import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
+import dayjsModule from 'dayjs';
+import fs from 'node:fs/promises';
 import { Redis } from 'ioredis';
 import { Request } from 'express';
 import utc from 'dayjs/plugin/utc';
@@ -188,16 +190,14 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
 	}
 }
 
-export async function sendEmail<T extends Record<string, any>>({
+export async function sendEmail({
 	to,
 	subject,
-	template,
-	data,
+	html,
 }: {
 	to: string;
 	subject: string;
-	template: (props: T) => string;
-	data: T;
+	html: string;
 }): Promise<void> {
 	try {
 		const transporter = nodemailer.createTransport({
@@ -213,12 +213,34 @@ export async function sendEmail<T extends Record<string, any>>({
 			from: emailConfig.alias,
 			to,
 			subject,
-			html: template(data),
+			html,
 		});
 
 		console.info('email sent successfully to:', to);
 	} catch (error) {
 		console.error('error while sending email:', error);
-		throw error;
+		// throw error;
+	}
+}
+
+export async function sendWelcomeEmail({ email, username }: { email: string; username: string }) {
+	try {
+		const templateContent = await fs.readFile(
+			path.join(__dirname, 'views', 'emails', 'welcome.html'),
+			'utf-8',
+		);
+
+		const html = ejs.render(templateContent, { username });
+
+		await sendEmail({
+			to: email,
+			subject: 'Welcome to 🔔 Notify',
+			html,
+		});
+
+		console.log('welcome email sent successfully');
+	} catch (error) {
+		console.error('failed to send welcome email:', error);
+		// throw error
 	}
 }

@@ -30,6 +30,7 @@ import {
 	postCreateAppDiscordChannelConfigHandler,
 	postCreateAppSMSChannelConfigHandler,
 	postMarkNotificationAsReadHandler,
+	postMarkAllNotificationsAsReadHandler,
 	postCreateAppEmailChannelConfigHandler,
 	postDeleteAppChannelHandler,
 	getAppChannelEditPageHandler,
@@ -285,6 +286,13 @@ router.post(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(postMarkNotificationAsReadHandler),
+);
+
+router.post(
+	'/apps/:aid/notifications/read',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postMarkAllNotificationsAsReadHandler),
 );
 
 router.post(

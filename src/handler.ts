@@ -379,6 +379,22 @@ export async function postMarkNotificationAsReadHandler(req: Request, res: Respo
 	return res.redirect('back');
 }
 
+// POST '/apps/:aid/notifications/read-all
+export async function postMarkAllNotificationsAsReadHandler(req: Request, res: Response) {
+	const { aid } = req.params;
+	const uid = req.session?.user?.id;
+
+	await db('notifications')
+		.andWhere('app_id', function (query: Knex) {
+			query.select('id').from('apps').where('id', aid).andWhere('user_id', uid);
+		})
+		.update({ read_at: db.fn.now() });
+
+	return res.redirect(
+		`/apps/${aid}/notifications?toast=${encodeURIComponent(`🎉 marked all as read!`)}`,
+	);
+}
+
 // POST '/apps/:id/notifications/test
 export async function postTestAppNotificationHandler(req: Request, res: Response) {
 	const { id } = req.params;
@@ -924,6 +940,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 		...app,
 		notifications: result.data.map((n: any) => ({
 			...n,
+			read_at: formatDate(n.read_at, req.session?.user?.timezone),
 			created_at: formatDate(n.created_at, req.session?.user?.timezone),
 			updated_at: formatDate(n.updated_at, req.session?.user?.timezone),
 		})),

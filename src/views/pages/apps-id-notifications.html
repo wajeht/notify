@@ -31,7 +31,12 @@
         </div>
       <% } %>
 
-      <a href="#">✅ Mark all as read</a>
+      <% if (state.unread_app_notification_count > 0) { %>
+        <form method="post" action="/apps/<%= app.id %>/notifications/read">
+          <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+          <button class="no-style-btn">✅ Mark as read</button>
+        </form>
+      <% } %>
     </div>
   </div>
 

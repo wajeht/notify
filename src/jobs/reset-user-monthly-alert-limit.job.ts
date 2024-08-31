@@ -1,5 +1,6 @@
 import { db } from '../db/db';
 import { setupJob, dayjs } from '../utils';
+import { sendGeneralEmailJob } from './general-email.job';
 
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',
@@ -15,12 +16,22 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 
 				if (now.isAfter(resetDate)) {
 					await db.transaction(async (trx) => {
-						await trx('apps')
-							.where('id', app.id)
-							.update({
-								alerts_sent_this_month: 0,
-								alerts_reset_date: now.add(1, 'month').startOf('month').toDate(),
-							});
+						const nextResetDate = now.add(1, 'month').startOf('month').toDate();
+						await trx('apps').where('id', app.id).update({
+							alerts_sent_this_month: 0,
+							alerts_reset_date: nextResetDate,
+						});
+
+						const user = await db.select('*').from('users').where({ id: app.user_id }).first();
+
+						await sendGeneralEmailJob({
+							email: user.email,
+							subject: 'Monthly Alert Limit Reset',
+							username: user.username,
+							message: `Your monthly alert limit for the app "${app.name}" has been reset on ${now.format('MMMM D, YYYY')}.
+													Your alert count has been set back to 0, and you can now send new alerts for this month.
+													The next reset will occur on ${nextResetDate}.`,
+						});
 
 						console.log(
 							`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id} (${app.name})`,

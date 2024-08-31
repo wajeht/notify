@@ -32,8 +32,10 @@ function template(username: string, message: string, details: Record<string, any
                 <div style="font-weight:normal;padding:16px 24px 16px 24px">
                   ${message}
                 </div>
-                <div style="font-weight:normal;padding:16px 24px 16px 24px">
-                  ${JSON.stringify(details, null, 2)}
+                <div style="padding:16px 24px 16px 24px">
+                  <div style="background-color:#fbfafa;border:1px dashed black;border-radius:5px;font-weight:normal;padding:16px 24px 16px 24px">
+                    ${JSON.stringify(details, null, 2)}
+                  </div>
                 </div>
               </div>
               <div style="background-color:#fbfafa;padding:16px 24px 16px 24px">

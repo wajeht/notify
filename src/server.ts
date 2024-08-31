@@ -4,7 +4,7 @@ import { AddressInfo } from 'net';
 import { appConfig } from './config';
 import { db, redis } from './db/db';
 import { runMigrations } from './utils';
-import { resetUserMonthlyAlertLimitJob } from 'jobs/reset-user-monthly-alert-limit.job';
+import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
 
 const server: Server = app.listen(appConfig.port);
 

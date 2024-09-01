@@ -9,13 +9,15 @@ import {
 import { Knex } from 'knex';
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
+import { body } from 'express-validator';
 import axios, { AxiosError } from 'axios';
 import { Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { sendNotificationJob } from './jobs/notification.job';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
-import { HttpError, NotFoundError, UnauthorizedError } from './error';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
+import { catchAsyncErrorMiddleware, validateRequestMiddleware } from 'middleware';
+import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -80,24 +82,65 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 }
 
 // POST /settings/account
-export async function postSettingsAccountHandler(req: Request, res: Response) {
-	const { email, username, timezone } = req.body;
-	const userId = req.session?.user?.id;
+export const postSettingsAccountHandler = [
+	validateRequestMiddleware([
+		body('username')
+			.notEmpty()
+			.custom(async (username, { req }) => {
+				const userId = req.session?.user?.id;
 
-	const [user] = await db('users')
-		.update({
-			email,
-			username,
-			timezone,
-		})
-		.where({ id: userId })
-		.returning('*');
+				const existingUser = await db
+					.select('*')
+					.from('users')
+					.where('username', username)
+					.whereNot('id', userId)
+					.first();
 
-	req.session.user = user;
-	req.session.save();
+				if (existingUser) {
+					throw ValidationError('Username is already taken');
+				}
 
-	return res.redirect('/settings/account?toast=🔄 updated!');
-}
+				return true;
+			}),
+		body('email')
+			.notEmpty()
+			.isEmail()
+			.custom(async (email, { req }) => {
+				const userId = req.session?.user?.id;
+
+				const existingUser = await db
+					.select('*')
+					.from('users')
+					.where('email', email)
+					.whereNot('id', userId)
+					.first();
+
+				if (existingUser) {
+					throw ValidationError('Email is already in use');
+				}
+
+				return true;
+			}),
+	]),
+	catchAsyncErrorMiddleware(async (req: Request, res: Response) => {
+		const { email, username, timezone } = req.body;
+		const userId = req.session?.user?.id;
+
+		const [user] = await db('users')
+			.update({
+				email,
+				username,
+				timezone,
+			})
+			.where({ id: userId })
+			.returning('*');
+
+		req.session.user = user;
+		req.session.save();
+
+		return res.redirect('/settings/account?toast=🔄 updated!');
+	}),
+];
 
 // GET /settings/danger-zone
 export async function getSettingsDangerZonePageHandler(req: Request, res: Response) {

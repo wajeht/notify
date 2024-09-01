@@ -5,7 +5,6 @@ import {
 	authenticationMiddleware,
 	catchAsyncErrorMiddleware,
 	csrfMiddleware,
-	validateRequestMiddleware,
 } from './middleware';
 
 import {
@@ -53,8 +52,6 @@ import {
 	postSettingsAccountHandler,
 } from './handler';
 
-import { postSettingsAccountHandlerValidator } from './validator';
-
 const router = express.Router();
 
 router.get('/', catchAsyncErrorMiddleware(getHomePageHandler));
@@ -89,8 +86,7 @@ router.post(
 	'/settings/account',
 	authenticationMiddleware,
 	csrfMiddleware,
-	validateRequestMiddleware(postSettingsAccountHandlerValidator),
-	catchAsyncErrorMiddleware(postSettingsAccountHandler),
+	postSettingsAccountHandler,
 );
 
 router.get(

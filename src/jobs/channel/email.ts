@@ -22,7 +22,7 @@ function template(username: string, message: string, details: Record<string, any
             <td>
               <div style="background-color:#fbfafa;padding:16px 24px 16px 24px">
                 <h1 style="font-weight:bold;text-align:center;margin:0;font-size:32px;padding:16px 24px 16px 24px">
-									<a style="text-decoration: none;" href="https://notify.jaw.dev/" target="_blank" title="notify">🔔 Notify</a>
+                  <a style="text-decoration: none;" href="https://notify.jaw.dev/" target="_blank" title="notify">🔔 Notify</a>
                 </h1>
               </div>
               <div style="border:1px dashed black;border-radius:5px;padding:16px 24px 16px 24px">
@@ -32,11 +32,17 @@ function template(username: string, message: string, details: Record<string, any
                 <div style="font-weight:normal;padding:16px 24px 16px 24px">
                   ${message}
                 </div>
+                ${
+									details && details.length > 0
+										? `
                 <div style="padding:16px 24px 16px 24px">
                   <div style="background-color:#fbfafa;border:1px dashed black;border-radius:5px;font-weight:normal;padding:16px 24px 16px 24px">
                     ${JSON.stringify(details, null, 2)}
                   </div>
                 </div>
+                `
+										: ''
+								}
               </div>
               <div style="background-color:#fbfafa;padding:16px 24px 16px 24px">
                 <div style="font-weight:normal;text-align:center;padding:16px 24px 16px 24px">

@@ -61,7 +61,11 @@ export async function seed(knex: Knex): Promise<void> {
 	const appIds = await knex('apps').insert(apps).returning('id');
 
 	// Seed channel types
-	const channelTypes = ['email', 'sms', 'discord'].map((name) => ({
+	const channelTypes = [
+		'email',
+		// 'sms',
+		// 'discord'
+	].map((name) => ({
 		name,
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
@@ -74,7 +78,8 @@ export async function seed(knex: Knex): Promise<void> {
 		channelTypeIds.map((channelType) => ({
 			app_id: app.id,
 			channel_type_id: channelType.id,
-			is_active: faker.datatype.boolean(),
+			// is_active: faker.datatype.boolean(),
+			is_active: true,
 			created_at: faker.date.past(),
 			updated_at: faker.date.recent(),
 		})),
@@ -96,11 +101,11 @@ export async function seed(knex: Knex): Promise<void> {
 	const emailConfigs = emailChannels.map((channel) => ({
 		name: `email-${channel.id}`,
 		app_channel_id: channel.id,
-		host: 'mailhot',
-		port: 1025,
-		alias: 'noreply@jaw.dev',
-		auth_email: 'noreply@jaw.dev',
-		auth_pass: 'password',
+		host: 'dt0PYNRnqDMo7eqz6_aiVpSWwLJS1o07B0eCTUIoYnVGiK0',
+		port: 'lewPmyKufdyI1p8TZJGkKC2NuoJuid2t6VOotQhlPB0',
+		alias: 'cpdeh_1N-UybxDZwI8EVc2Eq33QcZLCMnOBB5PSRIRaRLK4R2HxDKd7gXA',
+		auth_email: 'xGdTiOGQ7ClF5S24PJkt-zNA6Q_CiRpRUYZyUeKcPMVkcxNHwS-i-J7JIQ',
+		auth_pass: 'UGXJW7pSaCDTw15y_5MIoi5wvlLfc-2G6hhU6tbTeEoq61UW',
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
 	}));
@@ -108,48 +113,48 @@ export async function seed(knex: Knex): Promise<void> {
 	await knex('email_configs').insert(emailConfigs);
 
 	// Seed SMS configs
-	const smsChannels = await knex('app_channels')
-		.whereIn(
-			'id',
-			appChannelIds.map((ac) => ac.id),
-		)
-		.whereIn(
-			'channel_type_id',
-			channelTypeIds.filter((ct) => ct.name === 'sms').map((ct) => ct.id),
-		);
-	const smsConfigs = smsChannels.map((channel) => ({
-		name: `sms-${channel.id}`,
-		app_channel_id: channel.id,
-		account_sid: faker.string.alphanumeric(34),
-		auth_token: faker.string.alphanumeric(32),
-		from_phone_number: faker.phone.number(),
-		phone_number: faker.phone.number(),
-		created_at: faker.date.past(),
-		updated_at: faker.date.recent(),
-	}));
+	// const smsChannels = await knex('app_channels')
+	// 	.whereIn(
+	// 		'id',
+	// 		appChannelIds.map((ac) => ac.id),
+	// 	)
+	// 	.whereIn(
+	// 		'channel_type_id',
+	// 		channelTypeIds.filter((ct) => ct.name === 'sms').map((ct) => ct.id),
+	// 	);
+	// const smsConfigs = smsChannels.map((channel) => ({
+	// 	name: `sms-${channel.id}`,
+	// 	app_channel_id: channel.id,
+	// 	account_sid: faker.string.alphanumeric(34),
+	// 	auth_token: faker.string.alphanumeric(32),
+	// 	from_phone_number: faker.phone.number(),
+	// 	phone_number: faker.phone.number(),
+	// 	created_at: faker.date.past(),
+	// 	updated_at: faker.date.recent(),
+	// }));
 
-	await knex('sms_configs').insert(smsConfigs);
+	// await knex('sms_configs').insert(smsConfigs);
 
 	// Seed Discord configs
-	const discordChannels = await knex('app_channels')
-		.whereIn(
-			'id',
-			appChannelIds.map((ac) => ac.id),
-		)
-		.whereIn(
-			'channel_type_id',
-			channelTypeIds.filter((ct) => ct.name === 'discord').map((ct) => ct.id),
-		);
+	// const discordChannels = await knex('app_channels')
+	// 	.whereIn(
+	// 		'id',
+	// 		appChannelIds.map((ac) => ac.id),
+	// 	)
+	// 	.whereIn(
+	// 		'channel_type_id',
+	// 		channelTypeIds.filter((ct) => ct.name === 'discord').map((ct) => ct.id),
+	// 	);
 
-	const discordConfigs = discordChannels.map((channel) => ({
-		name: `discord-${channel.id}`,
-		app_channel_id: channel.id,
-		webhook_url: faker.internet.url(),
-		created_at: faker.date.past(),
-		updated_at: faker.date.recent(),
-	}));
+	// const discordConfigs = discordChannels.map((channel) => ({
+	// 	name: `discord-${channel.id}`,
+	// 	app_channel_id: channel.id,
+	// 	webhook_url: faker.internet.url(),
+	// 	created_at: faker.date.past(),
+	// 	updated_at: faker.date.recent(),
+	// }));
 
-	await knex('discord_configs').insert(discordConfigs);
+	// await knex('discord_configs').insert(discordConfigs);
 
 	// Seed notifications
 	const notifications = Array(50)

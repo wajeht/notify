@@ -18,20 +18,36 @@ export async function sendNotification(data: NotificationJobData) {
 
 		const user = await db.select('*').from('users').where({ id: userId }).first();
 
-		if (!user.is_admin) {
-			if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
+		if (user.is_admin === false) {
+			if (app.max_monthly_alerts_allowed === app.alerts_sent_this_month) {
 				console.log('You have reached your monthly quota. Please wait until next month!');
 
 				await sendGeneralEmailJob({
 					email: user.email,
 					subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
 					username: user.username,
-					message: `You have reached your monthly notification quota for the app "${app.name}". Please wait until next month to send more notifications. Thank you for using Notify!`,
+					message: `You have reached your monthly notification quota for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels. Please wait until next month to resume channel notifications. Thank you for using Notify!`,
+				});
+
+				return;
+			}
+
+			if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
+				console.log(
+					'You have reached your custom alert limit. Notifications will stop until you update your settings.',
+				);
+
+				await sendGeneralEmailJob({
+					email: user.email,
+					subject: `Custom Alert Limit Reached on ${app.name} 🔔 Notify`,
+					username: user.username,
+					message: `You have reached your custom notification limit for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels until you update your limit in your settings. Thank you for using Notify!`,
 				});
 
 				return;
 			}
 		}
+
 		const appChannels = await db('app_channels')
 			.join('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
 			.where('app_channels.app_id', appId)

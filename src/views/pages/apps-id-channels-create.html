@@ -16,7 +16,7 @@
 
   <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 20px;">
     <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
-      <label for="channel_type" style="flex: 1;">Channel Type:</label>
+      <label for="channel_type" style="flex: 1;">Channel Type<span style="color: red;">*</span></label>
       <select id="channel_type" name="channel_type" required onchange="showForm()" style="flex: 2;">
         <option value="">Select a type</option>
         <option value="email">📧 Email</option>
@@ -29,37 +29,37 @@
       <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="name">🔤 Config Name:</label>
+        <label for="name">🔤 Config Name<span style="color: red;">*</span></label>
         <input type="text" id="name" name="name" placeholder="alert email" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="host">🌐 Email Host:</label>
+        <label for="host">🌐 Email Host<span style="color: red;">*</span></label>
         <input type="text" id="host" name="host" placeholder="smtp.gmail.com" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="port">🔢 Email Port:</label>
+        <label for="port">🔢 Email Port<span style="color: red;">*</span></label>
         <input type="number" id="port" name="port" placeholder="587" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="alias">📧 Email Alias:</label>
+        <label for="alias">📧 Email Alias<span style="color: red;">*</span></label>
         <input type="email" id="alias" name="alias" placeholder="noreply@jaw.dev" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="auth_email">🔑 Auth Email:</label>
+        <label for="auth_email">🔑 Auth Email<span style="color: red;">*</span></label>
         <input type="email" id="auth_email" name="auth_email" placeholder="mailL@jaw.dev" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="auth_pass">🔑 Auth Password:</label>
+        <label for="auth_pass">🔑 Auth Password<span style="color: red;">*</span></label>
         <input type="password" id="auth_pass" name="auth_pass" required>
       </div>
 
       <div>
-        <label for="is_active_email">🟢 Active:</label>
+        <label for="is_active_email">🟢 Active</label>
         <input type="checkbox" id="is_active_email" name="is_active">
       </div>
 
@@ -70,17 +70,17 @@
       <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="name">🔤 Config Name:</label>
+        <label for="name">🔤 Config Name<span style="color: red;">*</span></label>
         <input type="text" id="name" name="name" placeholder="bot channel" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="webhook_url">🌐 Webhook URL:</label>
+        <label for="webhook_url">🌐 Webhook URL<span style="color: red;">*</span></label>
         <input type="url" id="webhook_url" name="webhook_url" placeholder="https://discord.com/api/webhooks/69" required>
       </div>
 
       <div>
-        <label for="is_active_discord">🟢 Active:</label>
+        <label for="is_active_discord">🟢 Active</label>
         <input type="checkbox" id="is_active_discord" name="is_active">
       </div>
 
@@ -91,32 +91,32 @@
       <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="name">🔤 Config Name:</label>
+        <label for="name">🔤 Config Name<span style="color: red;">*</span></label>
         <input type="text" id="name" name="name" placeholder="twilio phone" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="account_sid">🔑 Twilio Account SID:</label>
+        <label for="account_sid">🔑 Twilio Account SID<span style="color: red;">*</span></label>
         <input type="text" id="account_sid" name="account_sid" placeholder="123456" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="auth_token">🔑 Twilio Auth Token:</label>
+        <label for="auth_token">🔑 Twilio Auth Token<span style="color: red;">*</span></label>
         <input type="text" id="auth_token" name="auth_token" placeholder="123455abcd" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="from_phone_number">📞 Twilio From Phone Number:</label>
+        <label for="from_phone_number">📞 Twilio From Phone Number<span style="color: red;">*</span></label>
         <input type="text" id="from_phone_number" name="from_phone_number" required>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
-        <label for="phone_number">📞 Twilio Phone Number:</label>
+        <label for="phone_number">📞 Twilio Phone Number<span style="color: red;">*</span></label>
         <input type="text" id="phone_number" name="phone_number" required>
       </div>
 
       <div>
-        <label for="is_active_sms">🟢 Active:</label>
+        <label for="is_active_sms">🟢 Active</label>
         <input type="checkbox" id="is_active_sms" name="is_active">
       </div>
 

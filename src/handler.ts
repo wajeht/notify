@@ -1,11 +1,4 @@
-import {
-	dayjs,
-	secret,
-	formatDate,
-	extractDomain,
-	getGithubOauthToken,
-	getGithubUserEmails,
-} from './utils';
+import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 import { Knex } from 'knex';
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
@@ -1125,22 +1118,33 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 	}
 
 	const result = await db('notifications')
+		.select(
+			'notifications.*',
+			db.raw(
+				`CASE
+						WHEN notifications.read_at IS NULL THEN NULL
+						ELSE to_char(notifications.read_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
+					END as read_at`,
+				[req.session?.user?.timezone],
+			),
+			db.raw(
+				`to_char(notifications.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as created_at`,
+				[req.session?.user?.timezone],
+			),
+			db.raw(
+				`to_char(notifications.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as updated_at`,
+				[req.session?.user?.timezone],
+			),
+		)
 		.where('app_id', appId)
-		.orderBy('created_at', 'desc')
+		.orderBy('notifications.created_at', 'desc')
 		.paginate({ perPage, currentPage, isLengthAware: true });
 
-	const notifications = {
-		...app,
-		notifications: result.data.map((n: any) => ({
-			...n,
-			read_at: n.read_at === null ? n.read_at : formatDate(n.read_at, req.session?.user?.timezone),
-			created_at: formatDate(n.created_at, req.session?.user?.timezone),
-			updated_at: formatDate(n.updated_at, req.session?.user?.timezone),
-		})),
-	};
-
 	return res.render('apps-id-notifications.html', {
-		app: notifications,
+		app: {
+			...app,
+			notifications: result.data,
+		},
 		pagination: result.pagination,
 		layout: '../layouts/app.html',
 		path: `/apps/${appId}/notifications`,

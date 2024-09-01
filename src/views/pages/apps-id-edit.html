@@ -12,32 +12,32 @@
     <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
-      <label for="name">Name:</label>
+      <label for="name">🔤 Name:</label>
       <input type="text" id="name" name="name" value="<%= app.name %>" required>
     </div>
 
     <div>
-      <label for="is_active">Active:</label>
+      <label for="is_active">🟢 Active:</label>
       <input type="checkbox" id="is_active" name="is_active" <%= app.is_active ? 'checked' : '' %>>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
-      <label for="url">Url:</label>
+      <label for="url">🌐 Url:</label>
       <input type="url" id="url" name="url" value="<%= app.url %>" required>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
-      <label for="description">Description:</label>
+      <label for="description">📝 Description:</label>
       <textarea name="description" id="description"><%= app.description %></textarea>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
-      <label for="user_monthly_limit_threshold">Alert Threshold:</label>
+      <label for="user_monthly_limit_threshold">🔢 Alert Threshold:</label>
       <input type="number" id="user_monthly_limit_threshold" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
       <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
     </div>
 
-    <button type="submit">Update</button>
+    <button type="submit">🔄 Update</button>
   </form>
 
 </div>

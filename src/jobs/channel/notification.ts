@@ -50,8 +50,7 @@ export async function sendNotification(data: NotificationJobData) {
 
 		const appChannels = await db('app_channels')
 			.join('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
-			.where('app_channels.app_id', appId)
-			.andWhere({ 'app_channels.is_active': true })
+			.where({ 'app_channels.app_id': appId, 'app_channels.is_active': true })
 			.select('channel_types.name as channel_type', 'app_channels.id as app_channel_id');
 
 		if (!appChannels.length) {
@@ -64,19 +63,13 @@ export async function sendNotification(data: NotificationJobData) {
 
 			switch (channel.channel_type) {
 				case 'discord':
-					configs = await db('discord_configs').where({
-						app_channel_id: channel.app_channel_id,
-					});
+					configs = await db('discord_configs').where({ app_channel_id: channel.app_channel_id });
 					break;
 				case 'sms':
-					configs = await db('sms_configs').where({
-						app_channel_id: channel.app_channel_id,
-					});
+					configs = await db('sms_configs').where({ app_channel_id: channel.app_channel_id });
 					break;
 				case 'email':
-					configs = await db('email_configs').where({
-						app_channel_id: channel.app_channel_id,
-					});
+					configs = await db('email_configs').where({ app_channel_id: channel.app_channel_id });
 					break;
 				default:
 					console.log(`Unknown channel type: ${channel.channel_type}`);
@@ -102,7 +95,7 @@ export async function sendNotification(data: NotificationJobData) {
 
 		await db('apps')
 			.update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
-			.where({ id: appId });
+			.where({ id: appId, user_id: userId });
 
 		console.log(`notification jobs dispatched for app ${appId}`);
 	} catch (error) {

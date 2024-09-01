@@ -1,26 +1,26 @@
 <% if (state.flash) { %>
-    <% const messageTypes = ['success', 'error', 'info', 'warning', 'alert']; %>
-    <% messageTypes.forEach(type => { %>
-      <% if (state.flash[type] && state.flash[type].length > 0) { %>
-        <div class="alert alert-<%= type %>" style="
-          background-color: white;
-          border: 1px dashed;
-          color: black;
-          padding: 20px;
-          border-radius: 5px;
-          text-align: center;
-          box-sizing: border-box;
-        ">
-          <% if (state.flash[type].length === 1) { %>
-            <%= state.flash[type][0] %>
-          <% } else { %>
-            <ul style="list-style-type: none; padding: 0; margin: 0;">
-              <% state.flash[type].forEach(message => { %>
-                <li><%= message %></li>
-              <% }); %>
-            </ul>
-          <% } %>
-        </div>
-      <% } %>
-    <% }); %>
-  <% } %>
+  <% const messageTypes = ['success', 'error', 'info', 'warning', 'alert']; %>
+  <% messageTypes.forEach(type => { %>
+    <% if (state.flash[type] && state.flash[type].length > 0) { %>
+      <div class="alert alert-<%= type %>" style="
+        background-color: white;
+        border: 1px dashed;
+        color: black;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+        box-sizing: border-box;
+      ">
+        <% if (state.flash[type].length === 1) { %>
+          <%= state.flash[type][0] %>
+        <% } else { %>
+          <ul style="list-style-type: none; padding: 0; margin: 0;">
+            <% state.flash[type].forEach(message => { %>
+              <li><%= message %></li>
+            <% }); %>
+          </ul>
+        <% } %>
+      </div>
+    <% } %>
+  <% }); %>
+<% } %>

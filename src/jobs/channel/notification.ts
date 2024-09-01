@@ -3,12 +3,13 @@ import { sendEmailNotificationJob } from '../email.job';
 import { NotificationJobData } from '../notification.job';
 import { sendDiscordNotificationJob } from '../discord.job';
 import { sendSmsNotificationJob } from '../sms.job';
+import { sendGeneralEmailJob } from '../general-email.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {
 		const { appId, userId, message, details } = data;
 
-		const app = await db('apps').where({ id: appId, is_active: true }).first();
+		const app = await db('apps').where({ id: appId, is_active: true, user_id: userId }).first();
 
 		if (!app) {
 			console.log('Cannot find active app. Quitting notification job');
@@ -17,14 +18,20 @@ export async function sendNotification(data: NotificationJobData) {
 
 		const user = await db.select('*').from('users').where({ id: userId }).first();
 
-		if (user.is_admin === false) {
+		if (!user.is_admin) {
 			if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
-				console.log('you have reached month quota. please wait until another another!');
-				// TODO: send an email to user
+				console.log('You have reached your monthly quota. Please wait until next month!');
+
+				await sendGeneralEmailJob({
+					email: user.email,
+					subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
+					username: user.username,
+					message: `You have reached your monthly notification quota for the app "${app.name}". Please wait until next month to send more notifications. Thank you for using Notify!`,
+				});
+
 				return;
 			}
 		}
-
 		const appChannels = await db('app_channels')
 			.join('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
 			.where('app_channels.app_id', appId)

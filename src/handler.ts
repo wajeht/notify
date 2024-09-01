@@ -12,7 +12,7 @@ import jwt from 'jsonwebtoken';
 import axios, { AxiosError } from 'axios';
 import { Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
-import { HttpError, UnauthorizedError } from './error';
+import { ForbiddenError, HttpError, NotFoundError, UnauthorizedError } from './error';
 import { sendNotificationJob } from './jobs/notification.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
@@ -265,12 +265,32 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id
 export async function getAppPageHandler(req: Request, res: Response) {
-	const [app] = (await db.select('*').from('apps').where({ id: req.params.id })).map((a) => ({
-		...a,
-		alerts_reset_date: formatDate(a.alerts_reset_date, req.session?.user?.timezone),
-		created_at: formatDate(a.created_at, req.session?.user?.timezone),
-		updated_at: formatDate(a.updated_at, req.session?.user?.timezone),
-	}));
+	const user = req.session?.user;
+
+	const app = await db
+		.select(
+			'apps.*',
+			db.raw(
+				`to_char(apps.alerts_reset_date AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') as alerts_reset_date`,
+				[user?.timezone],
+			),
+			db.raw(`to_char(apps.created_at AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') as created_at`, [
+				user?.timezone,
+			]),
+			db.raw(`to_char(apps.updated_at AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') as updated_at`, [
+				user?.timezone,
+			]),
+		)
+		.from('apps')
+		.where({
+			id: req.params.id,
+			user_id: user?.id,
+		})
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	return res.render('apps-id.html', {
 		app,
@@ -313,6 +333,10 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 	const { id } = req.params;
 
 	const app = await db('apps').where({ id, user_id: req.session?.user?.id }).first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	const newKeyVersion = (app.api_key_version || 0) + 1;
 
@@ -417,7 +441,15 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 	const { id } = req.params;
 	const { message, details } = req.body;
 
-	const app = await db.select('api_key', 'id', 'is_active').from('apps').where({ id }).first();
+	const app = await db
+		.select('api_key', 'id', 'is_active')
+		.from('apps')
+		.where({ id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	if (app.is_active === false) {
 		return res.redirect(`/apps/${id}?toast=🚨 app is not active`);
@@ -454,7 +486,15 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 export async function getAppChannelEditPageHandler(req: Request, res: Response) {
 	const { id, cid, cfid } = req.params;
 
-	const [app] = await db.select('*').from('apps').where({ id });
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	const channel = await db('app_channels')
 		.select('app_channels.*', 'channel_types.name as channel_type_name')
@@ -610,7 +650,15 @@ export async function postUpdateAppChannelEmailHandler(req: Request, res: Respon
 
 // GET '/apps/:id/channels/import'
 export async function getImportAppChannelsPageHandle(req: Request, res: Response) {
-	const app = await db.select('*').from('apps').where({ id: req.params.id }).first();
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id: req.params.id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	return res.render('apps-id-channels-import.html', {
 		app,
@@ -623,14 +671,14 @@ export async function getImportAppChannelsPageHandle(req: Request, res: Response
 export async function postImportAppChannelsConfigHandle(req: Request, res: Response) {
 	const appId = req.params.id;
 	const userId = req.session?.user?.id;
+
 	const { config } = req.body;
 
-	const app = await db
-		.select('*')
-		.from('apps')
-		.where({ id: appId })
-		.andWhere({ user_id: userId })
-		.first();
+	const app = await db.select('*').from('apps').where({ id: appId, user_id: userId }).first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	const channelsToImport = JSON.parse(config);
 
@@ -731,59 +779,79 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 
 // GET /apps/:id/channels
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
-	let app = await db
+	const userTimezone = req.session?.user?.timezone || 'UTC';
+
+	const app = await db
 		.select(
 			'apps.*',
-			db.raw(`
-    COALESCE(
-      json_agg(
-        json_build_object(
-          'id', app_channels.id,
-          'app_id', app_channels.app_id,
-          'channel_type', channel_types.name,
-          'config', CASE
-            WHEN channel_types.name = 'email' THEN
-              json_build_object(
-                'id', email_configs.id,
-                'name', email_configs.name,
-                'is_active', app_channels.is_active,
-                'host', email_configs.host,
-                'port', email_configs.port,
-                'alias', email_configs.alias,
-                'auth_email', email_configs.auth_email,
-                'auth_pass', email_configs.auth_pass,
-                'created_at', email_configs.created_at,
-                'updated_at', email_configs.updated_at
-              )
-            WHEN channel_types.name = 'sms' THEN
-              json_build_object(
-                'id', sms_configs.id,
-                'name', sms_configs.name,
-                'is_active', app_channels.is_active,
-                'account_sid', sms_configs.account_sid,
-                'auth_token', sms_configs.auth_token,
-                'from_phone_number', sms_configs.from_phone_number,
-                'phone_number', sms_configs.phone_number,
-                'created_at', sms_configs.created_at,
-                'updated_at', sms_configs.updated_at
-              )
-            WHEN channel_types.name = 'discord' THEN
-              json_build_object(
-                'id', discord_configs.id,
-                'name', discord_configs.name,
-                'is_active', app_channels.is_active,
-                'webhook_url', discord_configs.webhook_url,
-                'created_at', discord_configs.created_at,
-                'updated_at', discord_configs.updated_at
-              )
-            ELSE NULL
-          END
-        )
-        ORDER BY app_channels.created_at DESC
-      ) FILTER (WHERE app_channels.id IS NOT NULL),
-      '[]'
-    ) as channels
-  `),
+			db.raw(
+				`
+							to_char(apps.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as created_at,
+							to_char(apps.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as updated_at,
+							COALESCE(
+									json_agg(
+											json_build_object(
+													'id', app_channels.id,
+													'app_id', app_channels.app_id,
+													'channel_type', channel_types.name,
+													'created_at', to_char(app_channels.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
+													'updated_at', to_char(app_channels.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
+													'config', CASE
+															WHEN channel_types.name = 'email' THEN
+																	json_build_object(
+																			'id', email_configs.id,
+																			'name', email_configs.name,
+																			'is_active', app_channels.is_active,
+																			'host', email_configs.host,
+																			'port', email_configs.port,
+																			'alias', email_configs.alias,
+																			'auth_email', email_configs.auth_email,
+																			'auth_pass', email_configs.auth_pass,
+																			'created_at', to_char(email_configs.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
+																			'updated_at', to_char(email_configs.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
+																	)
+															WHEN channel_types.name = 'sms' THEN
+																	json_build_object(
+																			'id', sms_configs.id,
+																			'name', sms_configs.name,
+																			'is_active', app_channels.is_active,
+																			'account_sid', sms_configs.account_sid,
+																			'auth_token', sms_configs.auth_token,
+																			'from_phone_number', sms_configs.from_phone_number,
+																			'phone_number', sms_configs.phone_number,
+																			'created_at', to_char(sms_configs.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
+																			'updated_at', to_char(sms_configs.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
+																	)
+															WHEN channel_types.name = 'discord' THEN
+																	json_build_object(
+																			'id', discord_configs.id,
+																			'name', discord_configs.name,
+																			'is_active', app_channels.is_active,
+																			'webhook_url', discord_configs.webhook_url,
+																			'created_at', to_char(discord_configs.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
+																			'updated_at', to_char(discord_configs.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
+																	)
+															ELSE NULL
+													END
+											)
+											ORDER BY app_channels.created_at DESC
+									) FILTER (WHERE app_channels.id IS NOT NULL),
+									'[]'
+							) as channels
+					`,
+				[
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+					userTimezone,
+				],
+			),
 		)
 		.from('apps')
 		.leftJoin('app_channels', 'apps.id', 'app_channels.app_id')
@@ -791,23 +859,13 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 		.leftJoin('email_configs', 'app_channels.id', 'email_configs.app_channel_id')
 		.leftJoin('sms_configs', 'app_channels.id', 'sms_configs.app_channel_id')
 		.leftJoin('discord_configs', 'app_channels.id', 'discord_configs.app_channel_id')
-		.where('apps.id', req.params.id)
+		.where({ 'apps.id': req.params.id, 'apps.user_id': req.session?.user?.id })
 		.groupBy('apps.id')
 		.first();
 
-	app = {
-		...app,
-		channels: app.channels.map((c: any) => ({
-			...c,
-			created_at: formatDate(c.created_at, req.session?.user?.timezone),
-			updated_at: formatDate(c.updated_at, req.session?.user?.timezone),
-			config: {
-				...c.config,
-				created_at: formatDate(c.config.created_at, req.session?.user?.timezone),
-				updated_at: formatDate(c.config.updated_at, req.session?.user?.timezone),
-			},
-		})),
-	};
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	return res.render('apps-id-channels.html', {
 		app,
@@ -818,7 +876,15 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 
 // GET /apps/:id/channels/create
 export async function getNewAppChannelPageHandler(req: Request, res: Response) {
-	const [app] = await db.select('*').from('apps').where({ id: req.params.id });
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id: req.params.id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	return res.render('apps-id-channels-create.html', {
 		app,
@@ -936,8 +1002,15 @@ export async function postCreateAppEmailChannelConfigHandler(req: Request, res: 
 
 // GET /apps/:id/settings
 export async function getAppSettingsPageHandler(req: Request, res: Response) {
-	const { id } = req.params;
-	const app = await db.select('*').from('apps').where({ id }).first();
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id: req.params.id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	return res.render('apps-id-settings.html', {
 		app,
@@ -952,7 +1025,18 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 	const perPage = parseInt(req.query.perPage as string) || 10;
 	const currentPage = parseInt(req.query.page as string) || 1;
 
-	const app = await db.select('apps.*').from('apps').where('apps.id', appId).first();
+	const app = await db
+		.select('apps.*')
+		.from('apps')
+		.where({
+			'apps.id': appId,
+			user_id: req.session?.user?.id,
+		})
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	const result = await db('notifications')
 		.where('app_id', appId)

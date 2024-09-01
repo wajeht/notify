@@ -56,18 +56,15 @@ export async function postNotificationHandler(req: Request, res: Response) {
 
 	await sendNotificationJob({ appId, message, details, userId });
 
-	return res.json({
+	return res.status(200).json({
 		message: 'Notification queued successfully',
 	});
 }
 
 // GET /settings
 export async function getSettingsPageHandler(req: Request, res: Response) {
-	const userId = req.session?.user?.id;
-	const user = await db.select('*').from('users').where({ id: userId }).first();
-
 	return res.render('settings-account.html', {
-		user,
+		user: req.session?.user,
 		path: '/settings',
 		layout: '../layouts/settings.html',
 	});
@@ -75,11 +72,8 @@ export async function getSettingsPageHandler(req: Request, res: Response) {
 
 // GET /settings/account
 export async function getSettingsAccountPageHandler(req: Request, res: Response) {
-	const userId = req.session?.user?.id;
-	const user = await db.select('*').from('users').where({ id: userId }).first();
-
 	return res.render('settings-account.html', {
-		user,
+		user: req.session?.user,
 		path: '/settings/account',
 		layout: '../layouts/settings.html',
 	});
@@ -107,11 +101,8 @@ export async function postSettingsAccountHandler(req: Request, res: Response) {
 
 // GET /settings/danger-zone
 export async function getSettingsDangerZonePageHandler(req: Request, res: Response) {
-	const userId = req.session?.user?.id;
-	const user = await db.select('*').from('users').where({ id: userId }).first();
-
 	return res.render('settings-danger-zone.html', {
-		user,
+		user: req.session?.user,
 		path: '/settings/danger-zone',
 		layout: '../layouts/settings.html',
 	});
@@ -290,7 +281,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 
 // POST /apps/:id/delete
 export async function postDeleteAppHandler(req: Request, res: Response) {
-	await db('apps').where({ id: req.params.id }).del();
+	await db('apps').where({ id: req.params.id, user_id: req.session?.user?.id }).del();
 
 	return res.redirect('/apps?toast=🗑️ deleted');
 }
@@ -304,7 +295,7 @@ export async function postAppUpdateHandler(req: Request, res: Response) {
 	const is_active = req.body.is_active === 'on' ? true : false;
 
 	await db('apps')
-		.where({ id })
+		.where({ id, user_id: req.session?.user?.id })
 		.update({
 			is_active,
 			name,
@@ -321,7 +312,7 @@ export async function postAppUpdateHandler(req: Request, res: Response) {
 export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 	const { id } = req.params;
 
-	const app = await db('apps').where({ id }).first();
+	const app = await db('apps').where({ id, user_id: req.session?.user?.id }).first();
 
 	const newKeyVersion = (app.api_key_version || 0) + 1;
 
@@ -333,7 +324,7 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 
 	const apiKey = jwt.sign(payload, appConfig.apiKeySecret, { expiresIn: '1y' });
 
-	await db('apps').where({ id }).update({
+	await db('apps').where({ id, user_id: req.session?.user?.id }).update({
 		api_key: apiKey,
 		api_key_version: newKeyVersion,
 		api_key_created_at: db.fn.now(),
@@ -344,10 +335,12 @@ export async function postCreateAppApiKeyHandler(req: Request, res: Response) {
 
 // GET /apps/:id/edit
 export async function getAppEditPageHandler(req: Request, res: Response) {
-	const [app] = await db
+	const app = await db
 		.select('*')
 		.from('apps')
-		.where({ id: parseInt(req.params.id!) });
+		.where({ id: req.params.id, user_id: req.session?.user?.id })
+		.first();
+
 	return res.render('apps-id-edit.html', {
 		app,
 		layout: '../layouts/app.html',

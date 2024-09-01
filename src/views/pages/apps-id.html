@@ -48,18 +48,18 @@
 
     <div style="display: flex; gap: 20px;">
       <button class="no-style-btn" onclick="document.getElementById(`test-notification-<% app.id %>-modal`).showModal()">🚀 Run test notification</button>
-      <dialog id="test-notification-<% app.id %>-modal">
+      <dialog id="test-notification-<% app.id %>-modal" style="width: 400px;">
         <h2>🔔 Test Notification</h2>
         <form id="notificationForm" style="display: flex; flex-direction: column; gap: 5px;" method="post" action="/apps/<%= app.id %>/notifications/test">
           <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
           <div style="display: flex; flex-direction: column; gap: 5px;">
-            <label for="message">Message:</label>
+            <label for="message">Message<span style="color: red;">*</span></label>
             <input type="text" id="message" name="message" required>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 5px;">
-            <label for="message">Details:</label>
+            <label for="message">Details</label>
             <textarea name="details" id="details"></textarea>
           </div>
 
@@ -151,16 +151,26 @@
           </div>
 
           <div style="display: flex; align-items: center; gap: 10px;">
-            <form action="/apps/<%= app.id %>/create-api-key" method="post">
-              <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
-              <button type="submit" class="no-style-btn">
-                <% if (app.api_key_version > 0) {  %>
-                  <span>🔄 Regenerate</span>
-                <% } else { %>
-                  <span>➕ Generate</span>
-                <% } %>
-              </button>
-            </form>
+            <% if (app.api_key_version > 0) {  %>
+              <button class="no-style-btn" onclick="document.getElementById('regenerate-modal').showModal()">🔄 Regenerate</button>
+              <dialog id="regenerate-modal" style="width: 400px;">
+                <h2>🔄 Regenerate</h2>
+                <p>This will invalidate the old key! Are you sure you want to regenerate a new api key? </p>
+                <form action="/apps/<%= app.id %>/create-api-key" method="post">
+                  <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+
+                  <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
+                    <button type="submit">🔄 Regenerate</button>
+                  </div>
+                </form>
+              </dialog>
+            <% } else { %>
+              <form action="/apps/<%= app.id %>/create-api-key" method="post">
+                <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+                <button type="submit">➕ Generate</button>
+              </form>
+            <% } %>
 
             <% if (app.api_key) { %>
               <button onclick="viewApiKey()" class="no-style-btn">👁️ View</button>

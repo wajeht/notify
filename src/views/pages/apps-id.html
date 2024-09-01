@@ -155,7 +155,7 @@
               <button class="no-style-btn" onclick="document.getElementById('regenerate-modal').showModal()">🔄 Regenerate</button>
               <dialog id="regenerate-modal" style="width: 400px;">
                 <h2>🔄 Regenerate</h2>
-                <p>This will invalidate the old key! Are you sure you want to regenerate a new api key?</p>
+                <p>This action will invalidate the current key. Are you sure you want to generate a new API key?</p>
                 <form action="/apps/<%= app.id %>/create-api-key" method="post">
                   <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 

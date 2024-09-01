@@ -18,16 +18,16 @@
       <% app.channels.forEach(channel => { %>
         <div style="border: dashed; border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
           <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px;">
-            <div><strong>ID:</strong></div>
+            <div><strong>🏷️ ID:</strong></div>
             <div><%= channel.id %></div>
 
-            <div><strong>Name:</strong></div>
+            <div><strong>🔤 Name:</strong></div>
             <div style="word-break: break-all;"><%= channel.config.name %></div>
 
-            <div><strong>Type:</strong></div>
+            <div><strong>📡 Type:</strong></div>
             <div><%= channel.channel_type === 'email' ? '✉️ Email' : channel.channel_type === 'discord' ? '💬 Discord' : '📱 SMS' %></div>
 
-            <div><strong>Status:</strong></div>
+            <div><strong>🚦 Status:</strong></div>
             <div
               style="
                 height: fit-content;

@@ -33,13 +33,18 @@ shell:
 	@docker compose -f docker-compose.dev.yml exec notify sh
 
 db-migrate:
-	@docker compose -f docker-compose.dev.yml exec notify npm run migrate:latest
+	@docker compose -f docker-compose.dev.yml exec notify npm run db:migrate:latest
 
 db-rollback:
-	@docker compose -f docker-compose.dev.yml exec notify npm run migrate:rollback
+	@docker compose -f docker-compose.dev.yml exec notify npm run db:migrate:rollback
 
 db-seed:
-	@docker compose -f docker-compose.dev.yml exec notify npm run seed:run
+	@docker compose -f docker-compose.dev.yml exec notify npm run db:seed:run
+
+db-reset:
+	make db-rollback
+	make db-migrate
+	make db-seed
 
 up:
 	@docker compose -f docker-compose.dev.yml up

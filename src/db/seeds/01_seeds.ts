@@ -61,11 +61,7 @@ export async function seed(knex: Knex): Promise<void> {
 	const appIds = await knex('apps').insert(apps).returning('id');
 
 	// Seed channel types
-	const channelTypes = [
-		'email',
-		// 'sms',
-		// 'discord'
-	].map((name) => ({
+	const channelTypes = ['email', 'sms', 'discord'].map((name) => ({
 		name,
 		created_at: faker.date.past(),
 		updated_at: faker.date.recent(),
@@ -73,17 +69,17 @@ export async function seed(knex: Knex): Promise<void> {
 
 	const channelTypeIds = await knex('channel_types').insert(channelTypes).returning('*');
 
-	// Seed app channels
-	const appChannels = appIds.flatMap((app) =>
-		channelTypeIds.map((channelType) => ({
-			app_id: app.id,
-			channel_type_id: channelType.id,
-			// is_active: faker.datatype.boolean(),
-			is_active: true,
-			created_at: faker.date.past(),
-			updated_at: faker.date.recent(),
-		})),
-	);
+	// Find the email channel type
+	const emailChannelType = channelTypeIds.find((channelType) => channelType.name === 'email');
+
+	// Seed app channels (only email)
+	const appChannels = appIds.map((app) => ({
+		app_id: app.id,
+		channel_type_id: emailChannelType.id,
+		is_active: true,
+		created_at: faker.date.past(),
+		updated_at: faker.date.recent(),
+	}));
 
 	const appChannelIds = await knex('app_channels').insert(appChannels).returning('id');
 

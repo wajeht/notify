@@ -12,10 +12,10 @@ import jwt from 'jsonwebtoken';
 import axios, { AxiosError } from 'axios';
 import { Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
-import { ForbiddenError, HttpError, NotFoundError, UnauthorizedError } from './error';
 import { sendNotificationJob } from './jobs/notification.job';
-import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
+import { HttpError, NotFoundError, UnauthorizedError } from './error';
+import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -499,14 +499,27 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 	const channel = await db('app_channels')
 		.select('app_channels.*', 'channel_types.name as channel_type_name')
 		.leftJoin('channel_types', 'app_channels.channel_type_id', 'channel_types.id')
-		.where({ 'app_channels.id': cid, 'app_channels.app_id': id })
+		.leftJoin('apps', 'apps.id', 'app_channels.app_id')
+		.where({
+			'app_channels.id': cid,
+			'app_channels.app_id': id,
+			'apps.user_id': req.session?.user?.id,
+		})
 		.first();
+
+	if (!channel) {
+		throw NotFoundError();
+	}
 
 	let config = await db
 		.select('*')
 		.from(`${channel.channel_type_name}_configs`)
 		.where({ id: cfid })
 		.first();
+
+	if (!config) {
+		throw NotFoundError();
+	}
 
 	if (channel.channel_type_name === 'discord') {
 		const webhook_url = secret().decrypt((config as DiscordConfig).webhook_url);

@@ -9,7 +9,7 @@ import { appConfig, oauthConfig } from './config';
 import { sendNotificationJob } from './jobs/notification.job';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
-import { catchAsyncErrorMiddleware, validateRequestMiddleware } from 'middleware';
+import { catchAsyncErrorMiddleware, validateRequestMiddleware } from './middleware';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
 
 // GET /healthz

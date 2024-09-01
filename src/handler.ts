@@ -1160,27 +1160,30 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 }
 
 // POST /apps
-export async function postCreateAppHandler(req: Request, res: Response) {
-	const { name, is_active, description, url } = req.body;
-	const user = req.session?.user;
+export const postCreateAppHandler = [
+	validateRequestMiddleware([body('name').trim().notEmpty().withMessage('name is required')]),
+	catchAsyncErrorMiddleware(async (req: Request, res: Response) => {
+		const { name, is_active, description, url } = req.body;
+		const user = req.session?.user;
 
-	const now = dayjs().tz(user?.timezone);
-	const alertsResetDate = now.add(1, 'month').startOf('month').toDate();
+		const now = dayjs().tz(user?.timezone);
+		const alertsResetDate = now.add(1, 'month').startOf('month').toDate();
 
-	const [app] = await db('apps')
-		.insert({
-			user_id: user?.id,
-			name,
-			url,
-			description,
-			is_active: is_active === 'on',
-			alerts_sent_this_month: 0,
-			alerts_reset_date: alertsResetDate,
-		})
-		.returning('*');
+		const [app] = await db('apps')
+			.insert({
+				user_id: user?.id,
+				name,
+				url,
+				description,
+				is_active: is_active === 'on',
+				alerts_sent_this_month: 0,
+				alerts_reset_date: alertsResetDate,
+			})
+			.returning('*');
 
-	return res.redirect(`/apps/${app.id}?toast=🎉 created`);
-}
+		return res.redirect(`/apps/${app.id}?toast=🎉 created`);
+	}),
+];
 
 // GET /logout
 export function getLogoutHandler(req: Request, res: Response) {

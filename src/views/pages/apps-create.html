@@ -12,17 +12,29 @@
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
       <label for="name">🔤 Name<span style="color: red;">*</span></label>
-      <input type="text" id="name" name="name" required placeholder="name" style="width: 100%;">
+      <input type="text" id="name" name="name" placeholder="name" style="width: 100%;" required>
+
+      <% if (state.errors.name) { %>
+        <small style="color: red;"><%= state.errors.name %></small>
+      <% } %>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
       <label for="url">🌐 Url</label>
       <input type="url" id="url" name="url" placeholder="https://example.com" pattern="https://.*" style="width: 100%;">
+
+      <% if (state.errors.url) { %>
+        <small style="color: red;"><%= state.errors.url %></small>
+      <% } %>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 5px;">
       <label for="description">📝 Description</label>
       <textarea name="description" id="description" rows="4" placeholder="description" style="width: 100%;"></textarea>
+
+      <% if (state.errors.description) { %>
+        <small style="color: red;"><%= state.errors.description %></small>
+      <% } %>
     </div>
 
     <div>

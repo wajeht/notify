@@ -124,12 +124,7 @@ router.get(
 	catchAsyncErrorMiddleware(getAppsPageHandler),
 );
 
-router.post(
-	'/apps',
-	authenticationMiddleware,
-	csrfMiddleware,
-	catchAsyncErrorMiddleware(postCreateAppHandler),
-);
+router.post('/apps', authenticationMiddleware, csrfMiddleware, postCreateAppHandler);
 
 router.get(
 	'/apps/create',

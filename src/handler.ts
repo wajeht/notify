@@ -482,7 +482,7 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 	return res.redirect(`/apps/${id}?toast=🎉 notification queued successfully`);
 }
 
-// GET '/apps/:aid/channels/:cid/configs/:cfid/edit'
+// GET '/apps/:id/channels/:cid/configs/:cfid/edit'
 export async function getAppChannelEditPageHandler(req: Request, res: Response) {
 	const { id, cid, cfid } = req.params;
 
@@ -568,12 +568,22 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 	});
 }
 
-// POST '/apps/:aid/channels/:cid/configs/:cfid/sms'
+// POST '/apps/:id/channels/:cid/configs/:cfid/sms'
 export async function postUpdateAppChannelSMSHandler(req: Request, res: Response) {
 	const { id, cfid, cid } = req.params;
 
 	// eslint-disable-next-line prefer-const
 	let { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
+
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	account_sid = secret().encrypt(account_sid);
 	auth_token = secret().encrypt(auth_token);
@@ -601,10 +611,20 @@ export async function postUpdateAppChannelSMSHandler(req: Request, res: Response
 	return res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
-// POST '/apps/:aid/channels/:cid/configs/:cfid/discord'
+// POST '/apps/:id/channels/:cid/configs/:cfid/discord'
 export async function postUpdateAppChannelDiscordHandler(req: Request, res: Response) {
 	const { id, cfid, cid } = req.params;
 	const { name, is_active, webhook_url } = req.body;
+
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	const hashedWebhookUrl = secret().encrypt(webhook_url);
 
@@ -626,12 +646,22 @@ export async function postUpdateAppChannelDiscordHandler(req: Request, res: Resp
 	return res.redirect(`/apps/${id}/channels?toast=🔄 updated`);
 }
 
-// POST '/apps/:aid/channels/:cid/configs/:cfid/email'
+// POST '/apps/:id/channels/:cid/configs/:cfid/email'
 export async function postUpdateAppChannelEmailHandler(req: Request, res: Response) {
 	const { id, cfid, cid } = req.params;
 
 	// eslint-disable-next-line prefer-const
 	let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+
+	const app = await db
+		.select('*')
+		.from('apps')
+		.where({ id, user_id: req.session?.user?.id })
+		.first();
+
+	if (!app) {
+		throw NotFoundError();
+	}
 
 	host = secret().encrypt(host);
 	port = secret().encrypt(port);

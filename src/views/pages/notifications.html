@@ -78,10 +78,17 @@
         <p>💬 <%= n.message %></p>
       </div>
 
-      <details>
-        <summary>🔍 Details</summary>
-        <pre><%= n.details %></pre>
-      </details>
+      <div style="display: flex; gap: 20px; position: relative;">
+        <details>
+          <summary>🔍 Details</summary>
+          <pre><%= n.details %></pre>
+        </details>
+
+        <details>
+          <summary>📄 JSON</summary>
+          <pre><%= JSON.stringify(n, null, 2) %></pre>
+        </details>
+      </div>
     </div>
   <% }) %>
 

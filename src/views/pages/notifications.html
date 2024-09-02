@@ -58,7 +58,7 @@
   </div>
 
   <% notifications.forEach(n => { %>
-    <div style="border-radius: 5px; border: dashed; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px; <%= n.read_at === null ? 'border: 2px dashed;' : 'border: 1px dashed;' %> ">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <a href="/apps/<%= n.app_id %>">📱 <%= n.app_name %></a>
 

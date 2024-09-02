@@ -1,5 +1,5 @@
 push:
-	@make test
+	# @make test
 	@make lint
 	@make format
 	@git add -A

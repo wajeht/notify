@@ -9,7 +9,7 @@
 		"dev": "export APP_ENV=development && npm run db:prepare:dev && tsx watch --no-warnings --clear-screen=false ./src/server.ts",
 		"build:server": "tsc",
 		"build": "npm run build:server",
-		"test": "echo 'not yet'",
+		"test": "npx playwright test",
 		"test:coverage": "echo 'not yet'",
 		"format:check": "prettier --check .",
 		"format:verbose": "prettier --write --cache .",
@@ -67,6 +67,7 @@
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^8.4.1",
+		"@playwright/test": "^1.46.1",
 		"@tailwindcss/typography": "^0.5.14",
 		"@types/bcrypt": "^5.0.2",
 		"@types/compression": "^1.7.5",

@@ -131,3 +131,7 @@ dist
 
 ./src/scratch.js
 src/scratch.js
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

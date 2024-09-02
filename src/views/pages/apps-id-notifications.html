@@ -41,7 +41,7 @@
   </div>
 
   <% app.notifications.forEach(n => { %>
-    <div style="border-radius: 5px; border: dashed; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+    <div style="border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px; <%= n.read_at === null ? 'border: 2px dashed;' : 'border: 1px dashed;' %> ">
 
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
         <div style="display: flex; align-items: baseline; gap: 20px;">

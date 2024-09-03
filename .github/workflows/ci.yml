@@ -12,15 +12,15 @@ env:
   APP_URL: 'localhost'
 
   # redis
-  REDIS_HOST: 'redis'
+  REDIS_HOST: 'localhost'
   REDIS_PORT: 6379
   REDIS_PASSWORD: 'password'
 
   # database
   DB_PORT: 5432
-  DB_HOST: 'postgres'
-  DB_USERNAME: 'username'
-  DB_PASSWORD: 'password'
+  DB_HOST: 'localhost'
+  DB_USERNAME: 'postgres'
+  DB_PASSWORD: 'postgres'
   DB_DATABASE: 'database'
 
   # email
@@ -40,6 +40,31 @@ jobs:
   unit-test:
     name: Unit tests
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     strategy:
       matrix:
@@ -66,6 +91,31 @@ jobs:
     timeout-minutes: 60
     name: Browser tests
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: database
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v4

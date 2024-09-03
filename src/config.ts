@@ -5,7 +5,7 @@ import { Env } from './types';
 dotenv.config({ path: path.resolve(path.join(process.cwd(), '.env')) });
 
 export const appConfig = {
-	port: parseInt(process.env.APP_PORT || '80', 10),
+	port: parseInt(process.env.APP_PORT || '8080', 10),
 	env: (process.env.APP_ENV as Env) || 'development',
 	appUrl: process.env.APP_URL || '',
 	adminEmail: process.env.APP_ADMIN_EMAIL || '',

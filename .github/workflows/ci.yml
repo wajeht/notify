@@ -84,6 +84,9 @@ jobs:
       - name: Install dependencies
         run: npm i
 
+      - name: Rollback database
+        run: npm run db:migrate:rollback
+
       - name: Migrate dev database
         run: npm run db:prepare:dev
 
@@ -131,6 +134,9 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
+      - name: Rollback database
+        run: npm run db:migrate:rollback
 
       - name: Migrate dev database
         run: npm run db:prepare:dev

@@ -85,7 +85,7 @@ jobs:
         run: npm i
 
       - name: Migrate dev database
-        run: npm run db:migrate:dev
+        run: npm run db:prepare:dev
 
       - name: Test codes
         run: npm run test:coverage
@@ -133,7 +133,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Migrate dev database
-        run: npm run db:migrate:dev
+        run: npm run db:prepare:dev
 
       - name: Run Playwright tests
         run: npx playwright test

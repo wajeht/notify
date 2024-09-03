@@ -5,53 +5,6 @@ on:
     branches: [main]
   pull_request:
 
-env:
-  # app
-  APP_PORT: 80
-  APP_ENV: 'development'
-  APP_URL: 'localhost'
-  APP_ADMIN_EMAIL: "deeznutz@gmail.com"
-  APP_API_KEY_SECRET: "notify"
-  APP_SECRET_SALT: "notify"
-
-  # redis
-  REDIS_HOST: 'localhost'
-  REDIS_PORT: 6379
-  REDIS_PASSWORD: 'password'
-
-  # session
-  SESSION_STORE_PREFIX: "deez"
-  SESSION_SECRET: "nutz"
-  SESSION_DOMAIN: "localhost" # needs to be domain.com without http or https
-
-  # database
-  DB_PORT: 5432
-  DB_HOST: 'localhost'
-  DB_USERNAME: 'postgres'
-  DB_PASSWORD: 'postgres'
-  DB_DATABASE: 'database'
-
-  # github
-  GITHUB_REDIRECT_URL: "http://localhost/oauth/github/redirect"
-  GITHUB_CLIENT_ID: "deez"
-  GITHUB_CLIENT_SECRET: "nutz"
-
-  # email
-  EMAIL_HOST: 'mailhot'
-  EMAIL_PORT: 1025
-  EMAIL_ALIAS: 'mail@jaw.dev'
-  EMAIL_AUTH_EMAIL: 'name@email.com'
-  EMAIL_AUTH_PASS: 'password'
-
-  # twilio
-  TWILIO_ACCOUNT_SID: ''
-  TWILIO_AUTH_TOKEN: ''
-  TWILIO_FROM_PHONE_NUMBER: ''
-  TWILIO_PHONE_NUMBER: ''
-
-  # discord
-  DISCORD_WEBHOOK_URL: ''
-
 jobs:
   unit-test:
     name: Unit tests
@@ -93,6 +46,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+
+      - name: Create .env file from .env.example
+        run: cp .env.example .env
 
       - name: Install dependencies
         run: npm i
@@ -136,11 +92,20 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    strategy:
+      matrix:
+        node-version: [22.x]
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Create .env file from .env.example
+        run: cp .env.example .env
 
       - name: Install dependencies
         run: npm ci

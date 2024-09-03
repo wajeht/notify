@@ -11,4 +11,5 @@ src/views/pages/*
 dist/*
 dist
 node_modules/*
+playwright-report/*
 node_modules

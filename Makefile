@@ -11,14 +11,11 @@ fix-git:
 	@git add .
 	@git commit -m "Untrack files in .gitignore"
 
-test:
+test-unit:
 	@docker compose -f docker-compose.dev.yml exec notify npm run test
 
-test-ete:
-	@docker compose -f docker-compose.dev.yml exec notify npm run test:ete
-
-test-w:
-	@docker compose -f docker-compose.dev.yml exec notify npm run test:watch
+test-browser:
+	@docker compose -f docker-compose.dev.yml exec notify npm run test:browser:headless
 
 format:
 	@docker compose -f docker-compose.dev.yml exec notify npm run format

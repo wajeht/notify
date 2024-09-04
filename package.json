@@ -12,7 +12,9 @@
 		"test:unit": "echo 'not yet'",
 		"test:browser:headless": "npx playwright test",
 		"test:browser": "npx playwright test --ui",
-		"test:coverage": "echo 'not yet'",
+		"test:watch": "NODE_ENV=testing  vitest",
+		"test": "NODE_ENV=testing vitest --run",
+		"test:coverage": "NODE_ENV=testing vitest run --coverage",
 		"format:check": "prettier --check .",
 		"format:verbose": "prettier --write --cache .",
 		"format": "prettier --write --cache . > /dev/null",
@@ -91,6 +93,7 @@
 		"ioredis-mock": "^8.9.0",
 		"prettier": "^3.3.3",
 		"tsx": "^4.16.5",
-		"typescript": "^5.5.4"
+		"typescript": "^5.5.4",
+		"vitest": "^2.0.5"
 	}
 }

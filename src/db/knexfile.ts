@@ -21,8 +21,12 @@ const knexConfig: Knex.Config = {
 	// debug: developmentEnvironmentOnly,
 	seeds: { directory: path.resolve(__dirname, './seeds') },
 	pool: {
-		min: 0,
+		min: 2,
 		max: 10,
+		acquireTimeoutMillis: 30000, // 30 seconds
+		createTimeoutMillis: 30000, // 30 seconds
+		idleTimeoutMillis: 30000, // 30 seconds
+		reapIntervalMillis: 1000, // 1 second
 		afterCreate: (conn: any, done: (err: Error | null, conn: any) => void) => {
 			console.info('New database connection established');
 			done(null, conn);

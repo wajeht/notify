@@ -423,7 +423,9 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 
 	await db('notifications').where({ id: nid }).del();
 
-	return res.redirect(`/apps/${id}/notifications?toast=🗑️ deleted`);
+	req.flash('info', '🗑️ deleted');
+
+	return res.redirect('back');
 }
 
 // POST '/apps/:aid/notifications/:nid/read

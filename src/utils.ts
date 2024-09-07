@@ -10,6 +10,7 @@ import { Redis } from 'ioredis';
 import { Request } from 'express';
 import utc from 'dayjs/plugin/utc';
 import nodemailer from 'nodemailer';
+import { logger } from './logger';
 import { db, redis } from './db/db';
 import { Queue, Worker, Job } from 'bullmq';
 import timezone from 'dayjs/plugin/timezone';

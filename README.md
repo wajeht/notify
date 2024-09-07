@@ -19,26 +19,26 @@ web 2.0 style notification systems for discord, email, and sms
 # ✅ Todo
 
 - [x] ~~pagination on jobs page~~
+- ~~[x] infer types from validation to handler - 🤔 maybe use zod?~~
+- [x] ~~search on apps page~~
+- [x] ~~search on apps page~~
 - [x] pagination on notifications page
 - [x] pagination on app notifications page
 - [x] pagination on apps page
 - [x] filters on apps page
-- [x] ~~search on apps page~~
-- [x] ~~search on apps page~~
 - [x] post notifications with api auth
 - [x] marketing page
 - [x] emoji
 - [x] csrf
 - [x] encrypt all configs
 - [x] basic faqs
+- [x] performance tuning - sql/handlers
 - [ ] self hosted docs
 - [ ] tests
 - [ ] adjust styles for mobile
 - [ ] validations on all routes
 - [ ] rbac on all handlers
-- [ ] performance tuning - sql/handlers
 - [ ] structure logging instead of console.log - use pino
-- [ ] infer types from validation to handler - 🤔 maybe use zod?
 
 # 📑 Docs
 

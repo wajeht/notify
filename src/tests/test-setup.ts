@@ -1,2 +1,1 @@
-import { logger } from '../utils';
-logger.info('test-setup.ts');
+console.log('test-setup.ts');

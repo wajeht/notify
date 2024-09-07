@@ -412,7 +412,17 @@ export async function getAppEditPageHandler(req: Request, res: Response) {
 export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 	const { aid, cid } = req.params;
 
-	await db('app_channels').where({ id: cid }).del();
+	await db('app_channels')
+		.where('app_channels.id', cid)
+		.andWhere(function () {
+			this.whereExists(function () {
+				this.select('apps.id')
+					.from('apps')
+					.where('apps.id', aid)
+					.andWhere('apps.user_id', req.session?.user?.id);
+			});
+		})
+		.delete();
 
 	return res.redirect(`/apps/${aid}/channels?toast=🗑️ deleted`);
 }
@@ -421,7 +431,17 @@ export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 export async function postDeleteAppNotificationHandler(req: Request, res: Response) {
 	const { id, nid } = req.params;
 
-	await db('notifications').where({ id: nid }).del();
+	await db('notifications')
+		.where('notifications.id', nid)
+		.andWhere(function () {
+			this.whereExists(function () {
+				this.select('apps.id')
+					.from('apps')
+					.where('apps.id', id)
+					.andWhere('apps.user_id', req.session?.user?.id);
+			});
+		})
+		.delete();
 
 	req.flash('info', '🗑️ deleted');
 

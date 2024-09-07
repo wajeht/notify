@@ -76,7 +76,7 @@ export const exportUserDataJob = setupJob<ExportUserDataJobData>(
 			logger.info(result);
 		} catch (error) {
 			logger.error('failed to process exportUserDataJob job:', error);
-			throw error;
+			// throw error;
 		}
 	},
 );

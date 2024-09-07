@@ -1,5 +1,6 @@
 import { sendNotification } from './channel/notification';
-import { setupJob, logger } from '../utils';
+import { setupJob } from '../utils';
+import { logger } from '../logger';
 
 export interface NotificationJobData {
 	userId: number;

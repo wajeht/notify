@@ -1,5 +1,5 @@
 import { db } from '../../db/db';
-import { logger } from '../../utils';
+import { logger } from '../../logger';
 import { sendEmailNotificationJob } from '../email.job';
 import { NotificationJobData } from '../notification.job';
 import { sendDiscordNotificationJob } from '../discord.job';

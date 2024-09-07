@@ -3,7 +3,8 @@ import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
 import { db, redis } from './db/db';
-import { runMigrations, logger } from './utils';
+import { runMigrations } from './utils';
+import { logger } from './logger';
 import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
 
 const server: Server = app.listen(appConfig.port);

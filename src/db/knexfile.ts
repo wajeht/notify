@@ -1,5 +1,4 @@
 import path from 'node:path';
-import { logger } from '../utils';
 import type { Knex } from 'knex';
 import { databaseConfig, appConfig } from '../config';
 
@@ -24,7 +23,7 @@ const knexConfig: Knex.Config = {
 		min: 2,
 		max: 10,
 		afterCreate: (conn: any, done: (err: Error | null, conn: any) => void) => {
-			logger.info('New database connection established');
+			console.log('New database connection established');
 			done(null, conn);
 		},
 	},

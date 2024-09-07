@@ -1,5 +1,6 @@
 import { sendSms } from './channel/sms';
-import { setupJob, logger } from '../utils';
+import { setupJob } from '../utils';
+import { logger } from '../logger';
 import { SmsConfig } from '../types';
 
 export interface SmsNotificationJobData {

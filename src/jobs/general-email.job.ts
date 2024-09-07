@@ -1,5 +1,5 @@
-import { sendGeneralEmail } from '../utils';
-import { setupJob, logger } from '../utils';
+import { setupJob, sendGeneralEmail } from '../utils';
+import { logger } from '../logger';
 
 export interface GeneralEmailJobData {
 	email: string;

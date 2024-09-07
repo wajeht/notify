@@ -1,5 +1,6 @@
 import { DiscordNotificationJobData } from '../discord.job';
-import { secret, logger } from '../../utils';
+import { secret } from '../../utils';
+import { logger } from '../../logger';
 
 type Params = {
 	username: string;

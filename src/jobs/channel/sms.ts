@@ -1,4 +1,4 @@
-import { logger } from '../../utils';
+import { logger } from '../../logger';
 import twilio from 'twilio';
 import { SmsNotificationJobData } from '../sms.job';
 

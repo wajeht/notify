@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { logger } from '../utils';
+import { logger } from '../logger';
 import RedisMock from 'ioredis-mock';
 import { redisConfig } from '../config';
 

@@ -1,11 +1,9 @@
 import qs from 'qs';
 import ejs from 'ejs';
-import pino from 'pino';
 import axios from 'axios';
 import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
-import pretty from 'pino-pretty';
 import dayjsModule from 'dayjs';
 import fs from 'node:fs/promises';
 import { Redis } from 'ioredis';
@@ -17,30 +15,6 @@ import { Queue, Worker, Job } from 'bullmq';
 import timezone from 'dayjs/plugin/timezone';
 import { appConfig, emailConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
-
-export const logger = pino(
-	{
-		level: process.env.PINO_LOG_LEVEL || 'info',
-		formatters: {
-			level: (label) => ({ level: label }),
-		},
-		timestamp: pino.stdTimeFunctions.isoTime,
-	},
-	pino.multistream([
-		{
-			stream: pino.destination(
-				`${path.resolve(process.cwd())}/logs/${new Date().toISOString().split('T')[0]}.log`,
-			),
-		},
-		{
-			stream: pretty({
-				translateTime: 'yyyy-mm-dd HH:MM:ss TT',
-				colorize: true,
-				ignore: 'hostname,pid',
-			}),
-		},
-	]),
-);
 
 export function dayjs(date: string | Date = new Date()) {
 	dayjsModule.extend(utc);

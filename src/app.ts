@@ -6,7 +6,6 @@ import {
 	rateLimitMiddleware,
 	sessionMiddleware,
 } from './middleware';
-
 import ejs from 'ejs';
 import cors from 'cors';
 import path from 'node:path';

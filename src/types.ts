@@ -1,5 +1,3 @@
-export type Env = 'production' | 'development' | 'testing';
-
 declare module 'express-session' {
 	interface SessionData {
 		user?: User;
@@ -16,6 +14,8 @@ declare global {
 		}
 	}
 }
+
+export type Env = 'production' | 'development' | 'testing';
 
 export type ApiKeyPayload = {
 	appId: string;

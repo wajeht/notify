@@ -6,8 +6,8 @@ import { verifyApiKey } from './utils';
 import { NotFoundError } from './error';
 import rateLimit from 'express-rate-limit';
 import connectRedisStore from 'connect-redis';
-import { sessionConfig, appConfig } from './config';
 import rateLimitRedisStore from 'rate-limit-redis';
+import { sessionConfig, appConfig } from './config';
 import { validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
 
@@ -106,8 +106,6 @@ export const validateRequestMiddleware = (schemas: any) => {
 				return acc;
 			}, {});
 
-			console.log(errors);
-
 			// Note: is this a good idea? maybe we jus disable a toast since we already all errors state.input?
 			// req.flash('error', Object.values(reshapedErrors));
 			req.session.errors = reshapedErrors;
@@ -200,6 +198,7 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 
 			res.locals.state['unread_apps_notification_count'] = unread_apps_notification_count;
 
+			// adding unread notification counts and channel counts to app id layout
 			const appIdMatch = req.path.match(/^\/apps\/(\d+)/);
 			if (appIdMatch && req.method === 'GET') {
 				// @ts-expect-error

@@ -68,12 +68,13 @@ export const exportUserDataJob = setupJob<ExportUserDataJobData>(
 				);
 
 				result.push({
-					appName: app.name,
+					name: app.name,
+					url: app.url,
+					description: app.description,
+					is_active: app.is_active,
 					configs,
 				});
 			}
-
-			logger.info(result);
 		} catch (error) {
 			logger.error('failed to process exportUserDataJob job:', error);
 			// throw error;

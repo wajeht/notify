@@ -1,0 +1,34 @@
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <h2 style="margin: 0;">📦 Data</h2>
+    <span>Data</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+    <div
+      style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 10px;"
+      >
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <h3>⚙️ Export configs</h3>
+        <p>Export all configs for all of your apps</p>
+      </div>
+
+      <button type="button" style="width: 100%;" onclick="document.getElementById('delete-users-<%= user.id %>-modal').showModal()">🗑️ Delete my account</button>
+      <dialog id="delete-users-<%= user.id %>-modal">
+        <h2>Confirm</h2>
+        <p>Are you sure you want to delete your account?</p>
+        <form method="POST" action="/settings/data">
+          <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
+            <button type="submit">🗑️ Delete</button>
+          </div>
+        </form>
+      </dialog>
+    </div>
+  </div>
+
+</div>

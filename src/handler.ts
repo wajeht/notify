@@ -11,6 +11,7 @@ import { sendGeneralEmailJob } from './jobs/general-email.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 import { catchAsyncErrorMiddleware, validateRequestMiddleware } from './middleware';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
+import { exportUserDataJob } from 'jobs/export-user-data.job';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
@@ -85,7 +86,7 @@ export async function getSettingsDataPageHandler(req: Request, res: Response) {
 
 // POST /settings/data
 export async function postSettingsDataPageHandler(req: Request, res: Response) {
-	// TODO
+	await exportUserDataJob({ userId: req.session?.user?.id as unknown as string });
 	return res.redirect('/settings/data?toast=🎉 we will send you an email very shortly');
 }
 

@@ -15,19 +15,10 @@
         <p>Export all configs for all of your apps</p>
       </div>
 
-      <button type="button" style="width: 100%;" onclick="document.getElementById('delete-users-<%= user.id %>-modal').showModal()">🗑️ Delete my account</button>
-      <dialog id="delete-users-<%= user.id %>-modal">
-        <h2>Confirm</h2>
-        <p>Are you sure you want to delete your account?</p>
-        <form method="POST" action="/settings/data">
-          <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
-
-          <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
-            <button type="submit">🗑️ Delete</button>
-          </div>
-        </form>
-      </dialog>
+      <form method="POST" action="/settings/data">
+        <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+        <button type="submit" style="width: 100%;">⬇️ Export</button>
+      </form>
     </div>
   </div>
 

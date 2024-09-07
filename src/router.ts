@@ -49,6 +49,7 @@ import {
 	getSettingsAccountPageHandler,
 	getSettingsDataPageHandler,
 	getSettingsDangerZonePageHandler,
+	postSettingsDataPageHandler,
 	postDeleteSettingsDangerZoneHandler,
 	postSettingsAccountHandler,
 } from './handler';
@@ -88,6 +89,13 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getSettingsDataPageHandler),
+);
+
+router.post(
+	'/settings/data',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(postSettingsDataPageHandler),
 );
 
 router.post(

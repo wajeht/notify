@@ -82,6 +82,13 @@ export async function getSettingsDataPageHandler(req: Request, res: Response) {
 		layout: '../layouts/settings.html',
 	});
 }
+
+// POST /settings/data
+export async function postSettingsDataPageHandler(req: Request, res: Response) {
+	// TODO
+	return res.redirect('/settings/data?toast=🎉 we will send you an email very shortly');
+}
+
 // POST /settings/account
 export const postSettingsAccountHandler = [
 	validateRequestMiddleware([

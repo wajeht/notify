@@ -14,7 +14,10 @@ import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
 	return (req: Request, res: Response, next: NextFunction) => {
-		throw NotFoundError();
+		return res.status(404).render('error.html', {
+			statusCode: 404,
+			message: 'not found',
+		});
 	};
 }
 
@@ -250,9 +253,9 @@ export function errorMiddleware() {
 			logger.error(error);
 		}
 
-		return res.status(error.statusCode || 500).render('error.html', {
-			statusCode: error.statusCode || 500,
-			message: error.message,
+		return res.status(500).render('error.html', {
+			statusCode: 500,
+			message: appConfig.env !== 'production' ? error.stack : 'internal server error',
 		});
 	};
 }

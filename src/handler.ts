@@ -1,4 +1,3 @@
-import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 import { Knex } from 'knex';
 import { db } from './db/db';
 import jwt from 'jsonwebtoken';
@@ -8,10 +7,11 @@ import { Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { sendNotificationJob } from './jobs/notification.job';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
+import { exportUserDataJob } from './jobs/export-user-data.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
 import { catchAsyncErrorMiddleware, validateRequestMiddleware } from './middleware';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
-import { exportUserDataJob } from 'jobs/export-user-data.job';
+import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {

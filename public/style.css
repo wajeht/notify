@@ -85,6 +85,10 @@ summary {
 	color: #0000ee;
 }
 
+summary:hover {
+	text-decoration: underline;
+}
+
 .no-style-btn {
 	background: none;
 	border: none;

@@ -33,12 +33,12 @@ web 2.0 style notification systems for discord, email, and sms
 - [x] encrypt all configs
 - [x] basic faqs
 - [x] performance tuning - sql/handlers
+- [x] structure logging instead of console.log - use pino
 - [ ] self hosted docs
 - [ ] tests
 - [ ] adjust styles for mobile
 - [ ] validations on all routes
 - [ ] rbac on all handlers
-- [ ] structure logging instead of console.log - use pino
 
 # 📑 Docs
 

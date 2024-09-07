@@ -1,5 +1,5 @@
 import { sendGeneralEmail } from '../utils';
-import { setupJob } from '../utils';
+import { setupJob, logger } from '../utils';
 
 export interface GeneralEmailJobData {
 	email: string;
@@ -19,7 +19,7 @@ export const sendGeneralEmailJob = setupJob<GeneralEmailJobData>(
 				message: job.data.message,
 			});
 		} catch (error) {
-			console.error('failed to process sendGeneralEmailJob job:', error);
+			logger.error('failed to process sendGeneralEmailJob job:', error);
 			// throw error;
 		}
 	},

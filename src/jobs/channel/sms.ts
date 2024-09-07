@@ -1,3 +1,4 @@
+import { logger } from '../../utils';
 import twilio from 'twilio';
 import { SmsNotificationJobData } from '../sms.job';
 
@@ -11,9 +12,9 @@ export async function sendSms(data: SmsNotificationJobData): Promise<void> {
 			to: data.config.phone_number,
 		});
 
-		console.log(`SMS sent: ${message.sid}`);
+		logger.info(`SMS sent: ${message.sid}`);
 	} catch (error) {
-		console.error('Failed to send SMS:', error);
+		logger.error('Failed to send SMS:', error);
 		// throw error;
 	}
 }

@@ -1,5 +1,5 @@
 import { sendNotification } from './channel/notification';
-import { setupJob } from '../utils';
+import { setupJob, logger } from '../utils';
 
 export interface NotificationJobData {
 	userId: number;
@@ -14,7 +14,7 @@ export const sendNotificationJob = setupJob<NotificationJobData>(
 		try {
 			await sendNotification(job.data);
 		} catch (error) {
-			console.error('failed to process notification job:', error);
+			logger.error('failed to process notification job:', error);
 			// throw error;
 		}
 	},

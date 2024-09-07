@@ -1,5 +1,5 @@
 import { sendEmail } from './channel/email';
-import { setupJob } from '../utils';
+import { setupJob, logger } from '../utils';
 import { EmailConfig } from '../types';
 
 export interface EmailNotificationJobData {
@@ -15,7 +15,7 @@ export const sendEmailNotificationJob = setupJob<EmailNotificationJobData>(
 		try {
 			await sendEmail(job.data);
 		} catch (error) {
-			console.error('failed to process email notification job:', error);
+			logger.error('failed to process email notification job:', error);
 			// throw error;
 		}
 	},

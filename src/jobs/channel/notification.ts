@@ -1,4 +1,5 @@
 import { db } from '../../db/db';
+import { logger } from '../../utils';
 import { sendEmailNotificationJob } from '../email.job';
 import { NotificationJobData } from '../notification.job';
 import { sendDiscordNotificationJob } from '../discord.job';
@@ -12,7 +13,7 @@ export async function sendNotification(data: NotificationJobData) {
 		const app = await db('apps').where({ id: appId, is_active: true, user_id: userId }).first();
 
 		if (!app) {
-			console.log('Cannot find active app. Quitting notification job');
+			logger.info('Cannot find active app. Quitting notification job');
 			return;
 		}
 
@@ -20,7 +21,7 @@ export async function sendNotification(data: NotificationJobData) {
 
 		if (user.is_admin === false) {
 			if (app.max_monthly_alerts_allowed === app.alerts_sent_this_month) {
-				console.log('You have reached your monthly quota. Please wait until next month!');
+				logger.info('You have reached your monthly quota. Please wait until next month!');
 
 				await sendGeneralEmailJob({
 					email: user.email,
@@ -33,7 +34,7 @@ export async function sendNotification(data: NotificationJobData) {
 			}
 
 			if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
-				console.log(
+				logger.info(
 					'You have reached your custom alert limit. Notifications will stop until you update your settings.',
 				);
 
@@ -54,7 +55,7 @@ export async function sendNotification(data: NotificationJobData) {
 			.select('channel_types.name as channel_type', 'app_channels.id as app_channel_id');
 
 		if (!appChannels.length) {
-			console.log('no active channels for app', app.id);
+			logger.info('no active channels for app', app.id);
 			return;
 		}
 
@@ -72,7 +73,7 @@ export async function sendNotification(data: NotificationJobData) {
 					configs = await db('email_configs').where({ app_channel_id: channel.app_channel_id });
 					break;
 				default:
-					console.log(`Unknown channel type: ${channel.channel_type}`);
+					logger.info(`Unknown channel type: ${channel.channel_type}`);
 					continue;
 			}
 
@@ -97,9 +98,9 @@ export async function sendNotification(data: NotificationJobData) {
 			.update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
 			.where({ id: appId, user_id: userId });
 
-		console.log(`notification jobs dispatched for app ${appId}`);
+		logger.info(`notification jobs dispatched for app ${appId}`);
 	} catch (error) {
-		console.error('error in sendNotification:', error);
+		logger.error('error in sendNotification:', error);
 		// throw error
 	}
 }
@@ -121,10 +122,10 @@ async function dispatchNotificationJob(
 				return await sendSmsNotificationJob({ config, message, details });
 			default:
 				// Note: dont throw
-				console.log(`Unsupported channel type: ${channelType}`);
+				logger.info(`Unsupported channel type: ${channelType}`);
 		}
 	} catch (error) {
-		console.error('Failed to dispatch notification job:', {
+		logger.error('Failed to dispatch notification job:', {
 			channelType,
 			config,
 			message,

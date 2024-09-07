@@ -1,5 +1,5 @@
 import { DiscordNotificationJobData } from '../discord.job';
-import { secret } from '../../utils';
+import { secret, logger } from '../../utils';
 
 type Params = {
 	username: string;
@@ -33,7 +33,7 @@ export async function sendDiscord(data: DiscordNotificationJobData): Promise<voi
 			console.info(`discord bot has sent: ${data.message}`);
 		}
 	} catch (error) {
-		console.error('error sending discord notification:', error);
+		logger.error('error sending discord notification:', error);
 		// throw error
 	}
 }

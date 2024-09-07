@@ -3,7 +3,7 @@ import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
 import { db, redis } from './db/db';
-import { runMigrations } from './utils';
+import { runMigrations, logger } from './utils';
 import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
 
 const server: Server = app.listen(appConfig.port);
@@ -13,7 +13,7 @@ server.on('listening', async () => {
 	// prettier-ignore
 	const bind: string = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
 
-	console.info(`Server is listening on ${bind}`);
+	logger.info(`Server is listening on ${bind}`);
 
 	if (appConfig.env === 'production') {
 		await runMigrations();
@@ -33,11 +33,11 @@ server.on('error', (error: NodeJS.ErrnoException) => {
 
 	switch (error.code) {
 		case 'EACCES':
-			console.error(`${bind} requires elevated privileges`);
+			logger.error(`${bind} requires elevated privileges`);
 			process.exit(1);
 		// eslint-disable-next-line no-fallthrough
 		case 'EADDRINUSE':
-			console.error(`${bind} is already in use`);
+			logger.error(`${bind} is already in use`);
 			process.exit(1);
 		// eslint-disable-next-line no-fallthrough
 		default:
@@ -46,31 +46,31 @@ server.on('error', (error: NodeJS.ErrnoException) => {
 });
 
 function gracefulShutdown(signal: string): void {
-	console.info(`Received ${signal}, shutting down gracefully.`);
+	logger.info(`Received ${signal}, shutting down gracefully.`);
 
 	server.close(async () => {
-		console.info('HTTP server closed.');
+		logger.info('HTTP server closed.');
 
 		try {
 			redis.quit();
-			console.info('Redis connection closed.');
+			logger.info('Redis connection closed.');
 		} catch (error) {
-			console.error('Error closing Redis connection:', error);
+			logger.error('Error closing Redis connection:', error);
 		}
 
 		try {
 			await db.destroy();
-			console.info('Database connection closed.');
+			logger.info('Database connection closed.');
 		} catch (error) {
-			console.error('Error closing database connection:', error);
+			logger.error('Error closing database connection:', error);
 		}
 
-		console.info('All connections closed successfully.');
+		logger.info('All connections closed successfully.');
 		process.exit(0);
 	});
 
 	setTimeout(() => {
-		console.error('Could not close connections in time, forcefully shutting down');
+		logger.error('Could not close connections in time, forcefully shutting down');
 		process.exit(1);
 	}, 10000);
 }
@@ -80,11 +80,11 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
 
 process.on('uncaughtException', async (error: Error, origin: string) => {
-	console.error('Uncaught Exception:', error, 'Origin:', origin);
+	logger.error('Uncaught Exception:', error, 'Origin:', origin);
 	gracefulShutdown('uncaughtException');
 });
 
 process.on('unhandledRejection', async (reason: unknown, promise: Promise<unknown>) => {
-	console.error('Unhandled Rejection:', promise, 'reason:', reason);
+	logger.error('Unhandled Rejection:', promise, 'reason:', reason);
 	gracefulShutdown('unhandledRejection');
 });

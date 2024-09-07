@@ -2,7 +2,7 @@ import helmet from 'helmet';
 import { db, redis } from './db/db';
 import { csrfSync } from 'csrf-sync';
 import session from 'express-session';
-import { verifyApiKey } from './utils';
+import { verifyApiKey, logger } from './utils';
 import { NotFoundError } from './error';
 import rateLimit from 'express-rate-limit';
 import connectRedisStore from 'connect-redis';
@@ -154,7 +154,7 @@ export async function apiKeyAuthenticationMiddleware(
 
 		next();
 	} catch (error) {
-		console.error('failed to auth api key', error);
+		logger.error('failed to auth api key', error);
 		return res.status(500).json({ message: 'internal server error' });
 	}
 }
@@ -246,7 +246,7 @@ export function errorMiddleware() {
 		next: NextFunction,
 	) => {
 		if (appConfig.env !== 'production') {
-			console.error(error);
+			logger.error(error);
 		}
 
 		return res.status(error.statusCode || 500).render('error.html', {

@@ -1,3 +1,4 @@
+import { logger } from '../utils';
 import { sendDiscord } from './channel/discord';
 import { setupJob } from '../utils';
 import { DiscordConfig } from 'types';
@@ -14,7 +15,7 @@ export const sendDiscordNotificationJob = setupJob<DiscordNotificationJobData>(
 		try {
 			await sendDiscord(job.data);
 		} catch (error) {
-			console.error('failed to process discord notification job:', error);
+			logger.error('failed to process discord notification job:', error);
 			// throw error;
 		}
 	},

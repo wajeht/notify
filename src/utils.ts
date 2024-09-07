@@ -1,9 +1,11 @@
 import qs from 'qs';
 import ejs from 'ejs';
+import pino from 'pino';
 import axios from 'axios';
 import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
+import pretty from 'pino-pretty';
 import dayjsModule from 'dayjs';
 import fs from 'node:fs/promises';
 import { Redis } from 'ioredis';
@@ -15,6 +17,30 @@ import { Queue, Worker, Job } from 'bullmq';
 import timezone from 'dayjs/plugin/timezone';
 import { appConfig, emailConfig, oauthConfig } from './config';
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
+
+export const logger = pino(
+	{
+		level: process.env.PINO_LOG_LEVEL || 'info',
+		formatters: {
+			level: (label) => ({ level: label }),
+		},
+		timestamp: pino.stdTimeFunctions.isoTime,
+	},
+	pino.multistream([
+		{
+			stream: pino.destination(
+				`${path.resolve(process.cwd())}/logs/${new Date().toISOString().split('T')[0]}.log`,
+			),
+		},
+		{
+			stream: pretty({
+				translateTime: 'yyyy-mm-dd HH:MM:ss TT',
+				colorize: true,
+				ignore: 'hostname,pid',
+			}),
+		},
+	]),
+);
 
 export function dayjs(date: string | Date = new Date()) {
 	dayjsModule.extend(utc);
@@ -87,7 +113,7 @@ export function extractDomain(req: Request): string {
 export async function runMigrations(force: boolean = false) {
 	try {
 		if (appConfig.env !== 'production' && force !== true) {
-			console.log('cannot run auto database migration on non production');
+			logger.info('cannot run auto database migration on non production');
 			return;
 		}
 
@@ -101,14 +127,14 @@ export async function runMigrations(force: boolean = false) {
 
 		const version = await db.migrate.currentVersion();
 
-		console.log(`current database version ${version}`);
+		logger.info(`current database version ${version}`);
 
-		console.log(`checking for database upgrades`);
+		logger.info(`checking for database upgrades`);
 
 		const [batchNo, migrations] = await db.migrate.latest(config);
 
 		if (migrations.length === 0) {
-			console.log('database upgrade not required');
+			logger.info('database upgrade not required');
 			return;
 		}
 
@@ -116,11 +142,11 @@ export async function runMigrations(force: boolean = false) {
 			.map((migration: any) => migration.split('_')[1].split('.')[0])
 			.join(', ');
 
-		console.log(`database upgrades completed for ${migrationList} schema`);
+		logger.info(`database upgrades completed for ${migrationList} schema`);
 
-		console.log(`batch ${batchNo} run: ${migrations.length} migrations`);
+		logger.info(`batch ${batchNo} run: ${migrations.length} migrations`);
 	} catch (error) {
-		console.error('error running migrations', error);
+		logger.error('error running migrations', error);
 		throw error;
 	}
 }
@@ -147,7 +173,7 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
 
 		return decoded;
 	} catch (error: any) {
-		console.error('failed to fetch github oauth tokens', error);
+		logger.error('failed to fetch github oauth tokens', error);
 		throw error;
 	}
 }
@@ -162,7 +188,7 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
 
 		return data;
 	} catch (error: any) {
-		console.error('failed to fetch github user emails', error);
+		logger.error('failed to fetch github user emails', error);
 		throw error;
 	}
 }
@@ -185,7 +211,7 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
 
 		return decodedApiKeyPayload;
 	} catch (error) {
-		console.error('failed to verify api key ', error);
+		logger.error('failed to verify api key ', error);
 		return null;
 	}
 }
@@ -218,7 +244,7 @@ export async function sendEmail({
 
 		console.info('email sent successfully to:', to);
 	} catch (error) {
-		console.error('error while sending email:', error);
+		logger.error('error while sending email:', error);
 		// throw error;
 	}
 }
@@ -248,9 +274,9 @@ export async function sendGeneralEmail({
 			html,
 		});
 
-		console.log('email sent successfully');
+		logger.info('email sent successfully');
 	} catch (error) {
-		console.error('failed to send email:', error);
+		logger.error('failed to send email:', error);
 		// throw error
 	}
 }

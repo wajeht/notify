@@ -1,4 +1,5 @@
 import Redis from 'ioredis';
+import { logger } from '../utils';
 import RedisMock from 'ioredis-mock';
 import { redisConfig } from '../config';
 
@@ -20,11 +21,11 @@ const createRedisClient = () => {
 const redis = createRedisClient();
 
 redis.on('ready', () => {
-	console.log('Redis connection established successfully');
+	logger.info('Redis connection established successfully');
 });
 
 redis.on('error', (error) => {
-	console.error('Error initializing Redis:', error);
+	logger.error('Error initializing Redis:', error);
 	process.exit(1);
 });
 

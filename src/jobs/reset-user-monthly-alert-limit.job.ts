@@ -1,11 +1,11 @@
 import { db } from '../db/db';
-import { setupJob, dayjs } from '../utils';
+import { setupJob, dayjs, logger } from '../utils';
 import { sendGeneralEmailJob } from './general-email.job';
 
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',
 	async (job) => {
-		console.log('[resetUserMonthlyAlertLimitJob] Started');
+		logger.info('[resetUserMonthlyAlertLimitJob] Started');
 		try {
 			const appsToReset = await db
 				.select(
@@ -21,7 +21,7 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 				.where('apps.alerts_reset_date', '<=', dayjs().toDate());
 
 			if (appsToReset.length === 0) {
-				console.log('no apps to reset today. exiting resetUserMonthlyAlertLimitJob');
+				logger.info('no apps to reset today. exiting resetUserMonthlyAlertLimitJob');
 				return;
 			}
 
@@ -45,12 +45,12 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
                         The next reset will occur on ${dayjs(nextResetDate).format('MMMM D, YYYY')}.`,
 						});
 
-						console.log(
+						logger.info(
 							`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id} (${app.name})`,
 						);
 					});
 				} catch (error) {
-					console.error(
+					logger.error(
 						`[resetUserMonthlyAlertLimitJob] Failed to reset app ${app.id} (${app.name}):`,
 						error,
 					);
@@ -59,9 +59,9 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 
 			await Promise.all(resetPromises);
 
-			console.log('[resetUserMonthlyAlertLimitJob] Finished');
+			logger.info('[resetUserMonthlyAlertLimitJob] Finished');
 		} catch (error) {
-			console.error('[resetUserMonthlyAlertLimitJob] Failed to process:', error);
+			logger.error('[resetUserMonthlyAlertLimitJob] Failed to process:', error);
 			// throw error;
 		}
 	},

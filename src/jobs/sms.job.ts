@@ -1,5 +1,5 @@
 import { sendSms } from './channel/sms';
-import { setupJob } from '../utils';
+import { setupJob, logger } from '../utils';
 import { SmsConfig } from '../types';
 
 export interface SmsNotificationJobData {
@@ -14,7 +14,7 @@ export const sendSmsNotificationJob = setupJob<SmsNotificationJobData>(
 		try {
 			await sendSms(job.data);
 		} catch (error) {
-			console.error('failed to process sms notification job:', error);
+			logger.error('failed to process sms notification job:', error);
 			// throw error;
 		}
 	},

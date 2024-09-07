@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { EmailNotificationJobData } from '../email.job';
-import { secret } from '../../utils';
+import { secret, logger } from '../../utils';
 
 function template(username: string, message: string, details: Record<string, any> | null) {
 	return `
@@ -82,7 +82,7 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 
 		console.info('email sent to:', data.config.auth_email);
 	} catch (error) {
-		console.error('error while sending email:', error);
+		logger.error('error while sending email:', error);
 		// throw error;
 	}
 }

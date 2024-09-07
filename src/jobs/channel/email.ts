@@ -80,7 +80,7 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 			html: template(data.username, data.message, data.details),
 		});
 
-		console.info('email sent to:', data.config.auth_email);
+		logger.info('email sent to:', data.config.auth_email);
 	} catch (error) {
 		logger.error('error while sending email:', error);
 		// throw error;

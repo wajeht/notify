@@ -242,7 +242,7 @@ export async function sendEmail({
 			html,
 		});
 
-		console.info('email sent successfully to:', to);
+		logger.info('email sent successfully to:', to);
 	} catch (error) {
 		logger.error('error while sending email:', error);
 		// throw error;

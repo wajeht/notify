@@ -74,6 +74,14 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 	});
 }
 
+// GET /settings/data
+export async function getSettingsDataPageHandler(req: Request, res: Response) {
+	return res.render('settings-data.html', {
+		user: req.session?.user,
+		path: '/settings/data',
+		layout: '../layouts/settings.html',
+	});
+}
 // POST /settings/account
 export const postSettingsAccountHandler = [
 	validateRequestMiddleware([

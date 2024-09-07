@@ -47,6 +47,7 @@ import {
 	postCreateAppApiKeyHandler,
 	postTestAppNotificationHandler,
 	getSettingsAccountPageHandler,
+	getSettingsDataPageHandler,
 	getSettingsDangerZonePageHandler,
 	postDeleteSettingsDangerZoneHandler,
 	postSettingsAccountHandler,
@@ -80,6 +81,13 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getSettingsAccountPageHandler),
+);
+
+router.get(
+	'/settings/data',
+	authenticationMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getSettingsDataPageHandler),
 );
 
 router.post(

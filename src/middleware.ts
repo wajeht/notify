@@ -168,6 +168,22 @@ export async function authenticationMiddleware(req: Request, res: Response, next
 			return res.redirect('/login');
 		}
 
+		const user = await db.select('*').from('users').where('id', req.session.user.id).first();
+
+		if (!user) {
+			req.session.destroy((err) => {
+				if (err) {
+					logger.error('Error destroying session:', err);
+				}
+				return res.redirect('/login');
+			});
+
+			return;
+		}
+
+		req.session.user = user;
+		req.session.save();
+
 		next();
 	} catch (error) {
 		next(error);

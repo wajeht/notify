@@ -20,7 +20,7 @@ const knexConfig: Knex.Config = {
 	debug: developmentEnvironmentOnly,
 	seeds: { directory: path.resolve(__dirname, './seeds') },
 	pool: {
-		min: 2,
+		min: 0,
 		max: 10,
 		afterCreate: (conn: any, done: (err: Error | null, conn: any) => void) => {
 			console.log('New database connection established');

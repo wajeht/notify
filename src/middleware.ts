@@ -4,7 +4,6 @@ import { csrfSync } from 'csrf-sync';
 import session from 'express-session';
 import { verifyApiKey } from './utils';
 import { logger } from './logger';
-import { NotFoundError } from './error';
 import rateLimit from 'express-rate-limit';
 import connectRedisStore from 'connect-redis';
 import rateLimitRedisStore from 'rate-limit-redis';

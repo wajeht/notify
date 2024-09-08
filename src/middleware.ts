@@ -193,7 +193,9 @@ export async function authenticationMiddleware(req: Request, res: Response, next
 export async function appLocalStateMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		res.locals.state = {
-			user: req.session?.user || null,
+			user: req.session?.user
+				? await db.select('*').from('users').where('id', req.session.user.id).first()
+				: null,
 			copyRightYear: new Date().getFullYear(),
 			input: req.session?.input || {},
 			errors: req.session?.errors || {},

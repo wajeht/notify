@@ -252,8 +252,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GH_TOKEN }}
 
-      - name: Preset Image Name
-        run: echo "IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      - name: Generate Image Name
+        id: image-name
+        run: |
+          IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker Image
         uses: docker/build-push-action@v4
@@ -261,7 +264,7 @@ jobs:
           context: .
           file: ./Dockerfile.prod
           push: true
-          tags: ${{ env.IMAGE_URL }}
+          tags: ${{ steps.image-name.outputs.IMAGE_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -276,10 +279,15 @@ jobs:
       url: https://notify.jaw.dev/
 
     steps:
+      - name: Generate Image Name
+        id: image-name
+        run: |
+          IMAGE_URL=$(echo ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(echo ${{ github.sha }} | cut -c1-7) | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_OUTPUT
       - name: Deploy Image to Server
         uses: caprover/deploy-from-github@v1.1.2
         with:
           server: '${{ secrets.CAPROVER_SERVER }}'
           app: '${{ secrets.APP_NAME }}'
           token: '${{ secrets.APP_TOKEN }}'
-          image: ${{ env.IMAGE_URL }}
+          image: ${{ steps.image-name.outputs.IMAGE_URL }}

@@ -78,7 +78,7 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 // GET /settings/data
 export async function getSettingsDataPageHandler(req: Request, res: Response) {
 	return res.render('settings-data.html', {
-		user: req.session?.user,
+		user: await db.select('*').from('users').where('id', req.session?.user?.id).first(),
 		path: '/settings/data',
 		layout: '../layouts/settings.html',
 	});

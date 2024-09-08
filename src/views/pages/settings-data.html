@@ -6,19 +6,23 @@
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
-    <div
-      style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 10px;"
-      >
+    <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 32.5%; display: flex; flex-direction: column; gap: 10px;">
 
       <div style="display: flex; flex-direction: column; gap: 5px;">
         <h3>⚙️ Export configs</h3>
         <p>Export all configs for all of your apps</p>
+        <p style="color: <%= user.export_count >= user.max_export_count_allowed ? 'red' : 'gray' %>;">Exports used: <%= user.export_count %> / <%= user.max_export_count_allowed %></p>
       </div>
 
       <form method="POST" action="/settings/data">
         <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
-        <button type="submit" style="width: 100%;">⬇️ Export</button>
+        <button type="submit" style="width: 100%;" <%= user.export_count >= user.max_export_count_allowed ? 'disabled' : '' %>>⬇️ Export</button>
       </form>
+
+      <% if (user.export_count >= user.max_export_count_allowed) { %>
+        <p style="color: red;">You have reached your export limit. Please contact support if you need additional exports.</p>
+      <% } %>
+
     </div>
   </div>
 

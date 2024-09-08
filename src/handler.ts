@@ -94,6 +94,12 @@ export async function postSettingsDataPageHandler(req: Request, res: Response) {
 		return res.redirect('/settings/data?toast=‼️ you have reached your limit. try again tomorrow!');
 	}
 
+	const apps = await db.select('*').from('apps').where('user_id', user.id);
+
+	if (!apps.length) {
+		return res.redirect('/settings/data?toast=🤷 nothing to export!');
+	}
+
 	await exportUserDataJob({ userId: user.id as unknown as string });
 
 	return res.redirect('/settings/data?toast=🎉 we will send you an email very shortly');

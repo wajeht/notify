@@ -41,10 +41,12 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 							const match = object.Key.match(/user_data_(\d+)_/);
 							if (match && match[1]) {
 								const userId = match[1];
+
 								await db('users')
 									.where('id', userId)
 									.decrement('export_count', 1)
 									.where('export_count', '>', 0);
+
 								logger.info(`Decremented export_count for user ${userId}`);
 							}
 						}

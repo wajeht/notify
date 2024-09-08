@@ -1,5 +1,6 @@
-import { setupJob } from '../utils';
+import { db } from '../db/db';
 import { logger } from '../logger';
+import { setupJob } from '../utils';
 import { backBlaze, s3Client } from '../config';
 import { DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
@@ -35,6 +36,17 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 
 							await s3Client.send(deleteCommand);
 							logger.info(`Successfully deleted expired file: ${object.Key}`);
+
+							// Extract user ID from the file name
+							const match = object.Key.match(/user_data_(\d+)_/);
+							if (match && match[1]) {
+								const userId = match[1];
+								await db('users')
+									.where('id', userId)
+									.decrement('export_count', 1)
+									.where('export_count', '>', 0);
+								logger.info(`Decremented export_count for user ${userId}`);
+							}
 						}
 					}
 				}

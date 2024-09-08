@@ -1,6 +1,6 @@
 import { db } from '../db/db';
-import { setupJob, dayjs } from '../utils';
 import { logger } from '../logger';
+import { setupJob, dayjs } from '../utils';
 import { sendGeneralEmailJob } from './general-email.job';
 
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(

@@ -34,6 +34,19 @@ export const exportUserDataJob = setupJob<ExportUserDataJobData>(
 			}
 			logger.info(`User found: ${user.id}`);
 
+			if (user.export_count >= user.max_export_count_allowed) {
+				logger.info(`User ${user.id} has reached their export limit. Quitting exportUserDataJob.`);
+
+				await sendGeneralEmailJob({
+					email: user.email,
+					subject: 'Export Limit Reached',
+					username: user.username,
+					message: `You have reached your limit of ${user.max_export_count_allowed} exports. Please contact support if you need additional exports.`,
+				});
+
+				return;
+			}
+
 			const apps = await db.select('*').from('apps').where('apps.user_id', user.id);
 			if (!apps.length) {
 				logger.info('User apps do not exist. Quitting exportUserDataJob.');
@@ -108,13 +121,16 @@ export const exportUserDataJob = setupJob<ExportUserDataJobData>(
 			await s3Client.send(uploadCommand);
 			logger.info(`File uploaded successfully: ${key}`);
 
+			await db('users').where('id', user.id).increment('export_count', 1);
+
 			const downloadUrl = await generateSignedUrl(key, filename);
 			logger.info(`Generated download URL for file: ${filename}`);
 
 			const message = `
             <p>Your requested data export is now ready. You can download it using the following link:</p>
             <p><a href="${downloadUrl}">Download</a></p>
-            <p>This link will expire in 24 hours.</p>`;
+            <p>This link will expire in 24 hours.</p>
+            <p>You have used ${user.export_count + 1} out of ${user.max_export_count_allowed} allowed exports.</p>`;
 
 			await sendGeneralEmailJob({
 				email: user.email,

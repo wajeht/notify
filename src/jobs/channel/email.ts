@@ -74,11 +74,24 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 	const transporter = nodemailer.createTransport(config);
 
 	try {
-		await transporter.sendMail({
-			from: config.alias,
-			to: config.auth.user,
-			subject: data.message,
-			html: template(data.username, data.message, data.details),
+		await new Promise((resolve, reject) => {
+			transporter.sendMail(
+				{
+					from: config.alias,
+					to: config.auth.user,
+					subject: data.message,
+					html: template(data.username, data.message, data.details),
+				},
+				(err, info) => {
+					if (err) {
+						logger.error('Error sending email:', err);
+						reject(err);
+					} else {
+						logger.info('Email sent successfully to:', config.auth.user);
+						resolve(info);
+					}
+				},
+			);
 		});
 
 		logger.info('email sent to:', data.config.auth_email);

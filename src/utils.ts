@@ -210,17 +210,20 @@ export async function sendEmail({
 			},
 		});
 
-		await transporter.sendMail({
-			from: emailConfig.alias,
-			to,
-			subject,
-			html,
+		await new Promise((resolve, reject) => {
+			transporter.sendMail({ from: emailConfig.alias, to, subject, html }, (err, info) => {
+				if (err) {
+					logger.error('Error sending email:', err);
+					reject(err);
+				} else {
+					logger.info('Email sent successfully to:', to);
+					resolve(info);
+				}
+			});
 		});
-
-		logger.info('email sent successfully to:', to);
 	} catch (error) {
-		logger.error('error while sending email:', error);
-		// throw error;
+		logger.error('Error while sending email:', error);
+		throw error;
 	}
 }
 

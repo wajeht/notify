@@ -8,7 +8,7 @@ import { appConfig, oauthConfig } from './config';
 import { sendNotificationJob } from './jobs/notification.job';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
 import { exportUserDataJob } from './jobs/export-user-data.job';
-import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from './types';
+import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from './types';
 import { catchAsyncErrorMiddleware, validateRequestMiddleware } from './middleware';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
 import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
@@ -78,6 +78,8 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 // GET /settings/data
 export async function getSettingsDataPageHandler(req: Request, res: Response) {
 	return res.render('settings-data.html', {
+		// TODO: get inside exportUserDataJob and manually modify the user session data
+		// user: req.session?.user?.id
 		user: await db.select('*').from('users').where('id', req.session?.user?.id).first(),
 		path: '/settings/data',
 		layout: '../layouts/settings.html',
@@ -86,7 +88,14 @@ export async function getSettingsDataPageHandler(req: Request, res: Response) {
 
 // POST /settings/data
 export async function postSettingsDataPageHandler(req: Request, res: Response) {
-	await exportUserDataJob({ userId: req.session?.user?.id as unknown as string });
+	const user = req.session?.user as User;
+
+	if (user.export_count >= user.max_export_count_allowed) {
+		return res.redirect('/settings/data?toast=‼️ you have reached your limit. try again tomorrow!');
+	}
+
+	await exportUserDataJob({ userId: user.id as unknown as string });
+
 	return res.redirect('/settings/data?toast=🎉 we will send you an email very shortly');
 }
 

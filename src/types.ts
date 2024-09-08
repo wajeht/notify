@@ -47,6 +47,8 @@ export type User = {
 	timezone: string;
 	email: string;
 	is_admin: boolean;
+	export_count: number;
+	max_export_count_allowed: number;
 	created_at: string;
 	updated_at: string;
 };

@@ -216,13 +216,13 @@ export async function sendEmail({
 					logger.error('Error sending email:', err);
 					reject(err);
 				} else {
-					logger.info('Email sent successfully to:', to);
+					logger.info(`Email sent successfully to: ${to}`);
 					resolve(info);
 				}
 			});
 		});
 	} catch (error) {
-		logger.error('Error while sending email:', error);
+		logger.error(`Error while sending email:  ${JSON.stringify(error, null, 2)}`);
 		throw error;
 	}
 }
@@ -254,7 +254,7 @@ export async function sendGeneralEmail({
 
 		logger.info('email sent successfully');
 	} catch (error) {
-		logger.error('failed to send email:', error);
+		logger.error(`failed to send email:  ${JSON.stringify(error, null, 2)}`);
 		// throw error
 	}
 }

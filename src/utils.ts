@@ -14,8 +14,8 @@ import { logger } from './logger';
 import { db, redis } from './db/db';
 import { Queue, Worker, Job } from 'bullmq';
 import timezone from 'dayjs/plugin/timezone';
-import { appConfig, emailConfig, oauthConfig } from './config';
-import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
+import { appConfig, emailConfig, oauthConfig, sessionConfig } from './config';
+import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload, User } from './types';
 
 export function dayjs(date: string | Date = new Date()) {
 	dayjsModule.extend(utc);
@@ -258,3 +258,34 @@ export async function sendGeneralEmail({
 		// throw error
 	}
 }
+
+export const modifyUserSessionById = async (
+	userId: string | number,
+	updateFunction: (user: User) => User,
+): Promise<{ sessionKey: string; updatedSessionData: any & User } | null> => {
+	const sessionKeys = await redis.keys(`${sessionConfig.store_prefix}*`);
+
+	for (const sessionKey of sessionKeys) {
+		const sessionData = await redis.get(sessionKey);
+
+		const parsedSessionData: any & User = JSON.parse(sessionData as string);
+
+		if (parsedSessionData.user && parsedSessionData.user.id === userId) {
+			logger.info(`Found session for user: ${JSON.stringify(parsedSessionData.user, null, 2)}`);
+
+			parsedSessionData.user = updateFunction(parsedSessionData.user);
+
+			await redis.set(sessionKey, JSON.stringify(parsedSessionData));
+
+			logger.info(`Updated user data: ${JSON.stringify(parsedSessionData.user, null, 2)}`);
+
+			return {
+				sessionKey,
+				updatedSessionData: parsedSessionData,
+			};
+		}
+	}
+
+	logger.error('No session found for user ID:', userId);
+	return null;
+};

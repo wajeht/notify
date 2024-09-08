@@ -78,9 +78,7 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 // GET /settings/data
 export async function getSettingsDataPageHandler(req: Request, res: Response) {
 	return res.render('settings-data.html', {
-		// TODO: get inside exportUserDataJob and manually modify the user session data
-		// user: req.session?.user?.id
-		user: await db.select('*').from('users').where('id', req.session?.user?.id).first(),
+		user: req.session?.user,
 		path: '/settings/data',
 		layout: '../layouts/settings.html',
 	});
@@ -148,19 +146,8 @@ export const postSettingsAccountHandler = [
 	]),
 	catchAsyncErrorMiddleware(async (req: Request, res: Response) => {
 		const { email, username, timezone } = req.body;
-		const userId = req.session?.user?.id;
 
-		const [user] = await db('users')
-			.update({
-				email,
-				username,
-				timezone,
-			})
-			.where({ id: userId })
-			.returning('*');
-
-		req.session.user = user;
-		req.session.save();
+		await db('users').update({ email, username, timezone }).where({ id: req.session?.user?.id });
 
 		return res.redirect('/settings/account?toast=🔄 updated!');
 	}),

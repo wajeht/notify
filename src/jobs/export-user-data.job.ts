@@ -1,6 +1,21 @@
 import { setupJob, secret } from '../utils';
 import { logger } from '../logger';
 import { db } from '../db/db';
+import { backBlaze, s3Client } from '../config';
+import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import crypto from 'node:crypto';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { sendGeneralEmailJob } from './general-email.job';
+
+async function generateSignedUrl(key: string, filename: string): Promise<string> {
+	const command = new GetObjectCommand({
+		Bucket: backBlaze.bucket,
+		Key: key,
+		ResponseContentDisposition: `attachment; filename="${filename}"`,
+		ResponseContentType: 'application/json',
+	});
+	return getSignedUrl(s3Client, command, { expiresIn: 3600 * 24 }); // URL expires in 24 hours
+}
 
 export interface ExportUserDataJobData {
 	userId: string;
@@ -73,6 +88,33 @@ export const exportUserDataJob = setupJob<ExportUserDataJobData>(
 					description: app.description,
 					is_active: app.is_active,
 					configs,
+				});
+
+				const filename = `user_data_${user.id}_${crypto.randomUUID()}.json`;
+
+				const key = `exports/${filename}`;
+
+				const uploadCommand = new PutObjectCommand({
+					Bucket: backBlaze.bucket,
+					Key: key,
+					Body: JSON.stringify(result, null, 2),
+					ContentType: 'application/json',
+				});
+
+				await s3Client.send(uploadCommand);
+
+				const downloadUrl = await generateSignedUrl(key, filename);
+
+				const message = `
+				<p>Your requested data export is now ready. You can download it using the following link:</p>
+				<p><a href="${downloadUrl}">Download</a></p>
+				<p>This link will expire in 24 hours.</p>`;
+
+				await sendGeneralEmailJob({
+					email: user.email,
+					subject: '🎉 Your Data Export is Ready',
+					username: user.username,
+					message: message.trim(),
 				});
 			}
 		} catch (error) {

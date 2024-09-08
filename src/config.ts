@@ -67,7 +67,7 @@ export const backBlaze = {
 	application_key: process.env.BACKBLAZE_APPLICATION_KEY as unknown as string,
 } as const;
 
-export const s3BucketConfig = new S3Client({
+export const s3Client = new S3Client({
 	credentials: {
 		accessKeyId: backBlaze.key_id,
 		secretAccessKey: backBlaze.application_key,

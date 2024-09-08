@@ -6,6 +6,7 @@ import { db, redis } from './db/db';
 import { runMigrations } from './utils';
 import { logger } from './logger';
 import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
+import { deleteExpiredExportJob } from './jobs/delete-expired-export.job';
 
 const server: Server = app.listen(appConfig.port);
 
@@ -22,6 +23,7 @@ server.on('listening', async () => {
 
 	// crons
 	await resetUserMonthlyAlertLimitJob({}, { cron: '0 0 * * *' }); // daily at midnight
+	await deleteExpiredExportJob({}, { cron: '0 0 * * *' }); // daily at midnight
 });
 
 server.on('error', (error: NodeJS.ErrnoException) => {

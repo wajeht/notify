@@ -240,7 +240,7 @@ export async function sendGeneralEmail({
 }) {
 	try {
 		const templateContent = await fs.readFile(
-			path.join(__dirname, 'views', 'emails', 'general.html'),
+			path.resolve(path.join(process.cwd(), 'src', 'views', 'emails', 'general.html')),
 			'utf-8',
 		);
 

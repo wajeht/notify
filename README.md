@@ -34,7 +34,7 @@ web 2.0 style notification systems for discord, email, and sms
 - [x] basic faqs
 - [x] performance tuning - sql/handlers
 - [x] structure logging instead of console.log - use pino
-- [ ] admin panel
+- [x] admin panel
 - [ ] self hosted docs
 - [ ] tests
 - [ ] adjust styles for mobile

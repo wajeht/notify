@@ -1,6 +1,7 @@
 import express from 'express';
 
 import {
+	adminOnlyMiddleware,
 	apiKeyAuthenticationMiddleware,
 	authenticationMiddleware,
 	catchAsyncErrorMiddleware,
@@ -52,6 +53,8 @@ import {
 	postSettingsDataPageHandler,
 	postDeleteSettingsDangerZoneHandler,
 	postSettingsAccountHandler,
+	getAdminPageHandler,
+	getAdminUsersPageHandler,
 } from './handler';
 
 const router = express.Router();
@@ -75,6 +78,22 @@ router.get(
 	authenticationMiddleware,
 	csrfMiddleware,
 	catchAsyncErrorMiddleware(getSettingsPageHandler),
+);
+
+router.get(
+	'/admin',
+	authenticationMiddleware,
+	adminOnlyMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getAdminPageHandler),
+);
+
+router.get(
+	'/admin/users',
+	authenticationMiddleware,
+	adminOnlyMiddleware,
+	csrfMiddleware,
+	catchAsyncErrorMiddleware(getAdminUsersPageHandler),
 );
 
 router.get(

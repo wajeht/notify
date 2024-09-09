@@ -90,8 +90,8 @@
 
             <a href="/apps/<%= app.id %>/channels/<%= channel.id %>/configs/<%= channel.config.id %>/edit">✏️ Edit</a>
 
-            <button class="no-style-btn" onclick="document.getElementById(`delete-channels-<%= channel.config.id %>-modal`).showModal()">🗑️ Delete</button>
-            <dialog id="delete-channels-<%= channel.config.id %>-modal">
+            <button class="no-style-btn" onclick="document.getElementById(`delete-channels-<%= channel.id %>-modal`).showModal()">🗑️ Delete</button>
+            <dialog id="delete-channels-<%= channel.id %>-modal">
               <h2>⚠️ Confirm Deletion</h2>
               <p>Are you sure you want to delete this channel?</p>
               <form method="POST" action="/apps/<%= app.id %>/channels/<%= channel.id %>/delete">

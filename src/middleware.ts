@@ -1,9 +1,10 @@
 import helmet from 'helmet';
+import { logger } from './logger';
 import { db, redis } from './db/db';
 import { csrfSync } from 'csrf-sync';
 import session from 'express-session';
 import { verifyApiKey } from './utils';
-import { logger } from './logger';
+import { UnauthorizedError } from './error';
 import rateLimit from 'express-rate-limit';
 import connectRedisStore from 'connect-redis';
 import rateLimitRedisStore from 'rate-limit-redis';
@@ -18,6 +19,22 @@ export function notFoundMiddleware() {
 			message: 'not found',
 		});
 	};
+}
+
+export async function adminOnlyMiddleware(req: Request, res: Response, next: NextFunction) {
+	try {
+		if (!req.session?.user) {
+			return res.redirect('/login');
+		}
+
+		if (!req.session.user.is_admin) {
+			throw UnauthorizedError();
+		}
+
+		next();
+	} catch (error) {
+		next(error);
+	}
 }
 
 export function helmetMiddleware() {

@@ -2,7 +2,7 @@ import path from 'node:path';
 import type { Knex } from 'knex';
 import { databaseConfig, appConfig } from '../config';
 
-// const developmentEnvironmentOnly = appConfig.env === 'development';
+const developmentEnvironmentOnly = appConfig.env === 'development';
 
 const knexConfig: Knex.Config = {
 	client: 'pg',
@@ -17,7 +17,7 @@ const knexConfig: Knex.Config = {
 		tableName: 'knex_migrations',
 		directory: path.resolve(__dirname, './migrations'),
 	},
-	// debug: developmentEnvironmentOnly,
+	debug: developmentEnvironmentOnly,
 	seeds: { directory: path.resolve(__dirname, './seeds') },
 	pool: {
 		min: 0,

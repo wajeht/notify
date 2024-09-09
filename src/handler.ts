@@ -550,8 +550,7 @@ export async function postTestAppNotificationHandler(req: Request, res: Response
 			},
 		);
 	} catch (error) {
-		// @ts-ignore- trust me bro
-		const message = (error as AxiosError).response?.data?.message;
+		const message = ((error as AxiosError).response as any)?.data.message;
 		return res.redirect(`/apps/${id}?toast=${message}`);
 	}
 

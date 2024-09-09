@@ -33,7 +33,10 @@
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.export_count %></td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_export_count_allowed %></td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= new Date(user.created_at).toLocaleString() %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><a href="#">📝 Edit</a></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd; display: flex; align-items: center; gap: 10px;">
+                  <a href="#">👀 View</a>
+                  <a href="#">📝 Edit</a>
+                </td>
               </tr>
             <% }); %>
           </tbody>

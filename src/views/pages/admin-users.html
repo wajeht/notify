@@ -1,0 +1,44 @@
+<div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <h2 style="margin: 0;">👤 Users</h2>
+    <span>Data</span>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
+    <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 66%; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">ID</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Username</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Email</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Timezone</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Admin</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Max Apps</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Exports Used</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Max Exports</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Created At</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% users.forEach(user => { %>
+              <tr>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.id %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.username %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.email %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.timezone %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.is_admin ? 'Yes' : 'No' %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_apps_allowed %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.export_count %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_export_count_allowed %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= new Date(user.created_at).toLocaleString() %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><a href="#">📝 Edit</a></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

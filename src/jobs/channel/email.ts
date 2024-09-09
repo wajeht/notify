@@ -70,8 +70,7 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 		},
 	};
 
-	// @ts-expect-error - trust me bro
-	const transporter = nodemailer.createTransport(config);
+	const transporter = nodemailer.createTransport(config as any);
 
 	try {
 		await new Promise((resolve, reject) => {

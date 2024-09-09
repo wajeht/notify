@@ -209,39 +209,35 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 
 		if (req.session?.user) {
 			// TODO: potentially cache with redis
-			// @ts-expect-error
-			const { unread_apps_notification_count } = await db('notifications')
+			const { unread_apps_notification_count } = (await db('notifications')
 				.count('* as unread_apps_notification_count')
 				.leftJoin('apps', 'notifications.app_id', 'apps.id')
 				.where('apps.user_id', req.session?.user.id)
 				.whereNull('notifications.read_at')
-				.first();
+				.first()) as any;
 
 			res.locals.state['unread_apps_notification_count'] = unread_apps_notification_count;
 
 			// adding unread notification counts and channel counts to app id layout
-			const appIdMatch = req.path.match(/^\/apps\/(\d+)/);
+			const appIdMatch = req.path.match(/^\/apps\/(\d+)/) as any;
 			if (appIdMatch && req.method === 'GET') {
-				// @ts-expect-error
 				const appId = parseInt(appIdMatch[1]);
 
-				// @ts-expect-error
-				const { unread_app_notification_count } = await db('notifications')
+				const { unread_app_notification_count } = (await db('notifications')
 					.count('* as unread_app_notification_count')
 					.leftJoin('apps', 'notifications.app_id', 'apps.id')
 					.where('apps.user_id', req.session?.user?.id)
 					.andWhere({ 'apps.id': appId })
 					.whereNull('notifications.read_at')
-					.first();
+					.first()) as any;
 
-				// @ts-expect-error
-				const { active_channel_count } = await db('app_channels')
+				const { active_channel_count } = (await db('app_channels')
 					.where({
 						app_id: appId,
 						is_active: true,
 					})
 					.count('* as active_channel_count')
-					.first();
+					.first()) as any;
 
 				res.locals.state['unread_app_notification_count'] = unread_app_notification_count;
 				res.locals.state['active_channel_count'] = active_channel_count;

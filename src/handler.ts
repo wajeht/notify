@@ -66,6 +66,24 @@ export async function getSettingsPageHandler(req: Request, res: Response) {
 	});
 }
 
+// GET /admin
+export async function getAdminPageHandler(req: Request, res: Response) {
+	return res.render('admin-users.html', {
+		users: await db.select('*').from('users'),
+		path: '/admin',
+		layout: '../layouts/admin.html',
+	});
+}
+
+// GET /admin/users
+export async function getAdminUsersPageHandler(req: Request, res: Response) {
+	return res.render('admin-users.html', {
+		users: await db.select('*').from('users'),
+		path: '/admin/users',
+		layout: '../layouts/admin.html',
+	});
+}
+
 // GET /settings/account
 export async function getSettingsAccountPageHandler(req: Request, res: Response) {
 	return res.render('settings-account.html', {

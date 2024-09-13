@@ -8,8 +8,8 @@ import { appConfig, oauthConfig } from './config';
 import { sendNotificationJob } from './jobs/notification.job';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
 import { exportUserDataJob } from './jobs/export-user-data.job';
-import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from './types';
 import { catchAsyncErrorMiddleware, validateRequestMiddleware } from './middleware';
+import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from './types';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
 import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 
@@ -97,6 +97,10 @@ export async function getAdminUsersPageHandler(req: Request, res: Response) {
                 'name', apps.name,
                 'url', apps.url,
                 'description', apps.description,
+                'max_monthly_alerts_allowed', apps.max_monthly_alerts_allowed,
+                'user_monthly_limit_threshold', apps.user_monthly_limit_threshold,
+                'alerts_sent_this_month', apps.alerts_sent_this_month,
+                'alerts_reset_date', apps.alerts_reset_date,
                 'is_active', apps.is_active,
                 'created_at', to_char(apps.created_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone, 'MM/DD/YYYY HH12:MI:SS AM'),
                 'updated_at', to_char(apps.updated_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone, 'MM/DD/YYYY HH12:MI:SS AM')

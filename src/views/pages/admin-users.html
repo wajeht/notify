@@ -35,7 +35,7 @@
               <tr>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.id %></td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd; display: flex; flex-direction: column;">
-                  <span><%= user.is_admin ? '✅' : '' %> <%= user.username %></span>
+                  <span><%= user.is_admin ? '⭐️' : '' %> <%= user.username %></span>
                   <a href="mailto:<%= user.email %>"><%= user.email %></a>
                 </td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.timezone %></td>
@@ -52,20 +52,33 @@
                       <thead>
                         <tr>
                           <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">ID</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Name</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">URL</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Active</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">App</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Alert Info</th>
                           <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Created At</th>
                         </tr>
                       </thead>
                       <tbody>
                         <% user.apps?.forEach(app => { %>
-                          <tr>
-                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.id %></td>
-                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.name %></td>
-                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.url || 'N/A' %></td>
-                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.is_active ? '✅' : '❌' %></td>
-                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.created_at %></td>
+                          <tr style="height: 100%; border-bottom: 1px solid #ddd;">
+                            <td style="padding: 8px;"><%= app.id %></td>
+                            <td style="padding: 8px; display: flex; flex-direction: column;">
+                              <span><%= app.name %> <%= app.is_active ? '✅' : '❌' %></span>
+                              <% if (app.url) { %>
+                                <a href="<%= app.url %>" target="_blank"><%= app.url %></a>
+                              <% } %>
+                              <% if (app.description) { %>
+                                <span><%= app.description %></span>
+                              <% } %>
+                            </td>
+                            <td style="padding: 8px;">
+                              <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <span><strong>Monthly Alerts Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
+                                <span><strong>Monthly Limit Threshold:</strong> <%= app.user_monthly_limit_threshold || 'N/A' %></span>
+                                <span><strong>Alerts Sent This Month:</strong> <%= app.alerts_sent_this_month %></span>
+                                <span><strong>Alerts Reset Date:</strong> <%= app.alerts_reset_date %></span>
+                              </div>
+                            </td>
+                            <td style="padding: 8px;"><%= app.created_at %></td>
                           </tr>
                         <% }); %>
                       </tbody>

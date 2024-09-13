@@ -98,6 +98,33 @@
                         <% } %>
                       </div>
 
+                      <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="max_apps_allowed">📱 Max Apps Allowed<span style="color: red;">*</span></label>
+                        <input type="number" id="max_apps_allowed" name="max_apps_allowed" value="<%= state.input.max_apps_allowed ?? user.max_apps_allowed %>" required>
+
+                        <% if (state.errors.max_apps_allowed) { %>
+                          <small style="color: red;"><%= state.errors.max_apps_allowed %></small>
+                        <% } %>
+                      </div>
+
+                      <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="export_count">📱 Exported Count<span style="color: red;">*</span></label>
+                        <input type="number" id="export_count" name="export_count" value="<%= state.input.export_count ?? user.export_count %>" required>
+
+                        <% if (state.errors.export_count) { %>
+                          <small style="color: red;"><%= state.errors.export_count %></small>
+                        <% } %>
+                      </div>
+
+                      <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="max_export_count_allowed">📱 Max Export Count Allowed<span style="color: red;">*</span></label>
+                        <input type="number" id="max_export_count_allowed" name="max_export_count_allowed" value="<%= state.input.max_export_count_allowed ?? user.max_export_count_allowed %>" required>
+
+                        <% if (state.errors.max_export_count_allowed) { %>
+                          <small style="color: red;"><%= state.errors.max_export_count_allowed %></small>
+                        <% } %>
+                      </div>
+
                       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
                         <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
                         <button type="submit">️🔄 Update</button>

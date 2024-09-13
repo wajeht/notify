@@ -108,7 +108,7 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="export_count">📱 Exported Count<span style="color: red;">*</span></label>
+                        <label for="export_count">⬇️ Exported Count<span style="color: red;">*</span></label>
                         <input type="number" id="export_count" name="export_count" value="<%= state.input.export_count ?? user.export_count %>" required>
 
                         <% if (state.errors.export_count) { %>
@@ -117,7 +117,7 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="max_export_count_allowed">📱 Max Export Count Allowed<span style="color: red;">*</span></label>
+                        <label for="max_export_count_allowed">⬇️ Max Export Count Allowed<span style="color: red;">*</span></label>
                         <input type="number" id="max_export_count_allowed" name="max_export_count_allowed" value="<%= state.input.max_export_count_allowed ?? user.max_export_count_allowed %>" required>
 
                         <% if (state.errors.max_export_count_allowed) { %>
@@ -216,6 +216,16 @@
                                     <label for="user_monthly_limit_threshold">🔢 Alert Threshold</label>
                                     <input type="number" id="user_monthly_limit_threshold" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
                                     <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
+                                  </div>
+
+                                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                                    <label for="max_monthly_alerts_allowed">🔔 Max Monthly Alerts Allowed</label>
+                                    <input type="number" id="max_monthly_alerts_allowed" name="max_monthly_alerts_allowed" value="<%= app.max_monthly_alerts_allowed %>" required>
+                                  </div>
+
+                                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                                    <label for="alerts_sent_this_month">📣 Alerts Sent This Month</label>
+                                    <input type="number" id="alerts_sent_this_month" name="alerts_sent_this_month" value="<%= app.alerts_sent_this_month %>" required>
                                   </div>
 
                                   <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">

@@ -58,12 +58,45 @@
                 <td style="padding: 8px; display: flex; align-items: center; gap: 10px;">
                   <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
                   <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-modal`).showModal()">️edit</button>
-                  <dialog id="edit-user-<%= user.id %>-modal">
+                  <dialog id="edit-user-<%= user.id %>-modal" style="width: 600px; display: flex; flex-direction: column; gap: 20px;">
                     <h2>📱 Edit User <%= user.name %></h2>
-                    <form method="POST" action="/admin/users/<%= user.id %>">
+
+                    <form method="POST" action="/admin/users/<%= user.id %>" style="display: flex; flex-direction: column; gap: 10px;">
                       <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
 
-                      <pre><%= JSON.stringify(user, null, 2) %></pre>
+                      <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="username">👤 Username<span style="color: red;">*</span></label>
+                        <input type="text" id="username" name="username" value="<%= state.input.username ?? user.username %>" required>
+
+                        <% if (state.errors.username) { %>
+                          <small style="color: red;"><%= state.errors.username %></small>
+                        <% } %>
+                      </div>
+
+                      <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="email">📧 Email<span style="color: red;">*</span></label>
+                        <input type="email" id="email" name="email" value="<%= state.input.email ?? user.email %>" required>
+
+                        <% if (state.errors.email) { %>
+                          <small style="color: red;"><%= state.errors.email %></small>
+                        <% } %>
+                      </div>
+
+                      <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="timezone">🌐 Timezone<span style="color: red;">*</span></label>
+
+                        <select id="timezone" name="timezone" required>
+                          <option value="UTC" <%= (state.input.timezone ?? user.timezone) === 'UTC' ? 'selected' : '' %>>UTC</option>
+                          <option value="America/New_York" <%= (state.input.timezone ?? user.timezone) === 'America/New_York' ? 'selected' : '' %>>Eastern Time</option>
+                          <option value="America/Chicago" <%= (state.input.timezone ?? user.timezone) === 'America/Chicago' ? 'selected' : '' %>>Central Time</option>
+                          <option value="America/Denver" <%= (state.input.timezone ?? user.timezone) === 'America/Denver' ? 'selected' : '' %>>Mountain Time</option>
+                          <option value="America/Los_Angeles" <%= (state.input.timezone ?? user.timezone) === 'America/Los_Angeles' ? 'selected' : '' %>>Pacific Time</option>
+                        </select>
+
+                        <% if (state.errors.timezone) { %>
+                          <small style="color: red;"><%= state.errors.timezone %></small>
+                        <% } %>
+                      </div>
 
                       <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
                         <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>

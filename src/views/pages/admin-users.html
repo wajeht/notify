@@ -58,15 +58,16 @@
                 <td style="padding: 8px; display: flex; align-items: center; gap: 10px;">
                   <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
                   <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-modal`).showModal()">️edit</button>
+
                   <dialog id="edit-user-<%= user.id %>-modal" style="width: 600px; display: flex; flex-direction: column; gap: 20px;">
                     <h2>📱 Edit User <%= user.name %></h2>
 
                     <form method="POST" action="/admin/users/<%= user.id %>" style="display: flex; flex-direction: column; gap: 10px;">
-                      <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+                      <input type="hidden" id="csrfToken-user-<%= user.id %>" name="csrfToken" value="<%= csrfToken %>" />
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="username">👤 Username<span style="color: red;">*</span></label>
-                        <input type="text" id="username" name="username" value="<%= state.input.username ?? user.username %>" required>
+                        <label for="username-<%= user.id %>">👤 Username<span style="color: red;">*</span></label>
+                        <input type="text" id="username-<%= user.id %>" name="username" value="<%= state.input.username ?? user.username %>" required>
 
                         <% if (state.errors.username) { %>
                           <small style="color: red;"><%= state.errors.username %></small>
@@ -74,8 +75,8 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="email">📧 Email<span style="color: red;">*</span></label>
-                        <input type="email" id="email" name="email" value="<%= state.input.email ?? user.email %>" required>
+                        <label for="email-<%= user.id %>">📧 Email<span style="color: red;">*</span></label>
+                        <input type="email" id="email-<%= user.id %>" name="email" value="<%= state.input.email ?? user.email %>" required>
 
                         <% if (state.errors.email) { %>
                           <small style="color: red;"><%= state.errors.email %></small>
@@ -83,9 +84,9 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="timezone">🌐 Timezone<span style="color: red;">*</span></label>
+                        <label for="timezone-<%= user.id %>">🌐 Timezone<span style="color: red;">*</span></label>
 
-                        <select id="timezone" name="timezone" required>
+                        <select id="timezone-<%= user.id %>" name="timezone" required>
                           <option value="UTC" <%= (state.input.timezone ?? user.timezone) === 'UTC' ? 'selected' : '' %>>UTC</option>
                           <option value="America/New_York" <%= (state.input.timezone ?? user.timezone) === 'America/New_York' ? 'selected' : '' %>>Eastern Time</option>
                           <option value="America/Chicago" <%= (state.input.timezone ?? user.timezone) === 'America/Chicago' ? 'selected' : '' %>>Central Time</option>
@@ -99,8 +100,8 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="max_apps_allowed">📱 Max Apps Allowed<span style="color: red;">*</span></label>
-                        <input type="number" id="max_apps_allowed" name="max_apps_allowed" value="<%= state.input.max_apps_allowed ?? user.max_apps_allowed %>" required>
+                        <label for="max-apps-allowed-<%= user.id %>">📱 Max Apps Allowed<span style="color: red;">*</span></label>
+                        <input type="number" id="max-apps-allowed-<%= user.id %>" name="max_apps_allowed" value="<%= state.input.max_apps_allowed ?? user.max_apps_allowed %>" required>
 
                         <% if (state.errors.max_apps_allowed) { %>
                           <small style="color: red;"><%= state.errors.max_apps_allowed %></small>
@@ -108,8 +109,8 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="export_count">⬇️ Exported Count<span style="color: red;">*</span></label>
-                        <input type="number" id="export_count" name="export_count" value="<%= state.input.export_count ?? user.export_count %>" required>
+                        <label for="export-count-<%= user.id %>">⬇️ Exported Count<span style="color: red;">*</span></label>
+                        <input type="number" id="export-count-<%= user.id %>" name="export_count" value="<%= state.input.export_count ?? user.export_count %>" required>
 
                         <% if (state.errors.export_count) { %>
                           <small style="color: red;"><%= state.errors.export_count %></small>
@@ -117,8 +118,8 @@
                       </div>
 
                       <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="max_export_count_allowed">⬇️ Max Export Count Allowed<span style="color: red;">*</span></label>
-                        <input type="number" id="max_export_count_allowed" name="max_export_count_allowed" value="<%= state.input.max_export_count_allowed ?? user.max_export_count_allowed %>" required>
+                        <label for="max-export-count-allowed-<%= user.id %>">⬇️ Max Export Count Allowed<span style="color: red;">*</span></label>
+                        <input type="number" id="max-export-count-allowed-<%= user.id %>" name="max_export_count_allowed" value="<%= state.input.max_export_count_allowed ?? user.max_export_count_allowed %>" required>
 
                         <% if (state.errors.max_export_count_allowed) { %>
                           <small style="color: red;"><%= state.errors.max_export_count_allowed %></small>
@@ -190,42 +191,42 @@
                                 <h2>📱 Edit App <%= app.name %></h2>
 
                                 <form method="POST" action="/admin/users/<%= user.id %>/apps/<%= app.id %>" style="display: flex; flex-direction: column; gap: 10px;">
-                                  <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+                                  <input type="hidden" id="csrfToken-app-<%= user.id %>-<%= app.id %>" name="csrfToken" value="<%= csrfToken %>" />
 
                                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="name">🔤 Name<span style="color: red;">*</span></label>
-                                    <input type="text" id="name" name="name" value="<%= app.name %>" required>
+                                    <label for="name-<%= user.id %>-<%= app.id %>">🔤 Name<span style="color: red;">*</span></label>
+                                    <input type="text" id="name-<%= user.id %>-<%= app.id %>" name="name" value="<%= app.name %>" required>
                                   </div>
 
                                   <div>
-                                    <label for="is_active">🚦 Status</label>
-                                    <input type="checkbox" id="is_active" name="is_active" <%= app.is_active ? 'checked' : '' %>>
+                                    <label for="is-active-<%= user.id %>-<%= app.id %>">🚦 Status</label>
+                                    <input type="checkbox" id="is-active-<%= user.id %>-<%= app.id %>" name="is_active" <%= app.is_active ? 'checked' : '' %>>
                                   </div>
 
                                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="url">🌐 Url</label>
-                                    <input type="url" id="url" name="url" value="<%= app.url %>" required>
+                                    <label for="url-<%= user.id %>-<%= app.id %>">🌐 Url</label>
+                                    <input type="url" id="url-<%= user.id %>-<%= app.id %>" name="url" value="<%= app.url %>">
                                   </div>
 
                                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="description">📝 Description</label>
-                                    <textarea name="description" id="description"><%= app.description %></textarea>
+                                    <label for="description-<%= user.id %>-<%= app.id %>">📝 Description</label>
+                                    <textarea name="description" id="description-<%= user.id %>-<%= app.id %>"><%= app.description %></textarea>
                                   </div>
 
                                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="user_monthly_limit_threshold">🔢 Alert Threshold</label>
-                                    <input type="number" id="user_monthly_limit_threshold" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
+                                    <label for="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>">🔢 Alert Threshold</label>
+                                    <input type="number" id="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
                                     <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
                                   </div>
 
                                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="max_monthly_alerts_allowed">🔔 Max Monthly Alerts Allowed</label>
-                                    <input type="number" id="max_monthly_alerts_allowed" name="max_monthly_alerts_allowed" value="<%= app.max_monthly_alerts_allowed %>" required>
+                                    <label for="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>">🔔 Max Monthly Alerts Allowed</label>
+                                    <input type="number" id="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>" name="max_monthly_alerts_allowed" value="<%= app.max_monthly_alerts_allowed %>" required>
                                   </div>
 
                                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="alerts_sent_this_month">📣 Alerts Sent This Month</label>
-                                    <input type="number" id="alerts_sent_this_month" name="alerts_sent_this_month" value="<%= app.alerts_sent_this_month %>" required>
+                                    <label for="alerts-sent-this-month-<%= user.id %>-<%= app.id %>">📣 Alerts Sent This Month</label>
+                                    <input type="number" id="alerts-sent-this-month-<%= user.id %>-<%= app.id %>" name="alerts_sent_this_month" value="<%= app.alerts_sent_this_month %>" required>
                                   </div>
 
                                   <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">

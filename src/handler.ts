@@ -77,8 +77,46 @@ export async function getAdminPageHandler(req: Request, res: Response) {
 
 // GET /admin/users
 export async function getAdminUsersPageHandler(req: Request, res: Response) {
+	const users = await db
+		.select(
+			'users.*',
+			db.raw(`
+        to_char(
+          users.created_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone,
+          'MM/DD/YYYY HH12:MI:SS AM'
+        ) as created_at
+      `),
+			db.raw(`
+        to_char(
+          users.updated_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone,
+          'MM/DD/YYYY HH12:MI:SS AM'
+        ) as updated_at
+      `),
+			db.raw(`
+        COALESCE(
+          (
+            SELECT json_agg(
+              json_build_object(
+                'id', apps.id,
+                'name', apps.name,
+                'url', apps.url,
+                'description', apps.description,
+                'is_active', apps.is_active,
+                'created_at', to_char(apps.created_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone, 'MM/DD/YYYY HH12:MI:SS AM'),
+                'updated_at', to_char(apps.updated_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone, 'MM/DD/YYYY HH12:MI:SS AM')
+              )
+            )
+            FROM apps
+            WHERE apps.user_id = users.id
+          ),
+          '[]'
+        ) as apps
+      `),
+		)
+		.from('users');
+
 	return res.render('admin-users.html', {
-		users: await db.select('*').from('users'),
+		users,
 		path: '/admin/users',
 		layout: '../layouts/admin.html',
 	});

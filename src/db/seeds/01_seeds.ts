@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { Knex } from 'knex';
+// @ts-expect-error - it's ok
 import { faker } from '@faker-js/faker';
 import path from 'node:path';
 

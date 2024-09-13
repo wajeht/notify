@@ -29,7 +29,7 @@
               <th style="text-align: left; padding: 8px;">⬇️ Max Exports</th>
               <th style="text-align: left; padding: 8px;">⬇️ Exports Used</th>
               <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
-              <th style="text-align: left; padding: 8px;">📱 Apps</th>
+              <th style="text-align: left; padding: 8px;">️⚡️ Actions</th>
             </tr>
           </thead>
 
@@ -46,7 +46,10 @@
                 <td style="padding: 8px;"><%= user.max_export_count_allowed %></td>
                 <td style="padding: 8px;"><%= user.export_count %></td>
                 <td style="padding: 8px;"><%= user.created_at %></td>
-                <td style="padding: 8px;"><button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button></td>
+                <td style="padding: 8px;">
+                  <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
+                  <button class="no-style-btn">edit</button>
+                </td>
               </tr>
               <tr id="details-<%= user.id %>" style="display: none;">
                 <td colspan="8" style="padding: 0; border-bottom: 1px dashed #ddd;">
@@ -58,12 +61,14 @@
                           <th style="text-align: left; padding: 8px;">📱 App</th>
                           <th style="text-align: left; padding: 8px;">🔔 Alert Info</th>
                           <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
+                          <th style="text-align: left; padding: 8px;">️️⚡️ Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         <% user.apps?.forEach(app => { %>
                           <tr style="height: 100%; border-bottom: 1px solid #ddd;">
                             <td style="padding: 8px;"><%= app.id %></td>
+
                             <td style="padding: 8px; display: flex; flex-direction: column;">
                               <span><%= app.name %> <%= app.is_active ? '✅' : '❌' %></span>
                               <% if (app.url) { %>
@@ -73,6 +78,7 @@
                                 <span>📝 <%= app.description %></span>
                               <% } %>
                             </td>
+
                             <td style="padding: 8px;">
                               <div style="display: flex; flex-direction: column; gap: 5px;">
                                 <span><strong>Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
@@ -84,7 +90,12 @@
                                 <span><strong>Reset Date:</strong> <%= app.alerts_reset_date %></span>
                               </div>
                             </td>
+
                             <td style="padding: 8px;"><%= app.created_at %></td>
+
+                            <td style="padding: 8px;">
+                              <button class="no-style-btn">edit</button>
+                            </td>
                           </tr>
                         <% }); %>
                       </tbody>

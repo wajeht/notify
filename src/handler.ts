@@ -68,11 +68,7 @@ export async function getSettingsPageHandler(req: Request, res: Response) {
 
 // GET /admin
 export async function getAdminPageHandler(req: Request, res: Response) {
-	return res.render('admin-users.html', {
-		users: await db.select('*').from('users'),
-		path: '/admin',
-		layout: '../layouts/admin.html',
-	});
+	return res.redirect('/admin/users');
 }
 
 // GET /admin/users

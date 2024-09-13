@@ -4,38 +4,61 @@
     <span>Data</span>
   </div>
   <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
-    <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 66%; display: flex; flex-direction: column; gap: 10px;">
-      <div style="display: flex; flex-direction: column; gap: 5px;">
-        <table style="width: 100%; border-collapse: collapse;">
+    <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 100%; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; flex-direction: column; gap: 5px; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
           <thead>
             <tr>
               <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">ID</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Username</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Email</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">User</th>
               <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Timezone</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Admin</th>
               <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Max Apps</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Exports Used</th>
               <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Max Exports</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Exports Used</th>
               <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Created At</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;"></th>
             </tr>
           </thead>
           <tbody>
             <% users.forEach(user => { %>
               <tr>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.id %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.username %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.email %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd; display: flex; flex-direction: column;">
+                  <span><%= user.username %> <%= user.is_admin ? '✅' : '❌' %></span>
+                  <a href="mailto:<%= user.email %>"><%= user.email %></a>
+                </td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.timezone %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.is_admin ? 'Yes' : 'No' %></td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_apps_allowed %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.export_count %></td>
                 <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_export_count_allowed %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= new Date(user.created_at).toLocaleString() %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd; display: flex; align-items: center; gap: 10px;">
-                  <a href="#">👀 View</a>
-                  <a href="#">📝 Edit</a>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.export_count %></td>
+                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.created_at %></td>
+              </tr>
+              <tr>
+                <td colspan="8" style="padding: 0; border-bottom: 1px dashed #ddd;">
+                  <details style="padding: 10px; background-color: #f9f9f9;">
+                    <summary style="cursor: pointer; padding: 5px;">User Details</summary>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <thead>
+                        <tr>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">ID</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Name</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">URL</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Active</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Created At</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% user.apps?.forEach(app => { %>
+                          <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.id %></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.name %></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.url || 'N/A' %></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.is_active ? '✅' : '❌' %></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><%= app.created_at %></td>
+                          </tr>
+                        <% }); %>
+                      </tbody>
+                    </table>
+                  </details>
                 </td>
               </tr>
             <% }); %>

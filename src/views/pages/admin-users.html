@@ -87,6 +87,7 @@
                           <th style="text-align: left; padding: 8px;">📱 App</th>
                           <th style="text-align: left; padding: 8px;">🔔 Alert Info</th>
                           <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
+                          <th style="text-align: left; padding: 8px;">🚦 Status</th>
                           <th style="text-align: left; padding: 8px;">️️⚡️ Actions</th>
                         </tr>
                       </thead>
@@ -97,7 +98,7 @@
                             <td style="padding: 8px;"><%= app.id %></td>
 
                             <td style="padding: 8px; display: flex; flex-direction: column;">
-                              <span><%= app.name %> <%= app.is_active ? '✅' : '❌' %></span>
+                              <a href="/apps/<%= app.id %>"><%= app.name %></a>
                               <% if (app.url) { %>
                                 <a href="<%= app.url %>" target="_blank">🌐 <%= app.url %></a>
                               <% } %>
@@ -119,6 +120,8 @@
                             </td>
 
                             <td style="padding: 8px;"><%= app.created_at %></td>
+
+                            <td style="padding: 8px;"><%= app.is_active ? '🟢' : '🔴' %></td>
 
                             <td style="padding: 8px;">
                               <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-app-<%= app.id %>-modal`).showModal()">️edit</button>

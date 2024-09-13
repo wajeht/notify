@@ -21,6 +21,7 @@
 
         <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
           <thead>
+
             <tr style="border-bottom: 1px dashed #ddd;">
               <th style="text-align: left; padding: 8px;">🏷️ ID</th>
               <th style="text-align: left; padding: 8px;">👤 User</th>
@@ -35,11 +36,14 @@
             <% users.forEach(user => { %>
               <tr style="border-bottom: 1px dashed #ddd;">
                 <td style="padding: 8px;"><%= user.id %></td>
+
                 <td style="padding: 8px; display: flex; flex-direction: column;">
                   <span><%= user.is_admin ? '⭐️' : '' %> <%= user.username %></span>
                   <a href="mailto:<%= user.email %>"><%= user.email %></a>
                 </td>
+
                 <td style="padding: 8px;"><%= user.timezone %></td>
+
                 <td style="padding: 8px;">
                   <span><strong>Max Apps:</strong> <%= user.max_apps_allowed %></span>
                   <div style="display: flex; gap: 5px;">
@@ -48,7 +52,9 @@
                     <span><strong>Exported:</strong> <%= user.export_count %></span>
                   </div>
                 </td>
+
                 <td style="padding: 8px;"><%= user.created_at %></td>
+
                 <td style="padding: 8px;">
                   <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
                   <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-modal`).showModal()">️edit</button>
@@ -66,11 +72,15 @@
                     </form>
                   </dialog>
                 </td>
+
               </tr>
+
               <tr id="details-<%= user.id %>" style="display: none;">
+
                 <td colspan="8" style="padding: 0; border-bottom: 1px dashed #ddd;">
                   <div style="padding: 20px; background-color: #f9f9f9;">
                     <table style="width: 100%; border-collapse: collapse;">
+
                       <thead>
                         <tr style="border-bottom: 1px dashed #ddd;">
                           <th style="text-align: left; padding: 8px;">🏷️ ID</th>
@@ -80,6 +90,7 @@
                           <th style="text-align: left; padding: 8px;">️️⚡️ Actions</th>
                         </tr>
                       </thead>
+
                       <tbody>
                         <% user.apps?.forEach(app => { %>
                           <tr style="height: 100%; border-bottom: 1px solid #ddd;">
@@ -123,6 +134,7 @@
                                 </form>
                               </dialog>
                             </td>
+
                           </tr>
                         <% }); %>
                       </tbody>

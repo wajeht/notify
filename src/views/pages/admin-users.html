@@ -14,47 +14,50 @@
     <h2 style="margin: 0;">👤 Users</h2>
     <span>Data</span>
   </div>
+
   <div style="display: flex; flex-direction: column; gap: 20px; max-width: 100%;">
     <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 100%; display: flex; flex-direction: column; gap: 10px;">
       <div style="display: flex; flex-direction: column; gap: 5px; overflow-x: auto;">
+
         <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
           <thead>
-            <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">🏷️ ID</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">👤 User</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">⏱️ Timezone</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">📱 Max Apps</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">⬇️ Max Exports</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">⬇️ Exports Used</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">🗓️ Created At</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">📱 Apps</th>
+            <tr style="border-bottom: 1px dashed #ddd;">
+              <th style="text-align: left; padding: 8px;">🏷️ ID</th>
+              <th style="text-align: left; padding: 8px;">👤 User</th>
+              <th style="text-align: left; padding: 8px;">⏱️ Timezone</th>
+              <th style="text-align: left; padding: 8px;">📱 Max Apps</th>
+              <th style="text-align: left; padding: 8px;">⬇️ Max Exports</th>
+              <th style="text-align: left; padding: 8px;">⬇️ Exports Used</th>
+              <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
+              <th style="text-align: left; padding: 8px;">📱 Apps</th>
             </tr>
           </thead>
+
           <tbody>
             <% users.forEach(user => { %>
-              <tr>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.id %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd; display: flex; flex-direction: column;">
+              <tr style="border-bottom: 1px dashed #ddd;">
+                <td style="padding: 8px;"><%= user.id %></td>
+                <td style="padding: 8px; display: flex; flex-direction: column;">
                   <span><%= user.is_admin ? '⭐️' : '' %> <%= user.username %></span>
                   <a href="mailto:<%= user.email %>"><%= user.email %></a>
                 </td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.timezone %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_apps_allowed %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.max_export_count_allowed %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.export_count %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><%= user.created_at %></td>
-                <td style="padding: 8px; border-bottom: 1px dashed #ddd;"><button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button></td>
+                <td style="padding: 8px;"><%= user.timezone %></td>
+                <td style="padding: 8px;"><%= user.max_apps_allowed %></td>
+                <td style="padding: 8px;"><%= user.max_export_count_allowed %></td>
+                <td style="padding: 8px;"><%= user.export_count %></td>
+                <td style="padding: 8px;"><%= user.created_at %></td>
+                <td style="padding: 8px;"><button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button></td>
               </tr>
               <tr id="details-<%= user.id %>" style="display: none;">
                 <td colspan="8" style="padding: 0; border-bottom: 1px dashed #ddd;">
                   <div style="padding: 20px; background-color: #f9f9f9;">
                     <table style="width: 100%; border-collapse: collapse;">
                       <thead>
-                        <tr>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">🏷️ ID</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">📱 App</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">🔔 Alert Info</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">🗓️ Created At</th>
+                        <tr style="border-bottom: 1px dashed #ddd;">
+                          <th style="text-align: left; padding: 8px;">🏷️ ID</th>
+                          <th style="text-align: left; padding: 8px;">📱 App</th>
+                          <th style="text-align: left; padding: 8px;">🔔 Alert Info</th>
+                          <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -92,7 +95,9 @@
             <% }); %>
           </tbody>
         </table>
+
       </div>
+
     </div>
   </div>
 </div>

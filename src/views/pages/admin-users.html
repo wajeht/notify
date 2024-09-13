@@ -20,14 +20,14 @@
         <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
           <thead>
             <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">ID</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">User</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Timezone</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Max Apps</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Max Exports</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Exports Used</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Created At</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">Apps</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">🏷️ ID</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">👤 User</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">⏱️ Timezone</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">📱 Max Apps</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">⬇️ Max Exports</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">⬇️ Exports Used</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">🗓️ Created At</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px dashed #ddd;">📱 Apps</th>
             </tr>
           </thead>
           <tbody>
@@ -51,10 +51,10 @@
                     <table style="width: 100%; border-collapse: collapse;">
                       <thead>
                         <tr>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">ID</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">App</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Alert Info</th>
-                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Created At</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">🏷️ ID</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">📱 App</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">🔔 Alert Info</th>
+                          <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">🗓️ Created At</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -64,18 +64,21 @@
                             <td style="padding: 8px; display: flex; flex-direction: column;">
                               <span><%= app.name %> <%= app.is_active ? '✅' : '❌' %></span>
                               <% if (app.url) { %>
-                                <a href="<%= app.url %>" target="_blank"><%= app.url %></a>
+                                <a href="<%= app.url %>" target="_blank">🌐 <%= app.url %></a>
                               <% } %>
                               <% if (app.description) { %>
-                                <span><%= app.description %></span>
+                                <span>📝 <%= app.description %></span>
                               <% } %>
                             </td>
                             <td style="padding: 8px;">
                               <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <span><strong>Monthly Alerts Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
-                                <span><strong>Monthly Limit Threshold:</strong> <%= app.user_monthly_limit_threshold || 'N/A' %></span>
-                                <span><strong>Alerts Sent This Month:</strong> <%= app.alerts_sent_this_month %></span>
-                                <span><strong>Alerts Reset Date:</strong> <%= app.alerts_reset_date %></span>
+                                <span><strong>Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
+                                <div style="display: flex; gap: 5px;">
+                                  <span><strong>Threshold:</strong> <%= app.user_monthly_limit_threshold || 'N/A' %></span>
+                                  <span>/</span>
+                                  <span><strong>Sent:</strong> <%= app.alerts_sent_this_month %></span>
+                                </div>
+                                <span><strong>Reset Date:</strong> <%= app.alerts_reset_date %></span>
                               </div>
                             </td>
                             <td style="padding: 8px;"><%= app.created_at %></td>

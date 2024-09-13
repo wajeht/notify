@@ -48,7 +48,20 @@
                 <td style="padding: 8px;"><%= user.created_at %></td>
                 <td style="padding: 8px;">
                   <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
-                  <button class="no-style-btn">edit</button>
+                  <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-modal`).showModal()">️edit</button>
+                  <dialog id="edit-user-<%= user.id %>-modal">
+                    <h2>📱 Edit User <%= user.name %></h2>
+                    <form method="POST" action="/admin/users/<%= user.id %>">
+                      <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+
+                      <pre><%= JSON.stringify(user, null, 2) %></pre>
+
+                      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
+                        <button type="submit">️🔄 Update</button>
+                      </div>
+                    </form>
+                  </dialog>
                 </td>
               </tr>
               <tr id="details-<%= user.id %>" style="display: none;">
@@ -94,7 +107,18 @@
                             <td style="padding: 8px;"><%= app.created_at %></td>
 
                             <td style="padding: 8px;">
-                              <button class="no-style-btn">edit</button>
+                              <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-app-<%= app.id %>-modal`).showModal()">️edit</button>
+                              <dialog id="edit-user-<%= user.id %>-app-<%= app.id %>-modal">
+                                <h2>📱 Edit App <%= app.name %></h2>
+                                <form method="POST" action="/admin/users/<%= user.id %>/apps/<%= app.id %>">
+                                  <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+                                  <pre><%= JSON.stringify(app, null, 2) %></pre>
+                                  <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                                    <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
+                                    <button type="submit">️🔄 Update</button>
+                                  </div>
+                                </form>
+                              </dialog>
                             </td>
                           </tr>
                         <% }); %>

@@ -49,7 +49,7 @@
           <div style="display: flex; align-items: center; gap: 10px;">
             <details style="position: relative;">
               <summary>🔍 Details</summary>
-              <div style="position: absolute; top: 100%; left: 0; z-index: 1; border: dashed; padding: 10px; background-color: white; border-radius: 5px; width: max-content;">
+              <div style="position: absolute; top: 100%; left: 0; z-index: 1; border: dashed; padding: 10px;  background-color: var(--background-color); border-radius: 5px; width: max-content;">
                 <% if (channel.channel_type === 'email') { %>
                   <div><strong>📧 Email Host:</strong></div>
                   <div><%= channel.config.host %></div>

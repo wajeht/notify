@@ -8,9 +8,36 @@
 	margin: 0;
 }
 
+:root {
+	--text-color: #333333;
+	--background-color: #ffffff;
+	--pre-background: #f8f9fa;
+	--pre-border: #edeff0;
+	--link-color: #0000ee;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		--text-color: #e0e0e0;
+		--background-color: #1a1a1a;
+		--pre-background: #2a2a2a;
+		--pre-border: #3a3a3a;
+		--link-color: #6495ed;
+	}
+}
+
+[data-theme='dark'] {
+	--text-color: #e0e0e0;
+	--background-color: #1a1a1a;
+	--pre-background: #2a2a2a;
+	--pre-border: #3a3a3a;
+	--link-color: #6495ed;
+}
+
 body {
 	padding: 1em 2rem;
-	color: #333333;
+	color: var(--text-color);
+	background-color: var(--background-color);
 	font-family:
 		Segoe UI,
 		system-ui,
@@ -57,8 +84,8 @@ pre {
 	word-break: break-all;
 	overflow-wrap: break-word;
 	white-space: pre-wrap;
-	background-color: #f8f9fa;
-	border: 1px solid #edeff0;
+	background-color: var(--pre-background);
+	border: 1px solid var(--pre-border);
 	padding: 10px;
 	border-radius: 5px;
 	font-size: 0.9em;
@@ -66,6 +93,7 @@ pre {
 
 a {
 	text-decoration: none;
+	color: var(--link-color);
 }
 
 a:hover {
@@ -79,10 +107,12 @@ dialog {
 	transform: translate(-50%, -50%);
 	border-radius: 5px;
 	margin: 0;
+	background-color: var(--background-color);
+	color: var(--text-color);
 }
 
 summary {
-	color: #0000ee;
+	color: var(--link-color);
 }
 
 summary:hover {
@@ -92,7 +122,7 @@ summary:hover {
 .no-style-btn {
 	background: none;
 	border: none;
-	color: #0000ee;
+	color: var(--link-color);
 	text-decoration: none;
 	cursor: pointer;
 	padding: 0;

@@ -14,6 +14,7 @@
 	--pre-background: #f8f9fa;
 	--pre-border: #edeff0;
 	--link-color: #0000ee;
+	--visited-link-color: #6f3788;
 	--border-color: #1a1a1a;
 }
 
@@ -23,6 +24,7 @@
 	--pre-background: #2a2a2a;
 	--pre-border: #3a3a3a;
 	--link-color: #6495ed;
+	--visited-link-color: #9370db;
 	--border-color: #ffffff;
 	--input-background: #333333;
 	--input-text: #ffffff;
@@ -80,12 +82,14 @@ select {
 	border: 1px solid var(--input-border);
 	border-radius: 2px;
 }
+
 [data-theme='dark'] input[type='checkbox'],
 [data-theme='dark'] input[type='radio'] {
 	background-color: var(--checkbox-background);
 	border: 1px solid var(--checkbox-border);
 	border-radius: 2px;
 }
+
 [data-theme='dark'] input[type='checkbox']:checked,
 [data-theme='dark'] input[type='radio']:checked {
 	background-color: var(--checkbox-check);
@@ -121,6 +125,10 @@ pre {
 a {
 	text-decoration: none;
 	color: var(--link-color);
+}
+
+a:visited {
+	color: var(--visited-link-color);
 }
 
 a:hover {

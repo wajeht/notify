@@ -12,6 +12,7 @@ import path from 'node:path';
 import express from 'express';
 import flash from 'connect-flash';
 import { router } from './router';
+import { appConfig } from './config';
 import compression from 'compression';
 import expressLayouts from 'express-ejs-layouts';
 
@@ -39,9 +40,9 @@ app.use(express.static(path.resolve(path.join(process.cwd(), 'public')), { maxAg
 
 app.engine('html', ejs.renderFile);
 
-app.set('view cache', true);
-
 app.set('view engine', 'html');
+
+app.set('view cache', appConfig.env === 'production');
 
 app.set('views', path.resolve(path.join(process.cwd(), 'src', 'views', 'pages')));
 

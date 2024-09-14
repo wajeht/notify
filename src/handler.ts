@@ -505,6 +505,8 @@ export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 export async function postDeleteAppNotificationHandler(req: Request, res: Response) {
 	const { id, nid } = req.params;
 
+	console.log('headers', req.headers);
+
 	await db('notifications')
 		.where('notifications.id', nid)
 		.andWhere(function () {

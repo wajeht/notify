@@ -89,7 +89,7 @@ process.on('uncaughtException', async (error: Error, origin: string) => {
 
 process.on('warning', (warning: Error) => {
   logger.warn('Process warning:', warning.name, warning.message);
-	gracefulShutdown('uncaughtException');
+	gracefulShutdown('warning');
 });
 
 process.on('unhandledRejection', async (reason: unknown, promise: Promise<unknown>) => {

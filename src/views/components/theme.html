@@ -6,7 +6,6 @@
     localStorage.setItem('theme', newTheme);
   }
 
-  // Initialize theme on page load
   document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {

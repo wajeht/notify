@@ -8,7 +8,7 @@ import { appConfig, oauthConfig } from './config';
 import { sendNotificationJob } from './jobs/notification.job';
 import { sendGeneralEmailJob } from './jobs/general-email.job';
 import { exportUserDataJob } from './jobs/export-user-data.job';
-import { catchAsyncErrorMiddleware, validateRequestMiddleware } from './middleware';
+import { validateRequestMiddleware } from './middleware';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from './types';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
 import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
@@ -200,13 +200,13 @@ export const postSettingsAccountHandler = [
 				return true;
 			}),
 	]),
-	catchAsyncErrorMiddleware(async (req: Request, res: Response) => {
+	async (req: Request, res: Response) => {
 		const { email, username, timezone } = req.body;
 
 		await db('users').update({ email, username, timezone }).where({ id: req.session?.user?.id });
 
 		return res.redirect('/settings/account?toast=🔄 updated!');
-	}),
+	},
 ];
 
 // GET /settings/danger-zone
@@ -1257,7 +1257,7 @@ export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 // POST /apps
 export const postCreateAppHandler = [
 	validateRequestMiddleware([body('name').trim().notEmpty().withMessage('name is required')]),
-	catchAsyncErrorMiddleware(async (req: Request, res: Response) => {
+	async (req: Request, res: Response) => {
 		const { name, is_active, description, url } = req.body;
 		const user = req.session?.user;
 
@@ -1277,7 +1277,7 @@ export const postCreateAppHandler = [
 			.returning('*');
 
 		return res.redirect(`/apps/${app.id}?toast=🎉 created`);
-	}),
+	},
 ];
 
 // GET /logout

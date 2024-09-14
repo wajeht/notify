@@ -289,27 +289,3 @@ export function errorMiddleware() {
 		});
 	};
 }
-
-export function catchAsyncErrorMiddleware<P = any, ResBody = any, ReqBody = any, ReqQuery = any>(
-	fn: (
-		req: Request<P, ResBody, ReqBody, ReqQuery>,
-		res: Response<ResBody>,
-		next: NextFunction,
-	) => Response | Promise<Response<any> | void> | void | Promise<void>,
-): (
-	req: Request<P, ResBody, ReqBody, ReqQuery>,
-	res: Response<ResBody>,
-	next: NextFunction,
-) => Promise<void> {
-	return async (
-		req: Request<P, ResBody, ReqBody, ReqQuery>,
-		res: Response<ResBody>,
-		next: NextFunction,
-	): Promise<void> => {
-		try {
-			await fn(req, res, next);
-		} catch (err) {
-			next(err);
-		}
-	};
-}

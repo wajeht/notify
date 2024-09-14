@@ -88,7 +88,7 @@ process.on('uncaughtException', async (error: Error, origin: string) => {
 });
 
 process.on('warning', (warning: Error) => {
-  logger.warn('Process warning:', warning.name, warning.message);
+	logger.warn('Process warning:', warning.name, warning.message);
 	gracefulShutdown('warning');
 });
 

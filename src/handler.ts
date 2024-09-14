@@ -505,8 +505,6 @@ export async function postDeleteAppChannelHandler(req: Request, res: Response) {
 export async function postDeleteAppNotificationHandler(req: Request, res: Response) {
 	const { id, nid } = req.params;
 
-	console.log('headers', req.headers);
-
 	await db('notifications')
 		.where('notifications.id', nid)
 		.andWhere(function () {
@@ -521,7 +519,7 @@ export async function postDeleteAppNotificationHandler(req: Request, res: Respon
 
 	req.flash('info', '🗑️ deleted');
 
-	return res.redirect('back');
+	return res.redirect(req.headers['referer'] ?? 'back');
 }
 
 // POST '/apps/:aid/notifications/:nid/read
@@ -536,7 +534,7 @@ export async function postMarkNotificationAsReadHandler(req: Request, res: Respo
 		})
 		.update({ read_at: db.fn.now() });
 
-	return res.redirect('back');
+	return res.redirect(req.headers['referer'] ?? 'back');
 }
 
 // POST '/apps/:aid/notifications/read-all'

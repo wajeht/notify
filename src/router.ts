@@ -54,6 +54,8 @@ import {
 	postSettingsAccountHandler,
 	getAdminPageHandler,
 	getAdminUsersPageHandler,
+	postUpdateAdminUsersHandler,
+	postUpdateAdminUserAppsHandler,
 } from './handler';
 
 const router = express.Router();
@@ -84,6 +86,22 @@ router.get(
 	adminOnlyMiddleware,
 	csrfMiddleware,
 	getAdminUsersPageHandler,
+);
+
+router.post(
+	'/admin/users/:id',
+	authenticationMiddleware,
+	adminOnlyMiddleware,
+	csrfMiddleware,
+	postUpdateAdminUsersHandler,
+);
+
+router.post(
+	'/admin/users/:uid/apps/:aid',
+	authenticationMiddleware,
+	adminOnlyMiddleware,
+	csrfMiddleware,
+	postUpdateAdminUserAppsHandler,
 );
 
 router.get(

@@ -71,6 +71,18 @@ export async function getAdminPageHandler(req: Request, res: Response) {
 	return res.redirect('/admin/users');
 }
 
+export async function postUpdateAdminUsersHandler(req: Request, res: Response) {
+	req.flash('info', '🎉 updated!');
+
+	return res.redirect(req.headers['referer'] ?? 'back');
+}
+
+export async function postUpdateAdminUserAppsHandler(req: Request, res: Response) {
+	req.flash('info', '🎉 updated!');
+
+	return res.redirect(req.headers['referer'] ?? 'back');
+}
+
 // GET /admin/users
 export async function getAdminUsersPageHandler(req: Request, res: Response) {
 	const users = await db

@@ -136,117 +136,118 @@
                     </form>
                   </dialog>
                 </td>
-
               </tr>
 
-              <tr id="details-<%= user.id %>" style="display: none;">
+              <% if (user.apps.length) { %>
+                <tr id="details-<%= user.id %>" style="display: none;">
+                  <td colspan="8" style="padding: 0; border-bottom: 1px dashed #ddd;">
+                    <div style="padding: 20px; background-color: var(--sub-table-background);">
+                      <table style="width: 100%; border-collapse: collapse;">
 
-                <td colspan="8" style="padding: 0; border-bottom: 1px dashed #ddd;">
-                  <div style="padding: 20px; background-color: var(--sub-table-background);">
-                    <table style="width: 100%; border-collapse: collapse;">
-
-                      <thead>
-                        <tr style="border-bottom: 1px dashed #ddd;">
-                          <th style="text-align: left; padding: 8px;">🏷️ ID</th>
-                          <th style="text-align: left; padding: 8px;">📱 App</th>
-                          <th style="text-align: left; padding: 8px;">🔔 Alert Info</th>
-                          <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
-                          <th style="text-align: left; padding: 8px;">🚦 Status</th>
-                          <th style="text-align: left; padding: 8px;">️️⚡️ Actions</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <% user.apps?.forEach(app => { %>
-                          <tr style="height: 100%; border-bottom: 1px solid #ddd;">
-                            <td style="padding: 8px;"><%= app.id %></td>
-
-                            <td style="padding: 8px; display: flex; flex-direction: column;">
-                              <a href="/apps/<%= app.id %>"><%= app.name %></a>
-                              <% if (app.url) { %>
-                                <a href="<%= app.url %>" target="_blank">🌐 <%= app.url %></a>
-                              <% } %>
-                              <% if (app.description) { %>
-                                <span>📝 <%= app.description %></span>
-                              <% } %>
-                            </td>
-
-                            <td style="padding: 8px;">
-                              <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <span><strong>Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
-                                <div style="display: flex; gap: 5px;">
-                                  <span><strong>Threshold:</strong> <%= app.user_monthly_limit_threshold || 'N/A' %></span>
-                                  <span>/</span>
-                                  <span><strong>Sent:</strong> <%= app.alerts_sent_this_month %></span>
-                                </div>
-                                <span><strong>Reset Date:</strong> <%= app.alerts_reset_date %></span>
-                              </div>
-                            </td>
-
-                            <td style="padding: 8px;"><%= app.created_at %></td>
-
-                            <td style="padding: 8px;"><%= app.is_active ? '🟢' : '🔴' %></td>
-
-                            <td style="padding: 8px;">
-                              <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-app-<%= app.id %>-modal`).showModal()">️edit</button>
-
-                              <dialog id="edit-user-<%= user.id %>-app-<%= app.id %>-modal" style="width: 600px; display: flex; flex-direction: column; gap: 20px;">
-                                <h2>📱 Edit App <%= app.name %></h2>
-
-                                <form method="POST" action="/admin/users/<%= user.id %>/apps/<%= app.id %>" style="display: flex; flex-direction: column; gap: 10px;">
-                                  <input type="hidden" id="csrfToken-app-<%= user.id %>-<%= app.id %>" name="csrfToken" value="<%= csrfToken %>" />
-
-                                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="name-<%= user.id %>-<%= app.id %>">🔤 Name<span style="color: red;">*</span></label>
-                                    <input type="text" id="name-<%= user.id %>-<%= app.id %>" name="name" value="<%= app.name %>" required>
-                                  </div>
-
-                                  <div>
-                                    <label for="is-active-<%= user.id %>-<%= app.id %>">🚦 Status</label>
-                                    <input type="checkbox" id="is-active-<%= user.id %>-<%= app.id %>" name="is_active" <%= app.is_active ? 'checked' : '' %>>
-                                  </div>
-
-                                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="url-<%= user.id %>-<%= app.id %>">🌐 Url</label>
-                                    <input type="url" id="url-<%= user.id %>-<%= app.id %>" name="url" value="<%= app.url %>">
-                                  </div>
-
-                                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="description-<%= user.id %>-<%= app.id %>">📝 Description</label>
-                                    <textarea name="description" id="description-<%= user.id %>-<%= app.id %>"><%= app.description %></textarea>
-                                  </div>
-
-                                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>">🔢 Alert Threshold</label>
-                                    <input type="number" id="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
-                                    <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
-                                  </div>
-
-                                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>">🔔 Max Monthly Alerts Allowed</label>
-                                    <input type="number" id="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>" name="max_monthly_alerts_allowed" value="<%= app.max_monthly_alerts_allowed %>" required>
-                                  </div>
-
-                                  <div style="display: flex; flex-direction: column; gap: 5px;">
-                                    <label for="alerts-sent-this-month-<%= user.id %>-<%= app.id %>">📣 Alerts Sent This Month</label>
-                                    <input type="number" id="alerts-sent-this-month-<%= user.id %>-<%= app.id %>" name="alerts_sent_this_month" value="<%= app.alerts_sent_this_month %>" required>
-                                  </div>
-
-                                  <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-                                    <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
-                                    <button type="submit">️🔄 Update</button>
-                                  </div>
-                                </form>
-                              </dialog>
-                            </td>
-
+                        <thead>
+                          <tr style="border-bottom: 1px dashed #ddd;">
+                            <th style="text-align: left; padding: 8px;">🏷️ ID</th>
+                            <th style="text-align: left; padding: 8px;">📱 App</th>
+                            <th style="text-align: left; padding: 8px;">🔔 Alert Info</th>
+                            <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
+                            <th style="text-align: left; padding: 8px;">🚦 Status</th>
+                            <th style="text-align: left; padding: 8px;">️️⚡️ Actions</th>
                           </tr>
-                        <% }); %>
-                      </tbody>
-                    </table>
-                  </div>
-                </td>
-              </tr>
+                        </thead>
+
+                        <tbody>
+                          <% user.apps?.forEach(app => { %>
+                            <tr style="height: 100%; border-bottom: 1px solid #ddd;">
+                              <td style="padding: 8px;"><%= app.id %></td>
+
+                              <td style="padding: 8px; display: flex; flex-direction: column;">
+                                <a href="/apps/<%= app.id %>"><%= app.name %></a>
+                                <% if (app.url) { %>
+                                  <a href="<%= app.url %>" target="_blank">🌐 <%= app.url %></a>
+                                <% } %>
+                                <% if (app.description) { %>
+                                  <span>📝 <%= app.description %></span>
+                                <% } %>
+                              </td>
+
+                              <td style="padding: 8px;">
+                                <div style="display: flex; flex-direction: column; gap: 5px;">
+                                  <span><strong>Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
+                                  <div style="display: flex; gap: 5px;">
+                                    <span><strong>Threshold:</strong> <%= app.user_monthly_limit_threshold || 'N/A' %></span>
+                                    <span>/</span>
+                                    <span><strong>Sent:</strong> <%= app.alerts_sent_this_month %></span>
+                                  </div>
+                                  <span><strong>Reset Date:</strong> <%= app.alerts_reset_date %></span>
+                                </div>
+                              </td>
+
+                              <td style="padding: 8px;"><%= app.created_at %></td>
+
+                              <td style="padding: 8px;"><%= app.is_active ? '🟢' : '🔴' %></td>
+
+                              <td style="padding: 8px;">
+                                <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-app-<%= app.id %>-modal`).showModal()">️edit</button>
+
+                                <dialog id="edit-user-<%= user.id %>-app-<%= app.id %>-modal" style="width: 600px; display: flex; flex-direction: column; gap: 20px;">
+                                  <h2>📱 Edit App <%= app.name %></h2>
+
+                                  <form method="POST" action="/admin/users/<%= user.id %>/apps/<%= app.id %>" style="display: flex; flex-direction: column; gap: 10px;">
+                                    <input type="hidden" id="csrfToken-app-<%= user.id %>-<%= app.id %>" name="csrfToken" value="<%= csrfToken %>" />
+
+                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                      <label for="name-<%= user.id %>-<%= app.id %>">🔤 Name<span style="color: red;">*</span></label>
+                                      <input type="text" id="name-<%= user.id %>-<%= app.id %>" name="name" value="<%= app.name %>" required>
+                                    </div>
+
+                                    <div>
+                                      <label for="is-active-<%= user.id %>-<%= app.id %>">🚦 Status</label>
+                                      <input type="checkbox" id="is-active-<%= user.id %>-<%= app.id %>" name="is_active" <%= app.is_active ? 'checked' : '' %>>
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                      <label for="url-<%= user.id %>-<%= app.id %>">🌐 Url</label>
+                                      <input type="url" id="url-<%= user.id %>-<%= app.id %>" name="url" value="<%= app.url %>">
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                      <label for="description-<%= user.id %>-<%= app.id %>">📝 Description</label>
+                                      <textarea name="description" id="description-<%= user.id %>-<%= app.id %>"><%= app.description %></textarea>
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                      <label for="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>">🔢 Alert Threshold</label>
+                                      <input type="number" id="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
+                                      <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                      <label for="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>">🔔 Max Monthly Alerts Allowed</label>
+                                      <input type="number" id="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>" name="max_monthly_alerts_allowed" value="<%= app.max_monthly_alerts_allowed %>" required>
+                                    </div>
+
+                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                      <label for="alerts-sent-this-month-<%= user.id %>-<%= app.id %>">📣 Alerts Sent This Month</label>
+                                      <input type="number" id="alerts-sent-this-month-<%= user.id %>-<%= app.id %>" name="alerts_sent_this_month" value="<%= app.alerts_sent_this_month %>" required>
+                                    </div>
+
+                                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                                      <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
+                                      <button type="submit">️🔄 Update</button>
+                                    </div>
+                                  </form>
+                                </dialog>
+                              </td>
+
+                            </tr>
+                          <% }); %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+            <% } %>
+
             <% }); %>
           </tbody>
         </table>

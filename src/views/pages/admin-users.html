@@ -68,6 +68,8 @@
                     <form method="POST" action="/admin/users/<%= user.id %>" style="display: flex; flex-direction: column; gap: 10px;">
                       <input type="hidden" id="csrfToken-user-<%= user.id %>" name="csrfToken" value="<%= csrfToken %>" />
 
+                      <input type="hidden" id="user-id-user-<%= user.id %>" name="userId" value="<%= user.id %>" />
+
                       <div style="display: flex; flex-direction: column; gap: 5px;">
                         <label for="username-<%= user.id %>">👤 Username<span style="color: red;">*</span></label>
                         <input type="text" id="username-<%= user.id %>" name="username" value="<%= state.input.username ?? user.username %>" required>

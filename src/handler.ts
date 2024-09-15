@@ -72,12 +72,25 @@ export async function getAdminPageHandler(req: Request, res: Response) {
 }
 
 export async function postUpdateAdminUsersHandler(req: Request, res: Response) {
+	await db('users')
+		.update({
+			username: req.body.username,
+			email: req.body.email,
+			timezone: req.body.timezone,
+			max_apps_allowed: parseInt(req.body.max_apps_allowed),
+			export_count: parseInt(req.body.export_count),
+			max_export_count_allowed: parseInt(req.body.max_export_count_allowed),
+		})
+		.where({ id: req.body.userId });
+
 	req.flash('info', '🎉 updated!');
 
 	return res.redirect(req.headers['referer'] ?? 'back');
 }
 
 export async function postUpdateAdminUserAppsHandler(req: Request, res: Response) {
+	console.log(req.body);
+
 	req.flash('info', '🎉 updated!');
 
 	return res.redirect(req.headers['referer'] ?? 'back');

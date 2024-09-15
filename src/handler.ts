@@ -81,7 +81,7 @@ export async function postUpdateAdminUsersHandler(req: Request, res: Response) {
 			export_count: parseInt(req.body.export_count),
 			max_export_count_allowed: parseInt(req.body.max_export_count_allowed),
 		})
-		.where({ id: req.body.userId });
+		.where({ id: parseInt(req.body.userId) });
 
 	req.flash('info', '🎉 updated!');
 
@@ -89,7 +89,16 @@ export async function postUpdateAdminUsersHandler(req: Request, res: Response) {
 }
 
 export async function postUpdateAdminUserAppsHandler(req: Request, res: Response) {
-	console.log(req.body);
+	await db('apps')
+		.update({
+			name: req.body.name,
+			url: req.body.url,
+			description: req.body.description,
+			user_monthly_limit_threshold: parseInt(req.body.user_monthly_limit_threshold),
+			max_monthly_alerts_allowed: parseInt(req.body.max_monthly_alerts_allowed),
+			alerts_sent_this_month: parseInt(req.body.alerts_sent_this_month),
+		})
+		.where({ id: parseInt(req.body.appId) });
 
 	req.flash('info', '🎉 updated!');
 

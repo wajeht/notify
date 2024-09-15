@@ -56,7 +56,10 @@
                 <td style="padding: 8px;"><%= user.created_at %></td>
 
                 <td style="padding: 8px; display: flex; align-items: center; gap: 10px;">
-                  <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
+                  <% if (user.apps.length) { %>
+                    <button class="no-style-btn" onclick="toggleDetails(<%= user.id %>)">view</button>
+                  <% } %>
+
                   <button class="no-style-btn" onclick="document.getElementById(`edit-user-<%= user.id %>-modal`).showModal()">️edit</button>
 
                   <dialog id="edit-user-<%= user.id %>-modal" style="width: 600px; display: flex; flex-direction: column; gap: 20px;">

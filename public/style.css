@@ -16,6 +16,7 @@
 	--link-color: #0000ee;
 	--visited-link-color: #6f3788;
 	--border-color: #1a1a1a;
+	--sub-table-background: #f8f9fa;
 }
 
 [data-theme='dark'] {
@@ -35,6 +36,7 @@
 	--checkbox-border: #4a4a4a;
 	--checkbox-check: #ffffff;
 	--button-hover-background: #5a5a5a;
+	--sub-table-background: #2a2a2a;
 }
 
 body {

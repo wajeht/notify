@@ -36,7 +36,13 @@ app.use(express.json({ limit: '100kb' }));
 
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
-app.use(express.static(path.resolve(path.join(process.cwd(), 'public')), { maxAge: '30d' }));
+app.use(
+	express.static(path.join(process.cwd(), 'public'), {
+		maxAge: '30d',
+		etag: true,
+		lastModified: true,
+	}),
+);
 
 app.engine('html', ejs.renderFile);
 
@@ -44,9 +50,9 @@ app.set('view engine', 'html');
 
 app.set('view cache', appConfig.env === 'production');
 
-app.set('views', path.resolve(path.join(process.cwd(), 'src', 'views', 'pages')));
+app.set('views', path.join(process.cwd(), 'src', 'views', 'pages'));
 
-app.set('layout', path.resolve(path.join(process.cwd(), 'src', 'views', 'layouts', 'public.html')));
+app.set('layout', path.join(process.cwd(), 'src', 'views', 'layouts', 'public.html'));
 
 app.use(expressLayouts);
 

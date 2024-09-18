@@ -5,12 +5,12 @@ import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
 import dayjsModule from 'dayjs';
-import fs from 'node:fs/promises';
 import { Redis } from 'ioredis';
+import { logger } from './logger';
+import fs from 'node:fs/promises';
 import { Request } from 'express';
 import utc from 'dayjs/plugin/utc';
 import nodemailer from 'nodemailer';
-import { logger } from './logger';
 import { db, redis } from './db/db';
 import { Queue, Worker, Job } from 'bullmq';
 import timezone from 'dayjs/plugin/timezone';
@@ -31,14 +31,10 @@ export function secret(secretSalt: string = appConfig.secretSalt) {
 	const algorithm = 'aes-256-gcm';
 	const keyLength = 32;
 	const encoding = 'base64url' as const;
-
-	function getKey(): Buffer {
-		return crypto.scryptSync(secretSalt, '', keyLength);
-	}
+	const key = crypto.scryptSync(secretSalt, '', keyLength);
 
 	function encrypt(text: string): string {
 		const iv = crypto.randomBytes(12);
-		const key = getKey();
 		const cipher = crypto.createCipheriv(algorithm, key, iv);
 		const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
 		const tag = cipher.getAuthTag();
@@ -50,7 +46,6 @@ export function secret(secretSalt: string = appConfig.secretSalt) {
 		const iv = buffer.subarray(0, 12);
 		const tag = buffer.subarray(12, 28);
 		const encrypted = buffer.subarray(28);
-		const key = getKey();
 		const decipher = crypto.createDecipheriv(algorithm, key, iv);
 		decipher.setAuthTag(tag);
 		const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);

@@ -12,13 +12,12 @@ export interface DiscordNotificationJobData {
 export const sendDiscordNotificationJob = setupJob<DiscordNotificationJobData>(
 	'sendDiscordNotificationJob',
 	async (job) => {
+		logger.info('[sendDiscordNotificationJob] Starting job');
 		try {
 			await sendDiscord(job.data);
+			logger.info('[sendDiscordNotificationJob] Discord notification sent successfully');
 		} catch (error) {
-			logger.error(
-				'[sendDiscordNotificationJob] failed to process discord notification job:',
-				error,
-			);
+			logger.error('[sendDiscordNotificationJob] Failed to send Discord notification:', error);
 			// throw error;
 		}
 	},

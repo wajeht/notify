@@ -12,10 +12,12 @@ export interface SmsNotificationJobData {
 export const sendSmsNotificationJob = setupJob<SmsNotificationJobData>(
 	'sendSmsNotificationJob',
 	async (job) => {
+		logger.info('[sendSmsNotificationJob] Starting job');
 		try {
 			await sendSms(job.data);
+			logger.info('[sendSmsNotificationJob] SMS sent successfully');
 		} catch (error) {
-			logger.error('[sendSmsNotificationJob] failed to process sms notification job:', error);
+			logger.error('[sendSmsNotificationJob] Failed to send SMS:', error);
 			// throw error;
 		}
 	},

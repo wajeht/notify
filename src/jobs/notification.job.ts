@@ -12,10 +12,12 @@ export interface NotificationJobData {
 export const sendNotificationJob = setupJob<NotificationJobData>(
 	'sendNotificationJob',
 	async (job) => {
+		logger.info('[sendNotificationJob] Starting job');
 		try {
 			await sendNotification(job.data);
+			logger.info('[sendNotificationJob] Notification sent successfully');
 		} catch (error) {
-			logger.error('[sendNotificationJob] failed to process notification job:', error);
+			logger.error('[sendNotificationJob] Failed to send notification:', error);
 			// throw error;
 		}
 	},

@@ -9,7 +9,8 @@ export interface DeleteExpiredExportJobData {}
 export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 	'deleteExpiredExportJob',
 	async (job) => {
-		logger.info('[deleteExpiredExportJob] Starting deleteExpiredExportJob');
+		logger.info('[deleteExpiredExportJob] Starting job');
+
 		try {
 			const now = new Date();
 			const expirationTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -22,6 +23,8 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 			const listResponse = await s3Client.send(listCommand);
 
 			if (listResponse.Contents) {
+				logger.info(`[deleteExpiredExportJob] Processing ${listResponse.Contents.length} objects`);
+
 				for (const object of listResponse.Contents) {
 					if (object.Key && object.LastModified) {
 						const fileAge = now.getTime() - object.LastModified.getTime();
@@ -54,6 +57,8 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 						}
 					}
 				}
+			} else {
+				logger.info('[deleteExpiredExportJob] No objects found to process');
 			}
 
 			logger.info('[deleteExpiredExportJob] Completed deleteExpiredExportJob');

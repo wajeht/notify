@@ -11,6 +11,7 @@ export interface GeneralEmailJobData {
 export const sendGeneralEmailJob = setupJob<GeneralEmailJobData>(
 	'sendGeneralEmailJob',
 	async (job) => {
+		logger.info('[sendGeneralEmailJob] Starting job');
 		try {
 			await sendGeneralEmail({
 				email: job.data.email,
@@ -18,8 +19,9 @@ export const sendGeneralEmailJob = setupJob<GeneralEmailJobData>(
 				username: job.data.username,
 				message: job.data.message,
 			});
+			logger.info('[sendGeneralEmailJob] General email sent successfully');
 		} catch (error) {
-			logger.error('[sendGeneralEmailJob] failed to process sendGeneralEmailJob job:', error);
+			logger.error('[sendGeneralEmailJob] Failed to send general email:', error);
 			// throw error;
 		}
 	},

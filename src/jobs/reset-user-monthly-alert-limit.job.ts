@@ -6,7 +6,7 @@ import { sendGeneralEmailJob } from './general-email.job';
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',
 	async (job) => {
-		logger.info('[resetUserMonthlyAlertLimitJob] Started');
+		logger.info('[resetUserMonthlyAlertLimitJob] Starting job');
 		try {
 			const appsToReset = await db
 				.select(
@@ -22,9 +22,11 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 				.where('apps.alerts_reset_date', '<=', dayjs().toDate());
 
 			if (appsToReset.length === 0) {
-				logger.info('no apps to reset today. exiting resetUserMonthlyAlertLimitJob');
+				logger.info('[resetUserMonthlyAlertLimitJob] No apps to reset today');
 				return;
 			}
+
+			logger.info(`[resetUserMonthlyAlertLimitJob] Resetting ${appsToReset.length} apps`);
 
 			const resetPromises = appsToReset.map(async (app) => {
 				const now = dayjs().tz(app.timezone);
@@ -42,27 +44,21 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 							subject: 'Monthly Alert Limit Reset',
 							username: app.username,
 							message: `Your monthly alert limit for the app "${app.name}" has been reset on ${now.format('MMMM D, YYYY')}.
-                        Your alert count has been set back to 0, and you can now send new alerts for this month.
-                        The next reset will occur on ${dayjs(nextResetDate).format('MMMM D, YYYY')}.`,
+                            Your alert count has been set back to 0, and you can now send new alerts for this month.
+                            The next reset will occur on ${dayjs(nextResetDate).format('MMMM D, YYYY')}.`,
 						});
-
-						logger.info(
-							`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id} (${app.name})`,
-						);
 					});
+
+					logger.info(`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id}`);
 				} catch (error) {
-					logger.error(
-						`[resetUserMonthlyAlertLimitJob] Failed to reset app ${app.id} (${app.name}):`,
-						error,
-					);
+					logger.error(`[resetUserMonthlyAlertLimitJob] Failed to reset app ${app.id}:`, error);
 				}
 			});
 
 			await Promise.all(resetPromises);
-
-			logger.info('[resetUserMonthlyAlertLimitJob] Finished');
+			logger.info('[resetUserMonthlyAlertLimitJob] Job completed successfully');
 		} catch (error) {
-			logger.error('[resetUserMonthlyAlertLimitJob] Failed to process:', error);
+			logger.error('[resetUserMonthlyAlertLimitJob] Job failed:', error);
 			// throw error;
 		}
 	},

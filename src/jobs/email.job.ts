@@ -13,10 +13,12 @@ export interface EmailNotificationJobData {
 export const sendEmailNotificationJob = setupJob<EmailNotificationJobData>(
 	'sendEmailNotificationJob',
 	async (job) => {
+		logger.info('[sendEmailNotificationJob] Starting job');
 		try {
 			await sendEmail(job.data);
+			logger.info('[sendEmailNotificationJob] Email sent successfully');
 		} catch (error) {
-			logger.error('[sendEmailNotificationJob] failed to process email notification job:', error);
+			logger.error('[sendEmailNotificationJob] Failed to send email:', error);
 			// throw error;
 		}
 	},

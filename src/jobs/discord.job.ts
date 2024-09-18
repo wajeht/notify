@@ -15,7 +15,10 @@ export const sendDiscordNotificationJob = setupJob<DiscordNotificationJobData>(
 		try {
 			await sendDiscord(job.data);
 		} catch (error) {
-			logger.error('failed to process discord notification job:', error);
+			logger.error(
+				'[sendDiscordNotificationJob] failed to process discord notification job:',
+				error,
+			);
 			// throw error;
 		}
 	},

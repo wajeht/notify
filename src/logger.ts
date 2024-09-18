@@ -12,9 +12,11 @@ export const logger = pino(
 	},
 	pino.multistream([
 		{
-			stream: pino.destination(
-				`${path.resolve(process.cwd())}/logs/${new Date().toISOString().split('T')[0]}.log`,
-			),
+			stream: pino.destination({
+				dest: `${path.resolve(process.cwd())}/logs/${new Date().toISOString().split('T')[0]}.log`,
+				sync: false,
+				mkdir: true,
+			}),
 		},
 		{
 			stream: pretty({

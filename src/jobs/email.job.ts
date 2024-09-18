@@ -16,7 +16,7 @@ export const sendEmailNotificationJob = setupJob<EmailNotificationJobData>(
 		try {
 			await sendEmail(job.data);
 		} catch (error) {
-			logger.error('failed to process email notification job:', error);
+			logger.error('[sendEmailNotificationJob] failed to process email notification job:', error);
 			// throw error;
 		}
 	},

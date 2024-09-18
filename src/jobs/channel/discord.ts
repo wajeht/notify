@@ -31,10 +31,10 @@ export async function sendDiscord(data: DiscordNotificationJobData): Promise<voi
 		});
 
 		if (res.status === 204) {
-			logger.info(`discord bot has sent: ${data.message}`);
+			logger.info(`[sendDiscord] discord bot has sent: ${data.message}`);
 		}
 	} catch (error) {
-		logger.error('error sending discord notification:', error);
+		logger.error('[sendDiscord] error sending discord notification:', error);
 		// throw error
 	}
 }

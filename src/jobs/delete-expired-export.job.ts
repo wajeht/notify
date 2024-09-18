@@ -9,7 +9,7 @@ export interface DeleteExpiredExportJobData {}
 export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 	'deleteExpiredExportJob',
 	async (job) => {
-		logger.info('Starting deleteExpiredExportJob');
+		logger.info('[deleteExpiredExportJob] Starting deleteExpiredExportJob');
 		try {
 			const now = new Date();
 			const expirationTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -27,7 +27,7 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 						const fileAge = now.getTime() - object.LastModified.getTime();
 
 						if (fileAge > expirationTime) {
-							logger.info(`Deleting expired file: ${object.Key}`);
+							logger.info(`[deleteExpiredExportJob] Deleting expired file: ${object.Key}`);
 
 							const deleteCommand = new DeleteObjectCommand({
 								Bucket: backBlaze.bucket,
@@ -35,7 +35,9 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 							});
 
 							await s3Client.send(deleteCommand);
-							logger.info(`Successfully deleted expired file: ${object.Key}`);
+							logger.info(
+								`[deleteExpiredExportJob] Successfully deleted expired file: ${object.Key}`,
+							);
 
 							// Extract user ID from the file name
 							const match = object.Key.match(/user_data_(\d+)_/);
@@ -47,16 +49,16 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 									.decrement('export_count', 1)
 									.where('export_count', '>', 0);
 
-								logger.info(`Decremented export_count for user ${userId}`);
+								logger.info(`[deleteExpiredExportJob] Decremented export_count for user ${userId}`);
 							}
 						}
 					}
 				}
 			}
 
-			logger.info('Completed deleteExpiredExportJob');
+			logger.info('[deleteExpiredExportJob] Completed deleteExpiredExportJob');
 		} catch (error) {
-			logger.error('Failed to process deleteExpiredExportJob:', error);
+			logger.error('[deleteExpiredExportJob] Failed to process deleteExpiredExportJob:', error);
 			// throw error;
 		}
 	},

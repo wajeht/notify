@@ -12,9 +12,9 @@ export async function sendSms(data: SmsNotificationJobData): Promise<void> {
 			to: data.config.phone_number,
 		});
 
-		logger.info(`SMS sent: ${message.sid}`);
+		logger.info(`[sendSms] SMS sent: ${message.sid}`);
 	} catch (error) {
-		logger.error('Failed to send SMS:', error);
+		logger.error('[sendSms] Failed to send SMS:', error);
 		// throw error;
 	}
 }

@@ -57,6 +57,9 @@ down:
 
 clean:
 	@rm -rf ./dist
-	@docker compose -f docker-compose.dev.yml down --rmi all
-	@docker system prune -a --volumes -f
-	@docker volume ls -qf dangling=true | xargs -r docker volume rm
+	@docker compose -f docker-compose.dev.yml down --rmi all --volumes --remove-orphans
+	@docker volume rm $$(docker volume ls -q -f name=notify_) 2>/dev/null || true
+	@docker volume prune -f
+	@docker image prune -a -f
+	@docker network prune -f
+	@docker system prune -a -f

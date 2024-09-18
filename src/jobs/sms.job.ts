@@ -15,7 +15,7 @@ export const sendSmsNotificationJob = setupJob<SmsNotificationJobData>(
 		try {
 			await sendSms(job.data);
 		} catch (error) {
-			logger.error('failed to process sms notification job:', error);
+			logger.error('[sendSmsNotificationJob] failed to process sms notification job:', error);
 			// throw error;
 		}
 	},

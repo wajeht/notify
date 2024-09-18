@@ -19,7 +19,7 @@ export const sendGeneralEmailJob = setupJob<GeneralEmailJobData>(
 				message: job.data.message,
 			});
 		} catch (error) {
-			logger.error('failed to process sendGeneralEmailJob job:', error);
+			logger.error('[sendGeneralEmailJob] failed to process sendGeneralEmailJob job:', error);
 			// throw error;
 		}
 	},

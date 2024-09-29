@@ -15,12 +15,12 @@ import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails 
 
 // GET /healthz
 export function getHealthzHandler(req: Request, res: Response) {
-	return res.setHeader('Content-Type', 'text/html').status(200).send('<p>ok</p>');
+	res.setHeader('Content-Type', 'text/html').status(200).send('<p>ok</p>');
 }
 
 // GET /terms-of-service
 export function getTermsOfServicePageHandler(req: Request, res: Response) {
-	return res.render('terms-of-service.html', {
+	res.render('terms-of-service.html', {
 		path: '/terms-of-service',
 	});
 }
@@ -28,10 +28,11 @@ export function getTermsOfServicePageHandler(req: Request, res: Response) {
 // GET /
 export function getHomePageHandler(req: Request, res: Response) {
 	if (req.session?.user) {
-		return res.redirect('/apps');
+		res.redirect('/apps');
+		return;
 	}
 
-	return res.render('home.html', {
+	res.render('home.html', {
 		path: '/',
 	});
 }
@@ -42,7 +43,8 @@ export async function postNotificationHandler(req: Request, res: Response) {
 	//       we have access to apiKeyPayload which has appId, userId, and apiKeyVersion
 
 	if (req.get('Content-Type') !== 'application/json') {
-		return res.status(404).json({ message: 'not found' });
+		res.status(404).json({ message: 'not found' });
+		return;
 	}
 
 	const { message, details } = req.body;
@@ -52,7 +54,7 @@ export async function postNotificationHandler(req: Request, res: Response) {
 
 	await sendNotificationJob({ appId, message, details, userId });
 
-	return res.status(200).json({
+	res.status(200).json({
 		message: 'Notification queued successfully',
 	});
 }
@@ -939,9 +941,8 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 		.where({ app_id: appId, 'apps.user_id': userId });
 
 	if (channels.length === 0) {
-		return res.redirect(
-			`/apps/${appId}/settings?toast=${encodeURIComponent('there are no configs!')}`,
-		);
+		res.redirect(`/apps/${appId}/settings?toast=${encodeURIComponent('there are no configs!')}`);
+		return;
 	}
 
 	const configs = await Promise.all(
@@ -982,7 +983,7 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 
 	res.setHeader('Content-Type', 'application/json');
 
-	return res.send(JSON.stringify(configs, null, 2));
+	res.send(JSON.stringify(configs, null, 2));
 }
 
 // GET /apps/:id/channels

@@ -161,13 +161,15 @@ export async function apiKeyAuthenticationMiddleware(
 		const apiKey = req.header('X-API-KEY');
 
 		if (!apiKey) {
-			return res.status(401).json({ message: 'api key is missing' });
+			res.status(401).json({ message: 'api key is missing' });
+			return;
 		}
 
 		const apiKeyPayload = await verifyApiKey(apiKey);
 
 		if (!apiKeyPayload) {
-			return res.status(401).json({ message: 'invalid api key' });
+			res.status(401).json({ message: 'invalid api key' });
+			return;
 		}
 
 		req.apiKeyPayload = apiKeyPayload;
@@ -175,7 +177,8 @@ export async function apiKeyAuthenticationMiddleware(
 		next();
 	} catch (error) {
 		logger.error('failed to auth api key', error);
-		return res.status(500).json({ message: 'internal server error' });
+		res.status(500).json({ message: 'internal server error' });
+		return;
 	}
 }
 

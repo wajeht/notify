@@ -178,6 +178,10 @@ summary:hover {
 	color: var(--link-color);
 }
 
+[data-theme='dark'] .no-style-btn:hover {
+	background: none;
+}
+
 .no-style-btn:hover {
 	text-decoration: underline;
 }

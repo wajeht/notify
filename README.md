@@ -22,6 +22,7 @@ web 2.0 style notification systems for discord, email, and sms
 - [x] ~~infer types from validation to handler - 🤔 maybe use zod?~~
 - [x] ~~search on apps page~~
 - [x] ~~search on apps page~~
+- [x] ~~adjust styles for mobile~~
 - [x] pagination on notifications page
 - [x] pagination on app notifications page
 - [x] pagination on apps page
@@ -35,11 +36,10 @@ web 2.0 style notification systems for discord, email, and sms
 - [x] performance tuning - sql/handlers
 - [x] structure logging instead of console.log - use pino
 - [x] admin panel
+- [x] validations on all routes
+- [x] rbac on all handlers
 - [ ] self hosted docs
 - [ ] tests
-- [ ] adjust styles for mobile
-- [ ] validations on all routes
-- [ ] rbac on all handlers
 
 # 📑 Docs
 

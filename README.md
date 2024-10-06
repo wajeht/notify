@@ -19,6 +19,7 @@ web 2.0 style notification systems for discord, email, and sms
 
 # 📑 Docs
 
+- See [INSTALLATION](./docs/installation.md) for `self hosted` doc.
 - See [ROADMAP](./docs/roadmap.md) for `roadmap` guide.
 - See [DEVELOPMENT](./docs/development.md) for `development` guide.
 - See [CONTRIBUTION](./docs/contribution.md) for `contribution` guide.

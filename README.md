@@ -16,7 +16,6 @@ web 2.0 style notification systems for discord, email, and sms
 | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | <img width="350" alt="Component Library" src="https://github.com/user-attachments/assets/1cd7ea63-e860-4b02-ace7-5b6454968333"> | <img width="350" alt="Settings Panel" src="https://github.com/user-attachments/assets/d3ed2bab-9875-4a8b-8739-19d3c99e5054"> | <img width="350" alt="Chart Interface" src="https://github.com/user-attachments/assets/08b1f616-5899-43d6-b954-e13971879d6a"> |
 
-
 # 📑 Docs
 
 - See [INSTALLATION](./docs/installation.md) for `self hosted` doc.

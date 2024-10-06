@@ -20,7 +20,7 @@
   function copyApiKey() {
     const apiKey = '<%= app.api_key %>';
     navigator.clipboard.writeText(apiKey).then(() => {
-      alert('🔑 API key copied to clipboard!');
+      createToast('🔑 API key copied to clipboard!')
     });
   }
 
@@ -33,7 +33,7 @@
     }
 
     navigator.clipboard.writeText(demoCode).then(() => {
-      createToast('copied!')
+      createToast('👨‍💻 example code copied to clipboard!')
     });
   }
 </script>

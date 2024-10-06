@@ -15,6 +15,5 @@ export async function sendSms(data: SmsNotificationJobData): Promise<void> {
 		logger.info(`[sendSms] SMS sent: ${message.sid}`);
 	} catch (error) {
 		logger.error('[sendSms] Failed to send SMS:', error);
-		// throw error;
 	}
 }

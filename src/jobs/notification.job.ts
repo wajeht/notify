@@ -18,7 +18,6 @@ export const sendNotificationJob = setupJob<NotificationJobData>(
 			logger.info('[sendNotificationJob] Notification sent successfully');
 		} catch (error) {
 			logger.error('[sendNotificationJob] Failed to send notification:', error);
-			// throw error;
 		}
 	},
 );

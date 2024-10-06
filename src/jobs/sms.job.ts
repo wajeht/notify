@@ -18,7 +18,6 @@ export const sendSmsNotificationJob = setupJob<SmsNotificationJobData>(
 			logger.info('[sendSmsNotificationJob] SMS sent successfully');
 		} catch (error) {
 			logger.error('[sendSmsNotificationJob] Failed to send SMS:', error);
-			// throw error;
 		}
 	},
 );

@@ -59,7 +59,6 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 			logger.info('[resetUserMonthlyAlertLimitJob] Job completed successfully');
 		} catch (error) {
 			logger.error('[resetUserMonthlyAlertLimitJob] Job failed:', error);
-			// throw error;
 		}
 	},
 );

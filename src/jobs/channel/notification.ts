@@ -134,6 +134,5 @@ async function dispatchNotificationJob(
 			details,
 			error,
 		});
-		// throw error;
 	}
 }

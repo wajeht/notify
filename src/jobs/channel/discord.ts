@@ -35,6 +35,5 @@ export async function sendDiscord(data: DiscordNotificationJobData): Promise<voi
 		}
 	} catch (error) {
 		logger.error('[sendDiscord] error sending discord notification:', error);
-		// throw error
 	}
 }

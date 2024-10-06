@@ -96,6 +96,5 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 		logger.info('[sendEmail] email sent to:', data.config.auth_email);
 	} catch (error) {
 		logger.error('[sendEmail] error while sending email:', error);
-		// throw error;
 	}
 }

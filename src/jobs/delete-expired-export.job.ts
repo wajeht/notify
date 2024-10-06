@@ -64,7 +64,6 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 			logger.info('[deleteExpiredExportJob] Completed deleteExpiredExportJob');
 		} catch (error) {
 			logger.error('[deleteExpiredExportJob] Failed to process deleteExpiredExportJob:', error);
-			// throw error;
 		}
 	},
 );

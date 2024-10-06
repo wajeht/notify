@@ -1,0 +1,24 @@
+# ✅ Todo
+
+- [x] ~~pagination on jobs page~~
+- [x] ~~infer types from validation to handler - 🤔 maybe use zod?~~
+- [x] ~~search on apps page~~
+- [x] ~~search on apps page~~
+- [x] ~~adjust styles for mobile~~
+- [x] pagination on notifications page
+- [x] pagination on app notifications page
+- [x] pagination on apps page
+- [x] filters on apps page
+- [x] post notifications with api auth
+- [x] marketing page
+- [x] emoji
+- [x] csrf
+- [x] encrypt all configs
+- [x] basic faqs
+- [x] performance tuning - sql/handlers
+- [x] structure logging instead of console.log - use pino
+- [x] admin panel
+- [x] validations on all routes
+- [x] rbac on all handlers
+- [ ] self hosted docs
+- [ ] tests

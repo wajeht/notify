@@ -16,33 +16,10 @@ web 2.0 style notification systems for discord, email, and sms
 | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | <img width="350" alt="Component Library" src="https://github.com/user-attachments/assets/1cd7ea63-e860-4b02-ace7-5b6454968333"> | <img width="350" alt="Settings Panel" src="https://github.com/user-attachments/assets/d3ed2bab-9875-4a8b-8739-19d3c99e5054"> | <img width="350" alt="Chart Interface" src="https://github.com/user-attachments/assets/08b1f616-5899-43d6-b954-e13971879d6a"> |
 
-# ✅ Todo
-
-- [x] ~~pagination on jobs page~~
-- [x] ~~infer types from validation to handler - 🤔 maybe use zod?~~
-- [x] ~~search on apps page~~
-- [x] ~~search on apps page~~
-- [x] ~~adjust styles for mobile~~
-- [x] pagination on notifications page
-- [x] pagination on app notifications page
-- [x] pagination on apps page
-- [x] filters on apps page
-- [x] post notifications with api auth
-- [x] marketing page
-- [x] emoji
-- [x] csrf
-- [x] encrypt all configs
-- [x] basic faqs
-- [x] performance tuning - sql/handlers
-- [x] structure logging instead of console.log - use pino
-- [x] admin panel
-- [x] validations on all routes
-- [x] rbac on all handlers
-- [ ] self hosted docs
-- [ ] tests
 
 # 📑 Docs
 
+- See [ROADMAP](./docs/roadmap.md) for `roadmap` guide.
 - See [DEVELOPMENT](./docs/development.md) for `development` guide.
 - See [CONTRIBUTION](./docs/contribution.md) for `contribution` guide.
 

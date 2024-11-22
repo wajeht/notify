@@ -1,9 +1,10 @@
 // @ts-nocheck
 
 import fs from 'fs';
+import { appConfig } from './config';
 
 export function reload({ app, watch, options = {} }) {
-	if (process.env.NODE_ENV === 'production') return;
+	if (appConfig.env !== 'development') return;
 
 	const pollInterval = options.pollInterval || 50;
 	const quiet = options.quiet || false;

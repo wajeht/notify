@@ -26,7 +26,7 @@ export function reload({ app, watch, options = {} }) {
 			if (changeDetected) {
 				changeDetected = false;
 				clearInterval(timer);
-				res.send(); // Empty 200 OK
+				res.send();
 			}
 		}, pollInterval);
 
@@ -47,12 +47,16 @@ export function reload({ app, watch, options = {} }) {
 
 	app.use((req, res, next) => {
 		const originalRender = res.render;
-		res.render = function (view, options, callback) {
-			originalRender.call(this, view, options, (err, html) => {
-				if (err) return callback ? callback(err) : next(err);
-				res.send(html.replace('</head>', clientScript + '</head>'));
-			});
+		const originalSend = res.send;
+
+		res.send = function (body) {
+			if (typeof body === 'string' && body.includes('</head>')) {
+				body = body.replace('</head>', clientScript + '</head>');
+			}
+
+			return originalSend.call(this, body);
 		};
+
 		next();
 	});
 }

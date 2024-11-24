@@ -46,7 +46,6 @@ export function reload({ app, watch, options = {} }) {
     </script>`;
 
 	app.use((req, res, next) => {
-		const originalRender = res.render;
 		const originalSend = res.send;
 
 		res.send = function (body) {

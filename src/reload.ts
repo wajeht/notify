@@ -1,9 +1,17 @@
-// @ts-nocheck
-
 import fs from 'fs';
+import { logger } from './logger';
 import { appConfig } from './config';
+import { Application, Request, Response, NextFunction } from 'express';
 
-export function reload({ app, watch, options = {} }) {
+export function reload({
+	app,
+	watch,
+	options = {},
+}: {
+	app: Application;
+	watch: { path: string; extensions: string[] }[];
+	options?: { pollInterval?: number; quiet?: boolean };
+}): void {
 	if (appConfig.env !== 'development') return;
 
 	const pollInterval = options.pollInterval || 50;
@@ -12,16 +20,15 @@ export function reload({ app, watch, options = {} }) {
 
 	watch.forEach(({ path: dir, extensions }) => {
 		const extensionsSet = new Set(extensions);
-
-		fs.watch(dir, { recursive: true }, (_, filename) => {
+		fs.watch(dir, { recursive: true }, (_: fs.WatchEventType, filename: string | null) => {
 			if (filename && extensionsSet.has(filename.slice(filename.lastIndexOf('.')))) {
-				if (!quiet) console.log('File changed:', filename);
+				if (!quiet) logger.info('[reload] File changed: %s', filename);
 				changeDetected = true;
 			}
 		});
 	});
 
-	app.get('/wait-for-reload', (req, res) => {
+	app.get('/wait-for-reload', (req: Request, res: Response) => {
 		const timer = setInterval(() => {
 			if (changeDetected) {
 				changeDetected = false;
@@ -43,17 +50,16 @@ export function reload({ app, watch, options = {} }) {
             location.reload();
         }
     })();
-    </script>`;
+    </script>\n\t`;
 
-	app.use((req, res, next) => {
-		const originalSend = res.send;
+	app.use((req: Request, res: Response, next: NextFunction) => {
+		const originalSend = res.send.bind(res);
 
-		res.send = function (body) {
+		res.send = function (body: any): Response {
 			if (typeof body === 'string' && body.includes('</head>')) {
 				body = body.replace('</head>', clientScript + '</head>');
 			}
-
-			return originalSend.call(this, body);
+			return originalSend(body);
 		};
 
 		next();

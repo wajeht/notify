@@ -9,12 +9,12 @@ import {
 import ejs from 'ejs';
 import cors from 'cors';
 import express from 'express';
+import { reload } from './utils';
 import flash from 'connect-flash';
 import { router } from './router';
 import { appConfig } from './config';
 import compression from 'compression';
 import expressLayouts from 'express-ejs-layouts';
-import { reload } from './reload';
 
 const app = express();
 

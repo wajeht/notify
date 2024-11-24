@@ -6,7 +6,7 @@
 	"scripts": {
 		"prepare": "husky",
 		"start": "export APP_ENV=production && node --no-warnings ./dist/src/server.js",
-		"dev": "export APP_ENV=development && npm run db:prepare:dev && tsx watch --no-warnings --clear-screen=false ./src/server.ts",
+		"dev": "export APP_ENV=development && npm run db:prepare:dev && tsx watch --no-warnings --clear-screen=false --exclude './src/views/*/*' ./src/server.ts ",
 		"build:server": "tsc",
 		"build": "npm run build:server",
 		"update:deps": "npx npm-check -u",

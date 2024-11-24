@@ -22,6 +22,7 @@ export function getHealthzHandler(req: Request, res: Response) {
 export function getTermsOfServicePageHandler(req: Request, res: Response) {
 	res.render('terms-of-service.html', {
 		path: '/terms-of-service',
+		title: 'Terms of Service',
 	});
 }
 
@@ -34,6 +35,7 @@ export function getHomePageHandler(req: Request, res: Response) {
 
 	res.render('home.html', {
 		path: '/',
+		title: 'web 2.0 style notification systems for discord, email, and sms',
 	});
 }
 
@@ -62,6 +64,7 @@ export async function postNotificationHandler(req: Request, res: Response) {
 // GET /settings
 export async function getSettingsPageHandler(req: Request, res: Response) {
 	return res.render('settings-account.html', {
+		title: 'Settings',
 		user: req.session?.user,
 		path: '/settings',
 		layout: '../layouts/settings.html',
@@ -152,6 +155,7 @@ export async function getAdminUsersPageHandler(req: Request, res: Response) {
 		.from('users');
 
 	return res.render('admin-users.html', {
+		title: 'Admin Users',
 		users,
 		path: '/admin/users',
 		layout: '../layouts/admin.html',
@@ -161,6 +165,7 @@ export async function getAdminUsersPageHandler(req: Request, res: Response) {
 // GET /settings/account
 export async function getSettingsAccountPageHandler(req: Request, res: Response) {
 	return res.render('settings-account.html', {
+		title: 'Account',
 		user: req.session?.user,
 		path: '/settings/account',
 		layout: '../layouts/settings.html',
@@ -170,6 +175,7 @@ export async function getSettingsAccountPageHandler(req: Request, res: Response)
 // GET /settings/data
 export async function getSettingsDataPageHandler(req: Request, res: Response) {
 	return res.render('settings-data.html', {
+		title: 'Data',
 		user: req.session?.user,
 		path: '/settings/data',
 		layout: '../layouts/settings.html',
@@ -248,6 +254,7 @@ export const postSettingsAccountHandler = [
 // GET /settings/danger-zone
 export async function getSettingsDangerZonePageHandler(req: Request, res: Response) {
 	return res.render('settings-danger-zone.html', {
+		title: 'Danger Zone',
 		user: req.session?.user,
 		path: '/settings/danger-zone',
 		layout: '../layouts/settings.html',
@@ -350,6 +357,7 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
 	const path = `${basePath}?${queryParams.toString()}`;
 
 	return res.render('notifications.html', {
+		title: 'Notifications',
 		notifications,
 		pagination,
 		path,
@@ -401,6 +409,7 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 	const path = `${basePath}?${queryParams.toString()}`;
 
 	return res.render('apps.html', {
+		title: 'Apps',
 		apps,
 		filter,
 		path,
@@ -439,6 +448,7 @@ export async function getAppPageHandler(req: Request, res: Response) {
 	}
 
 	return res.render('apps-id.html', {
+		title: 'App',
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}`,
@@ -512,6 +522,7 @@ export async function getAppEditPageHandler(req: Request, res: Response) {
 		.first();
 
 	return res.render('apps-id-edit.html', {
+		title: 'App Edit',
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}`,
@@ -727,6 +738,7 @@ export async function getAppChannelEditPageHandler(req: Request, res: Response) 
 	}
 
 	return res.render('apps-id-channels-id-edit.html', {
+		title: 'App Channel',
 		app,
 		channel,
 		config,
@@ -871,6 +883,7 @@ export async function getImportAppChannelsPageHandle(req: Request, res: Response
 	}
 
 	return res.render('apps-id-channels-import.html', {
+		title: 'App Channel Import',
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}/channels`,
@@ -1077,6 +1090,7 @@ export async function getAppChannelsPageHandler(req: Request, res: Response) {
 	}
 
 	return res.render('apps-id-channels.html', {
+		title: 'App Channels',
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}/channels`,
@@ -1096,6 +1110,7 @@ export async function getNewAppChannelPageHandler(req: Request, res: Response) {
 	}
 
 	return res.render('apps-id-channels-create.html', {
+		title: 'App Channels Create',
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}/channels/create`,

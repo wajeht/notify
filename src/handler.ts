@@ -1237,6 +1237,7 @@ export async function getAppSettingsPageHandler(req: Request, res: Response) {
 	}
 
 	return res.render('apps-id-settings.html', {
+		title: 'App Settings',
 		app,
 		layout: '../layouts/app.html',
 		path: `/apps/${app.id}/settings`,
@@ -1286,6 +1287,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 		.paginate({ perPage, currentPage, isLengthAware: true });
 
 	return res.render('apps-id-notifications.html', {
+		title: 'App Notifications',
 		app: {
 			...app,
 			notifications: result.data,
@@ -1299,6 +1301,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 // GET /apps/create
 export async function getCreateNewAppPageHandler(req: Request, res: Response) {
 	return res.render('apps-create.html', {
+		title: 'App Create',
 		layout: '../layouts/auth.html',
 		path: '/apps/create',
 	});

@@ -1419,3 +1419,92 @@ export async function getGithubRedirect(req: Request, res: Response) {
 		`/apps?toast=${encodeURIComponent(`🙏 welcome back, ${foundUser.username}!`)}`,
 	);
 }
+
+export async function postImportSettingsDataHandler(req: Request, res: Response) {
+	const user = req.session?.user as User;
+	const configInput = req.body.config;
+
+	try {
+		const parsedConfig = JSON.parse(configInput);
+
+		if (!Array.isArray(parsedConfig)) {
+			return res.redirect('/settings/data?toast=‼️ Invalid format - must be an array');
+		}
+
+		await db.transaction(async (trx) => {
+			for (const appConfig of parsedConfig) {
+				// Create the app
+				const [app] = await trx('apps')
+					.insert({
+						user_id: user.id,
+						name: appConfig.name,
+						url: appConfig.url,
+						description: appConfig.description,
+						is_active: appConfig.is_active,
+					})
+					.returning('*');
+
+				// Process each channel config
+				for (const channelConfig of appConfig.configs) {
+					// Get channel type id
+					const channel_type = await trx
+						.select('id')
+						.from('channel_types')
+						.where({ name: channelConfig.channel_type_name })
+						.first();
+
+					if (!channel_type) {
+						throw new Error(`Invalid channel type: ${channelConfig.channel_type_name}`);
+					}
+
+					// Create app channel
+					const [app_channel] = await trx('app_channels')
+						.insert({
+							app_id: app.id,
+							channel_type_id: channel_type.id,
+							is_active: true,
+						})
+						.returning('*');
+
+					// Create specific channel config based on type
+					switch (channelConfig.channel_type_name) {
+						case 'email':
+							await trx('email_configs').insert({
+								app_channel_id: app_channel.id,
+								name: channelConfig.config.name,
+								host: secret().encrypt(channelConfig.config.host),
+								port: secret().encrypt(channelConfig.config.port),
+								alias: secret().encrypt(channelConfig.config.alias),
+								auth_email: secret().encrypt(channelConfig.config.auth_email),
+								auth_pass: secret().encrypt(channelConfig.config.auth_pass),
+							});
+							break;
+
+						case 'discord':
+							await trx('discord_configs').insert({
+								app_channel_id: app_channel.id,
+								name: channelConfig.config.name,
+								webhook_url: secret().encrypt(channelConfig.config.webhook_url),
+							});
+							break;
+
+						case 'sms':
+							await trx('sms_configs').insert({
+								app_channel_id: app_channel.id,
+								name: channelConfig.config.name,
+								account_sid: secret().encrypt(channelConfig.config.account_sid),
+								auth_token: secret().encrypt(channelConfig.config.auth_token),
+								from_phone_number: secret().encrypt(channelConfig.config.from_phone_number),
+								phone_number: secret().encrypt(channelConfig.config.phone_number),
+							});
+							break;
+					}
+				}
+			}
+		});
+
+		return res.redirect('/settings/data?toast=🎉 Import successful!');
+	} catch (error) {
+		return res.redirect('/settings/data?toast=‼️ Import failed: ' + (error as Error).message);
+	}
+}

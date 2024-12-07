@@ -56,6 +56,7 @@ import {
 	getAdminUsersPageHandler,
 	postUpdateAdminUsersHandler,
 	postUpdateAdminUserAppsHandler,
+	postImportSettingsDataHandler,
 } from './handler';
 
 const router = express.Router();
@@ -302,6 +303,13 @@ router.post(
 	authenticationMiddleware,
 	csrfMiddleware,
 	postTestAppNotificationHandler,
+);
+
+router.post(
+	'/settings/data/import',
+	authenticationMiddleware,
+	csrfMiddleware,
+	postImportSettingsDataHandler,
 );
 
 router.get('/login', getLoginHandler);

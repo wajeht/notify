@@ -212,6 +212,9 @@ export async function authenticationMiddleware(req: Request, res: Response, next
 
 export async function appLocalStateMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
+		const isProd = appConfig.env === 'production';
+		const randomNumber = Math.random();
+
 		res.locals.state = {
 			user: req.session?.user
 				? await db.select('*').from('users').where('id', req.session.user.id).first()
@@ -219,6 +222,11 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 			copyRightYear: new Date().getFullYear(),
 			input: req.session?.input || {},
 			errors: req.session?.errors || {},
+			version: {
+				style: isProd ? '0.1' : randomNumber,
+				script: isProd ? '0.1' : randomNumber,
+				plausible: isProd ? '0.1' : randomNumber,
+			},
 			flash: {
 				success: req.flash('success'),
 				error: req.flash('error'),
@@ -266,8 +274,10 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 
 		// Clear session input and errors after setting locals
 		// This ensures they're available for the current request only
-		delete req.session.input;
-		delete req.session.errors;
+		if (req.session) {
+			delete req.session.input;
+			delete req.session.errors;
+		}
 
 		next();
 	} catch (error) {

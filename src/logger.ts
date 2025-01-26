@@ -2,6 +2,9 @@ import pino from 'pino';
 import path from 'node:path';
 import pretty from 'pino-pretty';
 
+const logDate = new Date().toISOString().split('T')[0];
+const logFilePath = path.resolve(process.cwd(), 'logs', `${logDate}.log`);
+
 export const logger = pino(
 	{
 		level: process.env.PINO_LOG_LEVEL || 'info',
@@ -9,20 +12,29 @@ export const logger = pino(
 			level: (label) => ({ level: label }),
 		},
 		timestamp: pino.stdTimeFunctions.isoTime,
+		serializers: {
+			error: (error: Error) => ({ name: error.name, message: error.message, stack: error.stack }),
+		},
+		base: {
+			pid: process.pid,
+			hostname: process.env.HOSTNAME,
+			env: process.env.NODE_ENV || 'development',
+		},
 	},
 	pino.multistream([
 		{
 			stream: pino.destination({
-				dest: `${path.resolve(process.cwd())}/logs/${new Date().toISOString().split('T')[0]}.log`,
+				dest: logFilePath,
 				sync: false,
 				mkdir: true,
 			}),
 		},
 		{
 			stream: pretty({
-				translateTime: 'yyyy-mm-dd HH:MM:ss TT',
+				translateTime: 'yyyy-mm-dd hh:MM:ss TT',
 				colorize: true,
-				ignore: 'hostname,pid',
+				sync: false,
+				ignore: 'hostname,pid,env',
 			}),
 		},
 	]),

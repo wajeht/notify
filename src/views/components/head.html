@@ -1,12 +1,18 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Notify - <%= title %></title>
+
+	<% if (typeof title !== 'undefined') { %>
+		<title>Notify - <%- title %></title>
+	<% } else { %>
+		<title>Notify</title>
+	<% } %>
+
 	<meta name="description" content="web 2.0 style notification systems for discord, email, and sms" />
 	<meta name="keywords" content="notify, notifications, alerts, messaging, web service, discord, sms" />
 	<meta name="author" content="wajeht" />
 
-	<link rel="preload" href="/style.css" as="style" />
+	<link rel="preload" href="/style.css?v=<%- state.version.style %>" as="style" />
 
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
@@ -29,7 +35,7 @@
 
 	<link rel="canonical" href="https://notify.jaw.dev/" />
 
-	<link rel="stylesheet" href="/style.css" />
+	<link rel="stylesheet" href="/style.css?v=<%- state.version.style %>" />
 
-	<script defer data-domain="notify.jaw.dev" src="https://plausible.jaw.dev/js/script.js"></script>
+	<script defer data-domain="notify.jaw.dev" src="https://plausible.jaw.dev/js/script.js?v=<%- state.version.plausible %>"></script>
 </head>

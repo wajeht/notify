@@ -93,6 +93,7 @@
 		"@typescript-eslint/eslint-plugin": "^7.16.1",
 		"@typescript-eslint/parser": "^7.18.0",
 		"@vitest/coverage-v8": "^2.1.5",
+		"@wajeht/express-templates-reload": "^1.0.1",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"husky": "^9.1.7",

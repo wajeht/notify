@@ -13,7 +13,7 @@ import { validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
 
 export function notFoundMiddleware() {
-	return (_req: Request, res: Response, next: NextFunction) => {
+	return (_req: Request, res: Response, _next: NextFunction) => {
 		return res.status(404).render('error.html', {
 			statusCode: 404,
 			message: 'not found',

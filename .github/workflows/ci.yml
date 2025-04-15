@@ -59,6 +59,10 @@ env:
   BACKBLAZE_KEY_ID: '42069247365'
   BACKBLAZE_APPLICATION_KEY: 'abcdefghijklmnopqrstuvwxyz'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-test:
     name: Unit tests

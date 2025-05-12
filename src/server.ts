@@ -10,6 +10,8 @@ import { deleteExpiredExportJob } from './jobs/delete-expired-export.job';
 
 const server: Server = app.listen(appConfig.port);
 
+process.title = 'Notify';
+
 server.on('listening', async () => {
 	const addr: string | AddressInfo | null = server.address();
 	// prettier-ignore

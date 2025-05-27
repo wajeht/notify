@@ -1,10 +1,10 @@
 import express from 'express';
 
 import {
-	adminOnlyMiddleware,
-	apiKeyAuthenticationMiddleware,
-	authenticationMiddleware,
 	csrfMiddleware,
+	adminOnlyMiddleware,
+	authenticationMiddleware,
+	apiKeyAuthenticationMiddleware,
 } from './middleware';
 
 import {

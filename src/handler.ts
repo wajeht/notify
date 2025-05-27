@@ -14,12 +14,12 @@ import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './
 import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
 
 // GET /healthz
-export function getHealthzHandler(req: Request, res: Response) {
+export function getHealthzHandler(_req: Request, res: Response) {
 	res.setHeader('Content-Type', 'text/html').status(200).send('<p>ok</p>');
 }
 
 // GET /terms-of-service
-export function getTermsOfServicePageHandler(req: Request, res: Response) {
+export function getTermsOfServicePageHandler(_req: Request, res: Response) {
 	res.render('terms-of-service.html', {
 		path: '/terms-of-service',
 		title: 'Terms of Service',
@@ -72,7 +72,7 @@ export async function getSettingsPageHandler(req: Request, res: Response) {
 }
 
 // GET /admin
-export async function getAdminPageHandler(req: Request, res: Response) {
+export async function getAdminPageHandler(_req: Request, res: Response) {
 	return res.redirect('/admin/users');
 }
 
@@ -111,7 +111,7 @@ export async function postUpdateAdminUserAppsHandler(req: Request, res: Response
 }
 
 // GET /admin/users
-export async function getAdminUsersPageHandler(req: Request, res: Response) {
+export async function getAdminUsersPageHandler(_req: Request, res: Response) {
 	const users = await db
 		.select(
 			'users.*',
@@ -1299,7 +1299,7 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
 }
 
 // GET /apps/create
-export async function getCreateNewAppPageHandler(req: Request, res: Response) {
+export async function getCreateNewAppPageHandler(_req: Request, res: Response) {
 	return res.render('apps-create.html', {
 		title: 'App Create',
 		layout: '../layouts/auth.html',

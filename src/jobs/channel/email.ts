@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
-import { EmailNotificationJobData } from '../email.job';
 import { secret } from '../../utils';
 import { logger } from '../../logger';
+import { EmailNotificationJobData } from '../email.job';
 
 function template(username: string, message: string, details: Record<string, any> | null) {
 	return `

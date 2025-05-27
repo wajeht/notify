@@ -1,10 +1,10 @@
 import { db } from '../../db/db';
 import { logger } from '../../logger';
+import { sendSmsNotificationJob } from '../sms.job';
 import { sendEmailNotificationJob } from '../email.job';
 import { NotificationJobData } from '../notification.job';
-import { sendDiscordNotificationJob } from '../discord.job';
-import { sendSmsNotificationJob } from '../sms.job';
 import { sendGeneralEmailJob } from '../general-email.job';
+import { sendDiscordNotificationJob } from '../discord.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {

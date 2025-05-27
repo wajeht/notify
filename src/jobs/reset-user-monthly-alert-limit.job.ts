@@ -5,7 +5,7 @@ import { sendGeneralEmailJob } from './general-email.job';
 
 export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 	'resetUserMonthlyAlertLimitJob',
-	async (job) => {
+	async (_job) => {
 		logger.info('[resetUserMonthlyAlertLimitJob] Starting job');
 		try {
 			const appsToReset = await db

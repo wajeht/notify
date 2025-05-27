@@ -1,5 +1,5 @@
-import { logger } from '../../logger';
 import twilio from 'twilio';
+import { logger } from '../../logger';
 import { SmsNotificationJobData } from '../sms.job';
 
 export async function sendSms(data: SmsNotificationJobData): Promise<void> {

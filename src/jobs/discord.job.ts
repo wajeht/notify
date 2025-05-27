@@ -1,7 +1,7 @@
 import { logger } from '../logger';
-import { sendDiscord } from './channel/discord';
 import { setupJob } from '../utils';
 import { DiscordConfig } from 'types';
+import { sendDiscord } from './channel/discord';
 
 export interface DiscordNotificationJobData {
 	config: DiscordConfig;

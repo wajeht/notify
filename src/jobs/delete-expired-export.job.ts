@@ -8,7 +8,7 @@ export interface DeleteExpiredExportJobData {}
 
 export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 	'deleteExpiredExportJob',
-	async (job) => {
+	async (_job) => {
 		logger.info('[deleteExpiredExportJob] Starting job');
 
 		try {

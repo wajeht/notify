@@ -1,7 +1,7 @@
-import { sendEmail } from './channel/email';
-import { setupJob } from '../utils';
 import { logger } from '../logger';
+import { setupJob } from '../utils';
 import { EmailConfig } from '../types';
+import { sendEmail } from './channel/email';
 
 export interface EmailNotificationJobData {
 	config: EmailConfig;

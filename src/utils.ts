@@ -60,9 +60,9 @@ export function setupJob<T extends Record<string, any>>(
 	processJob: (job: Job<T>) => Promise<void>,
 	redisConnection: Redis = redis,
 ) {
-	const queue = new Queue<T>(jobName, { connection: redisConnection });
+	const queue = new Queue(jobName, { connection: redisConnection });
 
-	new Worker<T>(jobName, processJob, { connection: redisConnection });
+	new Worker(jobName, processJob, { connection: redisConnection });
 
 	return (data: T, repeat?: { cron: string }) => {
 		if (repeat) {

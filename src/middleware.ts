@@ -6,7 +6,7 @@ import session from 'express-session';
 import { verifyApiKey } from './utils';
 import { UnauthorizedError } from './error';
 import rateLimit from 'express-rate-limit';
-import connectRedisStore from 'connect-redis';
+import { RedisStore } from 'connect-redis';
 import rateLimitRedisStore from 'rate-limit-redis';
 import { sessionConfig, appConfig } from './config';
 import { validationResult } from 'express-validator';
@@ -66,7 +66,7 @@ export function sessionMiddleware() {
 		secret: sessionConfig.secret,
 		resave: false,
 		saveUninitialized: false,
-		store: new connectRedisStore({
+		store: new RedisStore({
 			client: redis,
 			prefix: sessionConfig.store_prefix,
 			disableTouch: true,

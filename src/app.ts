@@ -18,6 +18,14 @@ import { expressTemplatesReload as reload } from '@wajeht/express-templates-relo
 
 const app = express();
 
+if (appConfig.env === 'development') {
+	reload({
+		app,
+		watch: [{ path: './public/style.css' }, { path: './src/views', extensions: ['.html'] }],
+		options: { quiet: false },
+	});
+}
+
 app
 	.set('trust proxy', 1)
 	.use(sessionMiddleware())
@@ -35,18 +43,9 @@ app
 	.set('views', './src/views/pages')
 	.set('layout', '../layouts/public.html')
 	.use(expressLayouts)
-	.use(appLocalStateMiddleware);
-
-if (appConfig.env === 'development') {
-	reload({
-		app,
-		watch: [{ path: './public/style.css' }, { path: './src/views', extensions: ['.html'] }],
-	});
-}
-
-// prettier-ignore
-app.use(router)
-    .use(notFoundMiddleware())
-    .use(errorMiddleware());
+	.use(appLocalStateMiddleware)
+	.use(router)
+	.use(notFoundMiddleware())
+	.use(errorMiddleware());
 
 export { app };

@@ -59,6 +59,32 @@ export const sessionConfig = {
 	domain: process.env.SESSION_DOMAIN || 'localhost',
 } as const;
 
+// Storage config - uses MinIO for development, BackBlaze for production
+const minioDefaults = {
+	bucket: 'notify-dev',
+	region: 'us-east-1',
+	endpoint: 'http://localhost:9000',
+	accessKeyId: 'minioadmin',
+	secretAccessKey: 'minioadmin',
+};
+
+export const storageConfig =
+	appConfig.env === 'development'
+		? {
+				bucket: process.env.MINIO_BUCKET || minioDefaults.bucket,
+				region: process.env.MINIO_REGION || minioDefaults.region,
+				endpoint: process.env.MINIO_ENDPOINT || minioDefaults.endpoint,
+				accessKeyId: process.env.MINIO_ACCESS_KEY_ID || minioDefaults.accessKeyId,
+				secretAccessKey: process.env.MINIO_SECRET_ACCESS_KEY || minioDefaults.secretAccessKey,
+			}
+		: ({
+				bucket: process.env.BACKBLAZE_BUCKET as string,
+				region: process.env.BACKBLAZE_REGION as string,
+				endpoint: process.env.BACKBLAZE_END_POINT as string,
+				accessKeyId: process.env.BACKBLAZE_KEY_ID as string,
+				secretAccessKey: process.env.BACKBLAZE_APPLICATION_KEY as string,
+			} as const);
+
 export const backBlaze = {
 	bucket: process.env.BACKBLAZE_BUCKET as unknown as string,
 	region: process.env.BACKBLAZE_REGION as unknown as string,
@@ -69,10 +95,10 @@ export const backBlaze = {
 
 export const s3Client = new S3Client({
 	credentials: {
-		accessKeyId: backBlaze.key_id,
-		secretAccessKey: backBlaze.application_key,
+		accessKeyId: storageConfig.accessKeyId,
+		secretAccessKey: storageConfig.secretAccessKey,
 	},
-	region: backBlaze.region,
+	region: storageConfig.region,
 	forcePathStyle: true,
-	endpoint: backBlaze.end_point,
+	endpoint: storageConfig.endpoint,
 });

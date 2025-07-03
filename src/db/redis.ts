@@ -1,32 +1,36 @@
 import Redis from 'ioredis';
 import { logger } from '../logger';
 import RedisMock from 'ioredis-mock';
-import { redisConfig } from '../config';
+import { appConfig, redisConfig } from '../config';
 
-const redisOptions = {
-	port: redisConfig.port,
-	host: redisConfig.host,
-	password: redisConfig.password,
-	maxRetriesPerRequest: null,
-	family: 0, // Support both IPv6 and IPv4
-};
+function _createRedisClient() {
+	const redisOptions = {
+		port: redisConfig.port,
+		host: redisConfig.host,
+		password: redisConfig.password,
+		maxRetriesPerRequest: null,
+		family: 0, // Support both IPv6 and IPv4
+	};
 
-const createRedisClient = () => {
-	if (process.env.APP_ENV === 'testing') {
-		return new RedisMock(redisOptions);
+	let client: Redis | typeof RedisMock;
+
+	if (appConfig.env === 'testing') {
+		client = new RedisMock(redisOptions);
+		logger.info('Redis mock client created for testing');
+	} else {
+		client = new Redis(redisOptions);
 	}
-	return new Redis(redisOptions);
-};
 
-const redis = createRedisClient();
+	client.on('ready', () => {
+		logger.info('Redis connection established successfully');
+	});
 
-redis.on('ready', () => {
-	logger.info('Redis connection established successfully');
-});
+	client.on('error', (error) => {
+		logger.error('Error initializing Redis:', error);
+		process.exit(1);
+	});
 
-redis.on('error', (error) => {
-	logger.error('Error initializing Redis:', error);
-	process.exit(1);
-});
+	return client;
+}
 
-export { redis };
+export const redis = _createRedisClient();

@@ -94,10 +94,33 @@ services:
       timeout: 10s
       retries: 3
 
+  minio:
+    container_name: minio
+    image: minio/minio:latest
+    restart: unless-stopped
+    ports:
+      - '9000:9000' # API
+      - '9001:9001' # Console
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    command: server /data --console-address ":9001"
+    volumes:
+      - 'minio-data:/data'
+    networks:
+      - notify-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   redis-data:
     driver: local
   postgres-data:
+    driver: local
+  minio-data:
     driver: local
 
 networks:

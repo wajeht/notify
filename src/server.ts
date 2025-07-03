@@ -1,10 +1,10 @@
 import { app } from './app';
 import { Server } from 'http';
+import { logger } from './logger';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
 import { db, redis } from './db/db';
 import { runMigrations } from './utils';
-import { logger } from './logger';
 import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
 import { deleteExpiredExportJob } from './jobs/delete-expired-export.job';
 

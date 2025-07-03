@@ -14,12 +14,12 @@ import { router } from './router';
 import { appConfig } from './config';
 import compression from 'compression';
 import expressLayouts from 'express-ejs-layouts';
-import { expressTemplatesReload as reload } from '@wajeht/express-templates-reload';
+import { expressTemplatesReload } from '@wajeht/express-templates-reload';
 
 const app = express();
 
 if (appConfig.env === 'development') {
-	reload({
+	expressTemplatesReload({
 		app,
 		watch: [{ path: './public/style.css' }, { path: './src/views', extensions: ['.html'] }],
 		options: { quiet: false },

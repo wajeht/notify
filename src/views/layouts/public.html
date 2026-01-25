@@ -5,8 +5,12 @@
 
 	<%- include('../components/toast.html') %>
 
-	<body style="display: flex; justify-items: center; align-items: center; min-height: 100vh; padding: 20px;">
-		<%- body %>
+	<body style="display: flex; flex-direction: column; justify-items: center; align-items: center; min-height: 100vh; padding: 20px;">
+		<main style="flex: 1; display: flex; justify-content: center; align-items: center;">
+			<%- body %>
+		</main>
+
+		<%- include('../components/footer.html') %>
 	</body>
 
 </html>

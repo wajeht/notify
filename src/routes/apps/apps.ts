@@ -857,13 +857,13 @@ export function createAppsRouter(context: AppContext) {
 
       const userTimezone = req.session?.user?.timezone || "UTC";
 
-      const result = await knex("notifications")
+      const { data: notificationsRaw, pagination } = await knex("notifications")
         .select("*")
         .where("app_id", appId)
         .orderBy("notifications.created_at", "desc")
         .paginate({ perPage, currentPage, isLengthAware: true });
 
-      const notifications = result.data.map((n: any) => ({
+      const notifications = notificationsRaw.map((n: any) => ({
         ...n,
         read_at: n.read_at ? formatDate(n.read_at, userTimezone) : null,
         created_at: formatDate(n.created_at, userTimezone),
@@ -876,7 +876,7 @@ export function createAppsRouter(context: AppContext) {
           ...app,
           notifications,
         },
-        pagination: result.pagination,
+        pagination,
         layout: "_layouts/app.html",
         path: `/apps/${appId}/notifications`,
       });

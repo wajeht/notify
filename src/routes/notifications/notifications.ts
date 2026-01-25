@@ -44,7 +44,7 @@ export function createNotificationsRouter(context: AppContext) {
 
       const { data: notificationsRaw, pagination } = await query.paginate({
         perPage,
-        currentPage: currentPage,
+        currentPage,
         isLengthAware: true,
       });
 

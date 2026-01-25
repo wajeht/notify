@@ -969,7 +969,7 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 					.first();
 
 				if (config) {
-					const { created_at, updated_at, app_channel_id, id, name, ...cleanedConfig } = config;
+					const { created_at: _created_at, updated_at: _updated_at, app_channel_id: _app_channel_id, id: _id, name, ...cleanedConfig } = config;
 
 					const decryptedConfig = Object.entries(cleanedConfig).reduce((acc, [key, value]) => {
 						if (typeof value === 'string') {

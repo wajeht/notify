@@ -15,15 +15,20 @@ export interface JobPayload {
 
 // Add job to queue
 export async function enqueue(type: JobType, payload: JobPayload): Promise<number> {
-  const [id] = await db("jobs").insert({
-    type,
-    payload: JSON.stringify(payload),
-    status: "pending",
-    attempts: 0,
-    max_attempts: 5,
-  }).returning("id");
-  logger.info({ jobId: id, type }, "[queue] job enqueued");
-  return id as number;
+  try {
+    const [id] = await db("jobs").insert({
+      type,
+      payload: JSON.stringify(payload),
+      status: "pending",
+      attempts: 0,
+      max_attempts: 5,
+    });
+    logger.info({ jobId: id, type }, "[queue] job enqueued");
+    return id as number;
+  } catch (error) {
+    logger.error({ err: error, type }, "[queue] failed to enqueue job");
+    throw error;
+  }
 }
 
 // Process a single job
@@ -78,14 +83,35 @@ async function processJob(job: any): Promise<boolean> {
   }
 }
 
+// Recover jobs stuck in "processing" (server crashed)
+async function recoverStuckJobs(): Promise<number> {
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+  const stuck = await db("jobs")
+    .where("status", "processing")
+    .where("updated_at", "<", fiveMinutesAgo)
+    .update({ status: "pending", updated_at: db.fn.now() });
+
+  if (stuck > 0) {
+    logger.warn({ count: stuck }, "[queue] recovered stuck jobs");
+  }
+  return stuck;
+}
+
 // Process all pending jobs (called by cron)
 export async function processPendingJobs(): Promise<{ processed: number; succeeded: number; failed: number }> {
+  // First recover any stuck jobs
+  await recoverStuckJobs();
+
   const now = new Date();
   const jobs = await db("jobs")
     .where("status", "pending")
     .where("run_at", "<=", now)
     .orderBy("created_at", "asc")
     .limit(100);
+
+  if (jobs.length === 0) {
+    return { processed: 0, succeeded: 0, failed: 0 };
+  }
 
   let succeeded = 0;
   let failed = 0;
@@ -99,9 +125,7 @@ export async function processPendingJobs(): Promise<{ processed: number; succeed
     else failed++;
   }
 
-  if (jobs.length > 0) {
-    logger.info({ processed: jobs.length, succeeded, failed }, "[queue] batch processed");
-  }
+  logger.info({ processed: jobs.length, succeeded, failed }, "[queue] batch processed");
 
   return { processed: jobs.length, succeeded, failed };
 }

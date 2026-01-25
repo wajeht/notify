@@ -92,12 +92,8 @@ export function createCron(db: Knex, logger: Logger): CronType {
   }
 
   async function processJobQueue(): Promise<void> {
-    logger.info("[cron:processJobQueue] Starting");
     try {
-      const result = await processPendingJobs();
-      if (result.processed > 0) {
-        logger.info(result, "[cron:processJobQueue] Completed");
-      }
+      await processPendingJobs();
     } catch (error) {
       logger.error({ err: error }, "[cron:processJobQueue] Job failed");
     }

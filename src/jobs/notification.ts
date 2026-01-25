@@ -1,9 +1,6 @@
 import crypto from "node:crypto";
 import { db } from "../db/db";
 import { logger } from "../logger";
-import { sendSms } from "./sms";
-import { sendEmail } from "./email";
-import { sendDiscord } from "./discord";
 import { sendGeneralEmail } from "../utils";
 import { enqueue, type JobType } from "../queue";
 
@@ -65,9 +62,7 @@ export async function sendNotification(data: NotificationJobData) {
       return;
     }
 
-    // Collect all channel configs
-    const channelJobs: { type: JobType; config: any; username: string }[] = [];
-
+    // Queue all channel notifications
     for (const channel of appChannels) {
       let configs;
 
@@ -90,18 +85,9 @@ export async function sendNotification(data: NotificationJobData) {
       }
 
       for (const config of configs) {
-        channelJobs.push({ type: channel.channel_type as JobType, config, username: user.username });
-      }
-    }
-
-    // Try to send immediately, queue failures for retry
-    for (const job of channelJobs) {
-      const success = await tryDispatch(job.type, job.config, job.username, message, details);
-      if (!success) {
-        // Queue for retry
-        await enqueue(job.type, {
-          config: job.config,
-          username: job.username,
+        await enqueue(channel.channel_type as JobType, {
+          config,
+          username: user.username,
           message,
           details,
         });
@@ -111,8 +97,8 @@ export async function sendNotification(data: NotificationJobData) {
     await db("notifications").insert({
       id: crypto.randomUUID(),
       app_id: appId,
-      message: message,
-      details: details,
+      message,
+      details: details ? JSON.stringify(details) : null,
     });
 
     await db("apps")
@@ -125,32 +111,3 @@ export async function sendNotification(data: NotificationJobData) {
   }
 }
 
-// Try to send immediately, return success status
-async function tryDispatch(
-  channelType: JobType,
-  config: any,
-  username: string,
-  message: string,
-  details: any,
-): Promise<boolean> {
-  try {
-    switch (channelType) {
-      case "discord":
-        await sendDiscord({ config, message, details });
-        break;
-      case "email":
-        await sendEmail({ config, username, message, details });
-        break;
-      case "sms":
-        await sendSms({ config, message, details });
-        break;
-      default:
-        logger.info({ channelType }, "[sendNotification] Unsupported channel type");
-        return false;
-    }
-    return true;
-  } catch (error) {
-    logger.error({ channelType, err: error }, "[sendNotification] Failed, will queue for retry");
-    return false;
-  }
-}

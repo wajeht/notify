@@ -78,20 +78,20 @@
         <p>💬 <%= n.message %></p>
       </div>
 
-      <div style="display: flex; gap: 20px; position: relative;">
+      <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
         <% if (n.details.length) { %>
-          <details>
-            <summary>🔍 Details</summary>
-            <pre><%= n.details %></pre>
-          </details>
+          <button class="no-style-btn" onclick="this.parentElement.nextElementSibling.querySelector('.details-content').toggleAttribute('hidden'); this.textContent = this.textContent.includes('▶') ? '▼ 🔍 Details' : '▶ 🔍 Details'">▶ 🔍 Details</button>
         <% } %>
+        <button class="no-style-btn" onclick="this.parentElement.nextElementSibling.querySelector('.json-content').toggleAttribute('hidden'); this.textContent = this.textContent.includes('▶') ? '▼ 📄 JSON' : '▶ 📄 JSON'">▶ 📄 JSON</button>
+        <button class="no-style-btn" onclick="document.getElementById(`delete-notifications-<%= n.id %>-modal`).showModal()">🗑️ Delete</button>
+      </div>
 
-        <details>
-          <summary>📄 JSON</summary>
-          <pre><%= JSON.stringify(n, null, 2) %></pre>
-        </details>
-
-        <button class="no-style-btn" style="padding-left: 5px;" onclick="document.getElementById(`delete-notifications-<%= n.id %>-modal`).showModal()">🗑️ Delete</button>
+      <div>
+        <% if (n.details.length) { %>
+          <pre class="details-content" hidden style="margin-top: 10px; padding: 10px; border: 1px dashed; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;"><%= n.details %></pre>
+        <% } %>
+        <pre class="json-content" hidden style="margin-top: 10px; padding: 10px; border: 1px dashed; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;"><%= JSON.stringify(n, null, 2) %></pre>
+      </div>
         <dialog id="delete-notifications-<%= n.id %>-modal">
           <h2>⚠️ Confirm Deletion</h2>
           <p>Are you sure you want to delete this notification?</p>
@@ -104,7 +104,6 @@
             </div>
           </form>
         </dialog>
-      </div>
     </div>
   <% }) %>
 

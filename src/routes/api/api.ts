@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { apiKeyAuthenticationMiddleware } from "../middleware";
-import { sendNotification } from "../../jobs/notification";
+import { sendNotification } from "../../notification";
 import { logger } from "../../logger";
 
 const router = express.Router();

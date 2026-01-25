@@ -12,7 +12,6 @@
   "author": "wajeht",
   "main": "index.js",
   "scripts": {
-    "prepare": "husky",
     "start": "export APP_ENV=production && node --no-warnings ./dist/src/server.js",
     "dev": "export APP_ENV=development && npm run db:prepare:dev && tsx watch --no-warnings --clear-screen=false --exclude './src/views/*/*' ./src/server.ts ",
     "build:server": "tsc",
@@ -88,7 +87,6 @@
     "@types/nodemailer": "^7.0.5",
     "@vitest/coverage-v8": "^4.0.18",
     "@wajeht/express-templates-reload": "^2.0.5",
-    "husky": "^9.1.7",
     "oxfmt": "^0.26.0",
     "oxlint": "^1.41.0",
     "tsx": "^4.21.0",
@@ -96,6 +94,6 @@
     "vitest": "^4.0.18"
   },
   "engines": {
-    "node": ">=22.3.0"
+    "node": ">=25.0.0"
   }
 }

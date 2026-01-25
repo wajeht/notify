@@ -1,7 +1,6 @@
 import path from "path";
 import dotenv from "dotenv";
 import { Env } from "./types";
-import { S3Client } from "@aws-sdk/client-s3";
 
 dotenv.config({ path: path.resolve(path.join(process.cwd(), ".env")) });
 
@@ -44,21 +43,3 @@ export const sessionConfig = {
   secret: process.env.SESSION_SECRET || "notify",
   domain: process.env.SESSION_DOMAIN || "localhost",
 } as const;
-
-export const backBlaze = {
-  bucket: process.env.BACKBLAZE_BUCKET as unknown as string,
-  region: process.env.BACKBLAZE_REGION as unknown as string,
-  end_point: process.env.BACKBLAZE_END_POINT as unknown as string,
-  key_id: process.env.BACKBLAZE_KEY_ID as unknown as string,
-  application_key: process.env.BACKBLAZE_APPLICATION_KEY as unknown as string,
-} as const;
-
-export const s3Client = new S3Client({
-  credentials: {
-    accessKeyId: backBlaze.key_id,
-    secretAccessKey: backBlaze.application_key,
-  },
-  region: backBlaze.region,
-  forcePathStyle: true,
-  endpoint: backBlaze.end_point,
-});

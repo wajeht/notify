@@ -23,7 +23,7 @@ server.on("listening", async () => {
   }
 
   // Start cron jobs
-  cron = createCron(db);
+  cron = createCron();
   cron.start();
 });
 

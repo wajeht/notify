@@ -41,8 +41,6 @@
     "db:seed:run:prod": "knex seed:run --knexfile=./dist/src/db/knexfile.js"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.975.0",
-    "@aws-sdk/s3-request-presigner": "^3.975.0",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.6.2",
     "compression": "^1.8.1",

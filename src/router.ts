@@ -13,7 +13,6 @@ import {
   validateRequestMiddleware,
 } from "./middleware";
 import { sendNotification } from "./jobs/notification";
-import { exportUserData } from "./jobs/export-user-data";
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from "./types";
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from "./error";
 import {
@@ -182,8 +181,6 @@ router.post(
         email: req.body.email,
         timezone: req.body.timezone,
         max_apps_allowed: parseInt(req.body.max_apps_allowed),
-        export_count: parseInt(req.body.export_count),
-        max_export_count_allowed: parseInt(req.body.max_export_count_allowed),
       })
       .where({ id: parseInt(req.body.userId) });
 
@@ -333,24 +330,82 @@ router.post(
   "/settings/data",
   authenticationMiddleware,
   csrfMiddleware,
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response): Promise<void> => {
     const user = req.session?.user as User;
-
-    if (user.export_count >= user.max_export_count_allowed) {
-      return res.redirect(
-        "/settings/data?toast=‼️ you have reached your limit. try again tomorrow!",
-      );
-    }
 
     const apps = await db.select("*").from("apps").where("user_id", user.id);
 
     if (!apps.length) {
-      return res.redirect("/settings/data?toast=🤷 nothing to export!");
+      res.redirect("/settings/data?toast=🤷 nothing to export!");
+      return;
     }
 
-    await exportUserData({ userId: user.id as unknown as string });
+    const result = [];
 
-    return res.redirect("/settings/data?toast=🎉 we will send you an email very shortly");
+    for (const app of apps) {
+      const channels = await db
+        .select("channel_types.name as channel_type_name", "app_channels.id as app_channel_id")
+        .from("app_channels")
+        .leftJoin("channel_types", "channel_types.id", "app_channels.channel_type_id")
+        .leftJoin("apps", "apps.id", "app_channels.app_id")
+        .where({ app_id: app.id, "apps.user_id": app.user_id });
+
+      const configs = await Promise.all(
+        channels.map(async (channel) => {
+          const { channel_type_name, app_channel_id } = channel;
+
+          if (["discord", "sms", "email"].includes(channel_type_name)) {
+            const config = await db
+              .select("*")
+              .from(`${channel_type_name}_configs`)
+              .where({ app_channel_id })
+              .first();
+
+            if (config) {
+              const {
+                created_at: _ca,
+                updated_at: _ua,
+                app_channel_id: _aci,
+                id: _id,
+                name,
+                ...cleanedConfig
+              } = config;
+
+              const decryptedConfig = Object.entries(cleanedConfig).reduce(
+                (acc, [key, value]) => {
+                  if (typeof value === "string") {
+                    acc[key] = secret().decrypt(value);
+                  } else {
+                    acc[key] = value;
+                  }
+                  return acc;
+                },
+                {} as Record<string, unknown>,
+              );
+
+              decryptedConfig.name = name;
+
+              return { channel_type_name, config: decryptedConfig };
+            }
+          }
+
+          return { channel_type_name, app_channel_id };
+        }),
+      );
+
+      result.push({
+        name: app.name,
+        url: app.url,
+        description: app.description,
+        is_active: app.is_active,
+        configs,
+      });
+    }
+
+    const filename = `notify-export-${user.username}-${Date.now()}.json`;
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.send(JSON.stringify(result, null, 2));
   },
 );
 

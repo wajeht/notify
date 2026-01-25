@@ -46,11 +46,6 @@
 
                 <td style="padding: 8px;">
                   <span><strong>Max Apps:</strong> <%= user.max_apps_allowed %></span>
-                  <div style="display: flex; gap: 5px;">
-                    <span><strong>Max Exports:</strong> <%= user.max_export_count_allowed%></span>
-                    <span>/</span>
-                    <span><strong>Exported:</strong> <%= user.export_count %></span>
-                  </div>
                 </td>
 
                 <td style="padding: 8px;"><%= user.created_at %></td>
@@ -110,24 +105,6 @@
 
                         <% if (state.errors.max_apps_allowed) { %>
                           <small style="color: red;"><%= state.errors.max_apps_allowed %></small>
-                        <% } %>
-                      </div>
-
-                      <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="export-count-<%= user.id %>">⬇️ Exported Count<span style="color: red;">*</span></label>
-                        <input type="number" id="export-count-<%= user.id %>" name="export_count" value="<%= state.input.export_count ?? user.export_count %>" required>
-
-                        <% if (state.errors.export_count) { %>
-                          <small style="color: red;"><%= state.errors.export_count %></small>
-                        <% } %>
-                      </div>
-
-                      <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label for="max-export-count-allowed-<%= user.id %>">⬇️ Max Export Count Allowed<span style="color: red;">*</span></label>
-                        <input type="number" id="max-export-count-allowed-<%= user.id %>" name="max_export_count_allowed" value="<%= state.input.max_export_count_allowed ?? user.max_export_count_allowed %>" required>
-
-                        <% if (state.errors.max_export_count_allowed) { %>
-                          <small style="color: red;"><%= state.errors.max_export_count_allowed %></small>
                         <% } %>
                       </div>
 

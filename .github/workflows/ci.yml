@@ -28,11 +28,6 @@ env:
   TWILIO_FROM_PHONE_NUMBER: ""
   TWILIO_PHONE_NUMBER: ""
   DISCORD_WEBHOOK_URL: ""
-  BACKBLAZE_BUCKET: test
-  BACKBLAZE_REGION: us-east-1
-  BACKBLAZE_END_POINT: https://example.com
-  BACKBLAZE_KEY_ID: ${{ secrets.BACKBLAZE_KEY_ID || 'test' }}
-  BACKBLAZE_APPLICATION_KEY: ${{ secrets.BACKBLAZE_APPLICATION_KEY || 'test' }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

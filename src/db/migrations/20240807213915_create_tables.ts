@@ -9,8 +9,6 @@ export async function up(knex: Knex): Promise<void> {
       table.string("timezone").defaultTo("UTC").notNullable();
       table.boolean("is_admin").defaultTo(false);
       table.integer("max_apps_allowed").defaultTo(5);
-      table.integer("export_count").defaultTo(0);
-      table.integer("max_export_count_allowed").defaultTo(5);
       table.timestamps(true, true);
 
       table.index(["email", "is_admin"]);

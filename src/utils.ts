@@ -1,4 +1,4 @@
-import ejs from "ejs";
+import { Eta } from "eta";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import path from "node:path";
@@ -199,7 +199,8 @@ export async function sendGeneralEmail({
       "utf-8",
     );
 
-    const html = ejs.render(templateContent, { username, message });
+    const eta = new Eta({ useWith: true });
+    const html = eta.renderString(templateContent, { username, message });
 
     await sendEmail({
       to: email,

@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 import { db } from "../db/db";
 import { logger } from "../logger";
-import { enqueue, type JobType } from "../queue";
+import { sendSms } from "./sms";
+import { sendEmail } from "./email";
+import { sendDiscord } from "./discord";
 
 export interface NotificationJobData {
   userId: number;
@@ -44,33 +46,34 @@ export async function sendNotification(data: NotificationJobData) {
     return;
   }
 
-  // Queue jobs for each channel config
+  // Send to each channel (fire-and-forget)
   for (const channel of appChannels) {
     let configs;
 
     switch (channel.channel_type) {
       case "discord":
         configs = await db("discord_configs").where({ app_channel_id: channel.app_channel_id });
+        for (const config of configs) {
+          sendDiscord({ config, message, details })
+            .catch(err => logger.error("[sendNotification] discord failed", err));
+        }
         break;
       case "sms":
         configs = await db("sms_configs").where({ app_channel_id: channel.app_channel_id });
+        for (const config of configs) {
+          sendSms({ config, message, details })
+            .catch(err => logger.error("[sendNotification] sms failed", err));
+        }
         break;
       case "email":
         configs = await db("email_configs").where({ app_channel_id: channel.app_channel_id });
+        for (const config of configs) {
+          sendEmail({ config, username: user.username, message, details })
+            .catch(err => logger.error("[sendNotification] email failed", err));
+        }
         break;
-      default:
-        continue;
-    }
-
-    for (const config of configs) {
-      await enqueue(channel.channel_type as JobType, {
-        config,
-        username: user.username,
-        message,
-        details,
-      });
     }
   }
 
-  logger.info("[sendNotification] queued", { appId });
+  logger.info("[sendNotification] dispatched", { appId });
 }

@@ -5,10 +5,8 @@ import { appConfig } from "./config";
 import { db } from "./db/db";
 import { runMigrations } from "./utils";
 import { logger } from "./logger";
-import { createCron, CronType } from "./cron";
 
 const server: Server = app.listen(appConfig.port);
-let cron: CronType;
 
 process.title = "notify";
 
@@ -21,10 +19,6 @@ server.on("listening", async () => {
   if (appConfig.env === "production") {
     await runMigrations();
   }
-
-  // Start cron jobs
-  cron = createCron();
-  cron.start();
 });
 
 server.on("error", (error: NodeJS.ErrnoException) => {
@@ -51,11 +45,6 @@ function gracefulShutdown(signal: string): void {
 
   server.close(async () => {
     logger.info("HTTP server closed.");
-
-    // Stop cron jobs
-    if (cron) {
-      cron.stop();
-    }
 
     try {
       await db.destroy();

@@ -48,7 +48,10 @@ export async function sendNotification(data: NotificationJobData) {
         username: user.username,
         message: `You have reached your monthly notification quota for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels. Please wait until next month to resume channel notifications.`,
       }).catch((err) => logger.error({ err }, "[sendNotification] failed to send quota email"));
-    } else if (app.user_monthly_limit_threshold && app.alerts_sent_this_month >= app.user_monthly_limit_threshold) {
+    } else if (
+      app.user_monthly_limit_threshold &&
+      app.alerts_sent_this_month >= app.user_monthly_limit_threshold
+    ) {
       logger.info({ appId }, "[sendNotification] custom limit reached");
       quotaReached = true;
 
@@ -112,4 +115,3 @@ export async function sendNotification(data: NotificationJobData) {
 
   logger.info({ appId }, "[sendNotification] queued");
 }
-

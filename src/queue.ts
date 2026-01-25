@@ -38,13 +38,26 @@ async function processJob(job: any): Promise<boolean> {
   try {
     switch (job.type as JobType) {
       case "discord":
-        await sendDiscord({ config: payload.config, message: payload.message, details: payload.details });
+        await sendDiscord({
+          config: payload.config,
+          message: payload.message,
+          details: payload.details,
+        });
         break;
       case "email":
-        await sendEmail({ config: payload.config, username: payload.username!, message: payload.message, details: payload.details });
+        await sendEmail({
+          config: payload.config,
+          username: payload.username!,
+          message: payload.message,
+          details: payload.details,
+        });
         break;
       case "sms":
-        await sendSms({ config: payload.config, message: payload.message, details: payload.details });
+        await sendSms({
+          config: payload.config,
+          message: payload.message,
+          details: payload.details,
+        });
         break;
       default:
         throw new Error(`Unknown job type: ${job.type}`);
@@ -67,16 +80,24 @@ async function processJob(job: any): Promise<boolean> {
     const backoffMinutes = backoffArr[Math.min(attempts - 1, 4)] ?? 60;
     const runAt = new Date(Date.now() + backoffMinutes * 60 * 1000);
 
-    await db("jobs").where({ id: job.id }).update({
-      status: failed ? "failed" : "pending",
-      attempts,
-      error: error.message || String(error),
-      run_at: failed ? job.run_at : runAt,
-      updated_at: db.fn.now(),
-    });
+    await db("jobs")
+      .where({ id: job.id })
+      .update({
+        status: failed ? "failed" : "pending",
+        attempts,
+        error: error.message || String(error),
+        run_at: failed ? job.run_at : runAt,
+        updated_at: db.fn.now(),
+      });
 
     logger.error(
-      { jobId: job.id, type: job.type, attempts, maxAttempts: job.max_attempts, error: error.message },
+      {
+        jobId: job.id,
+        type: job.type,
+        attempts,
+        maxAttempts: job.max_attempts,
+        error: error.message,
+      },
       `[queue] job ${failed ? "failed permanently" : "will retry"}`,
     );
     return false;
@@ -98,7 +119,11 @@ async function recoverStuckJobs(): Promise<number> {
 }
 
 // Process all pending jobs (called by cron)
-export async function processPendingJobs(): Promise<{ processed: number; succeeded: number; failed: number }> {
+export async function processPendingJobs(): Promise<{
+  processed: number;
+  succeeded: number;
+  failed: number;
+}> {
   // First recover any stuck jobs
   await recoverStuckJobs();
 
@@ -118,7 +143,9 @@ export async function processPendingJobs(): Promise<{ processed: number; succeed
 
   for (const job of jobs) {
     // Mark as processing
-    await db("jobs").where({ id: job.id }).update({ status: "processing", updated_at: db.fn.now() });
+    await db("jobs")
+      .where({ id: job.id })
+      .update({ status: "processing", updated_at: db.fn.now() });
 
     const success = await processJob(job);
     if (success) succeeded++;

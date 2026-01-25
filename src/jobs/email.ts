@@ -90,9 +90,15 @@ export async function sendEmail(data: EmailNotificationData): Promise<void> {
       (err, info) => {
         if (err) {
           const errWithCode = err as Error & { code?: string };
-          const isConnectionError = errWithCode.code === "EDNS" || errWithCode.code === "ECONNREFUSED" || errWithCode.code === "ETIMEDOUT";
+          const isConnectionError =
+            errWithCode.code === "EDNS" ||
+            errWithCode.code === "ECONNREFUSED" ||
+            errWithCode.code === "ETIMEDOUT";
           if (isConnectionError) {
-            logger.warn({ host: config.host, code: errWithCode.code }, "[sendEmail] Mail server unavailable, will retry");
+            logger.warn(
+              { host: config.host, code: errWithCode.code },
+              "[sendEmail] Mail server unavailable, will retry",
+            );
           } else {
             logger.error({ err }, "[sendEmail] Failed to send email");
           }

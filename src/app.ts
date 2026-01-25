@@ -44,8 +44,6 @@ if (appConfig.env === "development") {
   });
 }
 
-app.use(router)
-    .use(notFoundMiddleware())
-    .use(errorMiddleware());
+app.use(router).use(notFoundMiddleware()).use(errorMiddleware());
 
 export { app };

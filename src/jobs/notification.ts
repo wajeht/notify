@@ -54,22 +54,25 @@ export async function sendNotification(data: NotificationJobData) {
       case "discord":
         configs = await db("discord_configs").where({ app_channel_id: channel.app_channel_id });
         for (const config of configs) {
-          sendDiscord({ config, message, details })
-            .catch(err => logger.error("[sendNotification] discord failed", err));
+          sendDiscord({ config, message, details }).catch((err) =>
+            logger.error("[sendNotification] discord failed", err),
+          );
         }
         break;
       case "sms":
         configs = await db("sms_configs").where({ app_channel_id: channel.app_channel_id });
         for (const config of configs) {
-          sendSms({ config, message, details })
-            .catch(err => logger.error("[sendNotification] sms failed", err));
+          sendSms({ config, message, details }).catch((err) =>
+            logger.error("[sendNotification] sms failed", err),
+          );
         }
         break;
       case "email":
         configs = await db("email_configs").where({ app_channel_id: channel.app_channel_id });
         for (const config of configs) {
-          sendEmail({ config, username: user.username, message, details })
-            .catch(err => logger.error("[sendNotification] email failed", err));
+          sendEmail({ config, username: user.username, message, details }).catch((err) =>
+            logger.error("[sendNotification] email failed", err),
+          );
         }
         break;
     }

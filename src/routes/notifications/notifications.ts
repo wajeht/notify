@@ -70,18 +70,23 @@ router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, r
 });
 
 // POST /notifications/read
-router.post("/read", authenticationMiddleware, csrfMiddleware, async (req: Request, res: Response) => {
-  const uid = req.session?.user?.id;
+router.post(
+  "/read",
+  authenticationMiddleware,
+  csrfMiddleware,
+  async (req: Request, res: Response) => {
+    const uid = req.session?.user?.id;
 
-  await db("notifications")
-    .whereIn("app_id", function (query: Knex.QueryBuilder) {
-      query.select("id").from("apps").where("user_id", uid);
-    })
-    .update({ read_at: db.fn.now() });
+    await db("notifications")
+      .whereIn("app_id", function (query: Knex.QueryBuilder) {
+        query.select("id").from("apps").where("user_id", uid);
+      })
+      .update({ read_at: db.fn.now() });
 
-  return res.redirect(
-    `/notifications?toast=${encodeURIComponent(`🎉 marked all notifications as read!`)}`,
-  );
-});
+    return res.redirect(
+      `/notifications?toast=${encodeURIComponent(`🎉 marked all notifications as read!`)}`,
+    );
+  },
+);
 
 export { router as notificationsRouter };

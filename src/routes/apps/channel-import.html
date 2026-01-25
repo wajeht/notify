@@ -42,7 +42,7 @@
     <h2>📡 Channels / Import</h2>
     <p>Channel import</p>
   </div>
-  <div style="border-style: dashed; border-radius: 5px; padding: 20px; width: 66%; display: flex; flex-direction: column; gap: 20px;">
+  <div style="background-color: var(--background-color); border-style: dashed; border-radius: 5px; padding: 20px; width: 66%; display: flex; flex-direction: column; gap: 20px;">
     <form id="importForm" style="display:flex; flex-direction: column; gap: 10px;" action="/apps/<%= app.id %>/channels/import" method="POST">
       <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
       <div style="display: flex; flex-direction: column; gap: 5px;">

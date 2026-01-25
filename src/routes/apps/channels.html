@@ -17,7 +17,7 @@
     <% if (app.channels.length) { %>
       <% app.channels.forEach(channel => { %>
         <div class="channel-card" style="border: dashed; border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px;">
+          <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; background-color: var(--background-color); ">
             <div><strong>🏷️ ID:</strong></div>
             <div><%= channel.id %></div>
 

@@ -4,8 +4,8 @@ import twilio from "twilio";
 import type { Knex } from "knex";
 
 import type { LoggerType } from "./logger";
-import { secret } from "./utils";
-import { DiscordConfig, EmailConfig, SmsConfig } from "./types";
+import { secret } from "./helpers";
+import { DiscordConfig, EmailConfig, SmsConfig } from "../types";
 
 export interface NotificationJobData {
   userId: number;

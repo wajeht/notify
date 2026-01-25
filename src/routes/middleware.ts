@@ -1,7 +1,7 @@
 import helmet from "helmet";
 import { csrfSync } from "csrf-sync";
 import session from "express-session";
-import { verifyApiKey } from "../utils";
+import { verifyApiKey } from "../utils/helpers";
 import { UnauthorizedError } from "../error";
 import rateLimit from "express-rate-limit";
 import { ConnectSessionKnexStore } from "connect-session-knex";
@@ -9,7 +9,7 @@ import { sessionConfig, appConfig } from "../config";
 import { validationResult } from "express-validator";
 import { NextFunction, Request, Response } from "express";
 import type { Knex } from "knex";
-import type { LoggerType } from "../logger";
+import type { LoggerType } from "../utils/logger";
 
 export interface MiddlewareType {
   helmetMiddleware: ReturnType<typeof helmet>;

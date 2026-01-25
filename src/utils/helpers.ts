@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import type { Knex } from "knex";
 import { Request } from "express";
 
-import { appConfig, oauthConfig } from "./config";
-import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from "./types";
+import { appConfig, oauthConfig } from "../config";
+import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from "../types";
 import type { LoggerType } from "./logger";
 
 export function formatDate(date: Date | string | null, userTimezone: string = "UTC"): string {

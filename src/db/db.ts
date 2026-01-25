@@ -1,6 +1,6 @@
 import knex, { Knex } from "knex";
 import knexConfig from "./knexfile";
-import type { LoggerType } from "../logger";
+import type { LoggerType } from "../utils/logger";
 
 export interface PaginationOptions {
   perPage?: number;

@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import type { AppContext } from "../../context";
 import { appConfig, oauthConfig } from "../../config";
-import { getGithubOauthToken, getGithubUserEmails } from "../../utils";
+import { getGithubOauthToken, getGithubUserEmails } from "../../utils/helpers";
 import { UnauthorizedError } from "../../error";
 
 export function createAuthRouter(context: AppContext) {

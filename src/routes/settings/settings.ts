@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import type { AppContext } from "../../context";
 import { createMiddleware } from "../middleware";
-import { secret } from "../../utils";
+import { secret } from "../../utils/helpers";
 import { HttpError, ValidationError } from "../../error";
 import { User } from "../../types";
 

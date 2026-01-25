@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import type { AppContext } from "../../context";
 import { createMiddleware } from "../middleware";
-import { formatDate } from "../../utils";
+import { formatDate } from "../../utils/helpers";
 
 export function createAdminRouter(context: AppContext) {
   const router = express.Router();

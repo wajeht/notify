@@ -5,7 +5,7 @@ import { body } from "express-validator";
 import type { AppContext } from "../../context";
 import { appConfig } from "../../config";
 import { createMiddleware } from "../middleware";
-import { secret, extractDomain, formatDate, formatDatetime } from "../../utils";
+import { secret, extractDomain, formatDate, formatDatetime } from "../../utils/helpers";
 import { NotFoundError } from "../../error";
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig } from "../../types";
 

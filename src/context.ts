@@ -1,8 +1,8 @@
 import type { Knex } from "knex";
-import { createLogger, type LoggerType } from "./logger";
+import { createLogger, type LoggerType } from "./utils/logger";
 import { createDatabase, type DatabaseType } from "./db/db";
-import { createNotification, type NotificationType } from "./notification";
-import { createMail, type MailType } from "./mail";
+import { createNotification, type NotificationType } from "./utils/notification";
+import { createMail, type MailType } from "./utils/mail";
 
 export type { LoggerType, DatabaseType, NotificationType, MailType };
 

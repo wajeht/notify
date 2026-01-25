@@ -3,7 +3,7 @@ import path from "node:path";
 import fsp from "node:fs/promises";
 import nodemailer from "nodemailer";
 
-import { emailConfig } from "./config";
+import { emailConfig } from "../config";
 import type { LoggerType } from "./logger";
 
 export interface MailType {

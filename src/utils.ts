@@ -10,7 +10,10 @@ import { db } from "./db/db";
 import { appConfig, emailConfig, oauthConfig } from "./config";
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from "./types";
 
-export function formatDate(date: Date, userTimezone: string = "UTC"): string {
+export function formatDate(date: Date | string | null, userTimezone: string = "UTC"): string {
+  if (!date) return "";
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return "";
   return new Intl.DateTimeFormat("en-US", {
     timeZone: userTimezone,
     month: "2-digit",
@@ -20,19 +23,25 @@ export function formatDate(date: Date, userTimezone: string = "UTC"): string {
     minute: "2-digit",
     second: "2-digit",
     hour12: true,
-  }).format(date);
+  }).format(d);
 }
 
-export function formatDateLong(date: Date, userTimezone: string = "UTC"): string {
+export function formatDateLong(date: Date | string | null, userTimezone: string = "UTC"): string {
+  if (!date) return "";
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return "";
   return new Intl.DateTimeFormat("en-US", {
     timeZone: userTimezone,
     month: "long",
     day: "numeric",
     year: "numeric",
-  }).format(date);
+  }).format(d);
 }
 
-export function formatDatetime(date: Date, userTimezone: string = "UTC"): string {
+export function formatDatetime(date: Date | string | null, userTimezone: string = "UTC"): string {
+  if (!date) return "";
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return "";
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: userTimezone,
     year: "numeric",
@@ -43,7 +52,7 @@ export function formatDatetime(date: Date, userTimezone: string = "UTC"): string
     second: "2-digit",
     hour12: false,
   })
-    .format(date)
+    .format(d)
     .replace(",", "");
 }
 

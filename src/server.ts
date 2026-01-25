@@ -1,77 +1,53 @@
-import { app } from "./app";
-import { Server } from "http";
-import { AddressInfo } from "net";
-import { appConfig } from "./config";
-import { createDatabase } from "./db/db";
-import { logger } from "./logger";
+import { createContext } from "./context";
+import { createServer, closeServer, ServerInfo } from "./app";
 
-const database = createDatabase(logger);
+const context = createContext();
 
-const server: Server = app.listen(appConfig.port);
-
-process.title = "notify";
-
-server.on("listening", async () => {
-  const addr = server.address();
-  const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${(addr as AddressInfo).port}`;
-
-  logger.info(`Server is listening on ${bind}`);
-  await database.init();
-});
-
-server.on("error", (error: NodeJS.ErrnoException) => {
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-
-  const bind =
-    typeof appConfig.port === "string" ? `Pipe ${appConfig.port}` : `Port ${appConfig.port}`;
-
-  if (error.code === "EACCES") {
-    logger.error(`${bind} requires elevated privileges`);
-    process.exit(1);
-  } else if (error.code === "EADDRINUSE") {
-    logger.error(`${bind} is already in use`);
-    process.exit(1);
-  } else {
-    throw error;
-  }
-});
-
-function gracefulShutdown(signal: string): void {
-  logger.info(`Received ${signal}, shutting down gracefully.`);
-
-  server.close(async () => {
-    logger.info("HTTP server closed.");
-
-    try {
-      await database.stop();
-    } catch (err) {
-      logger.error("Error closing database connection", err);
-    }
-
-    logger.info("All connections closed successfully.");
-    process.exit(0);
-  });
+async function gracefulShutdown(signal: string, serverInfo: ServerInfo): Promise<void> {
+  context.logger.info(`Received ${signal}, shutting down gracefully.`);
 
   setTimeout(() => {
-    logger.error("Could not close connections in time, forcefully shutting down");
+    context.logger.error("Could not close connections in time, forcefully shutting down");
     process.exit(1);
-  }, 10000);
+  }, 10000).unref();
+
+  try {
+    await closeServer(serverInfo);
+    process.exit(0);
+  } catch (error) {
+    context.logger.error("Error during shutdown", error);
+    process.exit(1);
+  }
 }
 
-process.on("SIGINT", () => gracefulShutdown("SIGINT"));
-process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
-process.on("SIGQUIT", () => gracefulShutdown("SIGQUIT"));
+function handleWarning(warning: Error): void {
+  context.logger.warn(`Process warning: ${warning.name} - ${warning.message}`);
+}
 
-process.on("uncaughtException", (error: Error) => {
-  logger.error("Uncaught Exception", error);
-});
+function handleUncaughtException(error: Error): void {
+  context.logger.error("Uncaught Exception", error);
+  process.exit(1);
+}
 
-process.on("warning", (warning: Error) => {
-  logger.warn("Process warning", warning);
-});
+function handleUnhandledRejection(reason: unknown): void {
+  context.logger.error("Unhandled Rejection", reason);
+  process.exit(1);
+}
 
-process.on("unhandledRejection", (reason: unknown) => {
-  logger.error("Unhandled Rejection", reason);
+async function main(): Promise<void> {
+  const serverInfo = await createServer(context);
+  process.title = "notify";
+
+  process.on("SIGINT", () => gracefulShutdown("SIGINT", serverInfo));
+  process.on("SIGTERM", () => gracefulShutdown("SIGTERM", serverInfo));
+  process.on("SIGQUIT", () => gracefulShutdown("SIGQUIT", serverInfo));
+
+  process.on("warning", handleWarning);
+  process.on("uncaughtException", handleUncaughtException);
+  process.on("unhandledRejection", handleUnhandledRejection);
+}
+
+main().catch((error) => {
+  context.logger.error("Uncaught Exception", error);
+  process.exit(1);
 });

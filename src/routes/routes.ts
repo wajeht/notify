@@ -1,26 +1,23 @@
 import express from "express";
-import { apiRouter } from "./api/api";
-import { authRouter } from "./auth/auth";
-import { appsRouter } from "./apps/apps";
-import { adminRouter } from "./admin/admin";
-import { generalRouter } from "./general/general";
-import { settingsRouter } from "./settings/settings";
-import { notificationsRouter } from "./notifications/notifications";
+import type { AppContext } from "../context";
+import { createApiRouter } from "./api/api";
+import { createAuthRouter } from "./auth/auth";
+import { createAppsRouter } from "./apps/apps";
+import { createAdminRouter } from "./admin/admin";
+import { createGeneralRouter } from "./general/general";
+import { createSettingsRouter } from "./settings/settings";
+import { createNotificationsRouter } from "./notifications/notifications";
 
-const router = express.Router();
+export function createMainRouter(context: AppContext) {
+  const router = express.Router();
 
-router.use("/", generalRouter);
+  router.use("/", createGeneralRouter(context));
+  router.use("/", createApiRouter(context));
+  router.use("/", createAuthRouter(context));
+  router.use("/admin", createAdminRouter(context));
+  router.use("/settings", createSettingsRouter(context));
+  router.use("/notifications", createNotificationsRouter(context));
+  router.use("/apps", createAppsRouter(context));
 
-router.use("/", apiRouter);
-
-router.use("/", authRouter);
-
-router.use("/admin", adminRouter);
-
-router.use("/settings", settingsRouter);
-
-router.use("/notifications", notificationsRouter);
-
-router.use("/apps", appsRouter);
-
-export { router };
+  return router;
+}

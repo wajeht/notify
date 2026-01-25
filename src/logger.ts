@@ -80,4 +80,4 @@ function createLogger(): LoggerType {
   };
 }
 
-export const logger = createLogger();
+export { createLogger };

@@ -1,12 +1,11 @@
 import crypto from "node:crypto";
-import { db } from "./db/db";
-import { logger } from "./logger";
-import { secret } from "./utils";
-import { DiscordConfig } from "./types";
 import nodemailer from "nodemailer";
-import { EmailConfig } from "./types";
 import twilio from "twilio";
-import { SmsConfig } from "./types";
+import type { Knex } from "knex";
+
+import type { LoggerType } from "./logger";
+import { secret } from "./utils";
+import { DiscordConfig, EmailConfig, SmsConfig } from "./types";
 
 export interface NotificationJobData {
   userId: number;
@@ -21,23 +20,24 @@ export interface SmsNotificationData {
   details: Record<string, any> | null;
 }
 
-export async function sendSms(data: SmsNotificationData): Promise<void> {
-  const client = twilio(data.config.account_sid, data.config.auth_token);
-
-  const message = await client.messages.create({
-    body: `${data.message}\n\n${JSON.stringify(data.details)}`,
-    from: data.config.from_phone_number,
-    to: data.config.phone_number,
-  });
-
-  logger.info("[sendSms] SMS sent", { sid: message.sid });
-}
-
 export interface EmailNotificationData {
   config: EmailConfig;
   username: string;
   message: string;
   details: Record<string, any> | null;
+}
+
+export interface DiscordNotificationData {
+  config: DiscordConfig;
+  message: string;
+  details: Record<string, unknown> | null;
+}
+
+export interface NotificationType {
+  sendSms: (data: SmsNotificationData) => Promise<void>;
+  sendEmail: (data: EmailNotificationData) => Promise<void>;
+  sendDiscord: (data: DiscordNotificationData) => Promise<void>;
+  sendNotification: (data: NotificationJobData) => Promise<void>;
 }
 
 function template(username: string, message: string, details: Record<string, any> | null) {
@@ -96,174 +96,192 @@ function template(username: string, message: string, details: Record<string, any
 </html>`;
 }
 
-export async function sendEmail(data: EmailNotificationData): Promise<void> {
-  const config = {
-    host: secret().decrypt(data.config.host),
-    port: secret().decrypt(data.config.port),
-    alias: secret().decrypt(data.config.alias),
-    auth: {
-      user: secret().decrypt(data.config.auth_email),
-      pass: secret().decrypt(data.config.auth_pass),
-    },
-  };
+export function createNotification(knex: Knex, logger: LoggerType): NotificationType {
+  async function sendSms(data: SmsNotificationData): Promise<void> {
+    const client = twilio(data.config.account_sid, data.config.auth_token);
 
-  const transporter = nodemailer.createTransport(config as any);
+    const message = await client.messages.create({
+      body: `${data.message}\n\n${JSON.stringify(data.details)}`,
+      from: data.config.from_phone_number,
+      to: data.config.phone_number,
+    });
 
-  await new Promise((resolve, reject) => {
-    transporter.sendMail(
-      {
-        from: config.alias,
-        to: config.auth.user,
-        subject: data.message,
-        html: template(data.username, data.message, data.details),
+    logger.info("[sendSms] SMS sent", { sid: message.sid });
+  }
+
+  async function sendEmail(data: EmailNotificationData): Promise<void> {
+    const config = {
+      host: secret().decrypt(data.config.host),
+      port: secret().decrypt(data.config.port),
+      alias: secret().decrypt(data.config.alias),
+      auth: {
+        user: secret().decrypt(data.config.auth_email),
+        pass: secret().decrypt(data.config.auth_pass),
       },
-      (err, info) => {
-        if (err) {
-          const errWithCode = err as Error & { code?: string };
-          const isConnectionError =
-            errWithCode.code === "EDNS" ||
-            errWithCode.code === "ECONNREFUSED" ||
-            errWithCode.code === "ETIMEDOUT";
-          if (isConnectionError) {
-            logger.warn("[sendEmail] Mail server unavailable, will retry", {
-              host: config.host,
-              code: errWithCode.code,
-            });
+    };
+
+    const transporter = nodemailer.createTransport(config as any);
+
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(
+        {
+          from: config.alias,
+          to: config.auth.user,
+          subject: data.message,
+          html: template(data.username, data.message, data.details),
+        },
+        (err, info) => {
+          if (err) {
+            const errWithCode = err as Error & { code?: string };
+            const isConnectionError =
+              errWithCode.code === "EDNS" ||
+              errWithCode.code === "ECONNREFUSED" ||
+              errWithCode.code === "ETIMEDOUT";
+            if (isConnectionError) {
+              logger.warn("[sendEmail] Mail server unavailable, will retry", {
+                host: config.host,
+                code: errWithCode.code,
+              });
+            } else {
+              logger.error("[sendEmail] Failed to send email", err);
+            }
+            reject(err);
           } else {
-            logger.error("[sendEmail] Failed to send email", err);
+            logger.info("[sendEmail] Email sent", { to: config.auth.user });
+            resolve(info);
           }
-          reject(err);
-        } else {
-          logger.info("[sendEmail] Email sent", { to: config.auth.user });
-          resolve(info);
-        }
-      },
-    );
-  });
-}
-
-export interface DiscordNotificationData {
-  config: DiscordConfig;
-  message: string;
-  details: Record<string, unknown> | null;
-}
-
-type Params = {
-  username: string;
-  content: string;
-  embeds?: Array<{ title: string; description: string }>;
-};
-
-export async function sendDiscord(data: DiscordNotificationData): Promise<void> {
-  const params: Params = {
-    username: "notify.jaw.dev",
-    content: data.message,
-  };
-
-  if (data.details) {
-    params.embeds = [
-      {
-        title: data.message,
-        description: JSON.stringify(data.details),
-      },
-    ];
+        },
+      );
+    });
   }
 
-  const res = await fetch(secret().decrypt(data.config.webhook_url), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(params),
-  });
+  async function sendDiscord(data: DiscordNotificationData): Promise<void> {
+    type Params = {
+      username: string;
+      content: string;
+      embeds?: Array<{ title: string; description: string }>;
+    };
 
-  if (res.status === 204) {
-    logger.info("[sendDiscord] Discord notification sent", { message: data.message });
-  } else {
-    const error = new Error(`Discord webhook failed with status ${res.status}`);
-    logger.warn("[sendDiscord] Discord webhook failed, will retry", { status: res.status });
-    throw error;
-  }
-}
+    const params: Params = {
+      username: "notify.jaw.dev",
+      content: data.message,
+    };
 
-export async function sendNotification(data: NotificationJobData) {
-  const { appId, userId, message, details } = data;
+    if (data.details) {
+      params.embeds = [
+        {
+          title: data.message,
+          description: JSON.stringify(data.details),
+        },
+      ];
+    }
 
-  const appQuery = db("apps").where({ id: appId, is_active: true, user_id: userId }).first();
-  const channelsQuery = db("app_channels")
-    .join("channel_types", "app_channels.channel_type_id", "channel_types.id")
-    .where({ "app_channels.app_id": appId, "app_channels.is_active": true })
-    .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
+    const res = await fetch(secret().decrypt(data.config.webhook_url), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(params),
+    });
 
-  const [app, appChannels] = await Promise.all([appQuery, channelsQuery]);
-
-  if (!app) {
-    throw new Error(`App ${appId} not found or inactive`);
-  }
-
-  const needsEmail = appChannels.some((channel) => channel.channel_type === "email");
-  const user = needsEmail ? await db.select("*").from("users").where({ id: userId }).first() : null;
-
-  if (needsEmail && !user) {
-    throw new Error(`User ${userId} not found`);
-  }
-
-  // Save the notification to the database
-  await db("notifications").insert({
-    id: crypto.randomUUID(),
-    app_id: appId,
-    message,
-    details: details ? JSON.stringify(details) : null,
-  });
-
-  if (!appChannels.length) {
-    logger.info("[sendNotification] no active channels", { appId });
-    return;
-  }
-
-  const discordChannelIds: number[] = [];
-  const smsChannelIds: number[] = [];
-  const emailChannelIds: number[] = [];
-
-  for (const channel of appChannels) {
-    switch (channel.channel_type) {
-      case "discord":
-        discordChannelIds.push(channel.app_channel_id);
-        break;
-      case "sms":
-        smsChannelIds.push(channel.app_channel_id);
-        break;
-      case "email":
-        emailChannelIds.push(channel.app_channel_id);
-        break;
+    if (res.status === 204) {
+      logger.info("[sendDiscord] Discord notification sent", { message: data.message });
+    } else {
+      const error = new Error(`Discord webhook failed with status ${res.status}`);
+      logger.warn("[sendDiscord] Discord webhook failed, will retry", { status: res.status });
+      throw error;
     }
   }
 
-  const [discordConfigs, smsConfigs, emailConfigs] = await Promise.all([
-    discordChannelIds.length
-      ? db("discord_configs").whereIn("app_channel_id", discordChannelIds)
-      : [],
-    smsChannelIds.length ? db("sms_configs").whereIn("app_channel_id", smsChannelIds) : [],
-    emailChannelIds.length ? db("email_configs").whereIn("app_channel_id", emailChannelIds) : [],
-  ]);
+  async function sendNotification(data: NotificationJobData): Promise<void> {
+    const { appId, userId, message, details } = data;
 
-  for (const config of discordConfigs) {
-    void sendDiscord({ config, message, details }).catch((err) =>
-      logger.error("[sendNotification] discord failed", err),
-    );
-  }
+    const appQuery = knex("apps").where({ id: appId, is_active: true, user_id: userId }).first();
+    const channelsQuery = knex("app_channels")
+      .join("channel_types", "app_channels.channel_type_id", "channel_types.id")
+      .where({ "app_channels.app_id": appId, "app_channels.is_active": true })
+      .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
 
-  for (const config of smsConfigs) {
-    void sendSms({ config, message, details }).catch((err) =>
-      logger.error("[sendNotification] sms failed", err),
-    );
-  }
+    const [app, appChannels] = await Promise.all([appQuery, channelsQuery]);
 
-  if (emailConfigs.length && user) {
-    for (const config of emailConfigs) {
-      void sendEmail({ config, username: user.username, message, details }).catch((err) =>
-        logger.error("[sendNotification] email failed", err),
+    if (!app) {
+      throw new Error(`App ${appId} not found or inactive`);
+    }
+
+    const needsEmail = appChannels.some((channel) => channel.channel_type === "email");
+    const user = needsEmail
+      ? await knex.select("*").from("users").where({ id: userId }).first()
+      : null;
+
+    if (needsEmail && !user) {
+      throw new Error(`User ${userId} not found`);
+    }
+
+    await knex("notifications").insert({
+      id: crypto.randomUUID(),
+      app_id: appId,
+      message,
+      details: details ? JSON.stringify(details) : null,
+    });
+
+    if (!appChannels.length) {
+      logger.info("[sendNotification] no active channels", { appId });
+      return;
+    }
+
+    const discordChannelIds: number[] = [];
+    const smsChannelIds: number[] = [];
+    const emailChannelIds: number[] = [];
+
+    for (const channel of appChannels) {
+      switch (channel.channel_type) {
+        case "discord":
+          discordChannelIds.push(channel.app_channel_id);
+          break;
+        case "sms":
+          smsChannelIds.push(channel.app_channel_id);
+          break;
+        case "email":
+          emailChannelIds.push(channel.app_channel_id);
+          break;
+      }
+    }
+
+    const [discordConfigs, smsConfigs, emailConfigs] = await Promise.all([
+      discordChannelIds.length
+        ? knex("discord_configs").whereIn("app_channel_id", discordChannelIds)
+        : [],
+      smsChannelIds.length ? knex("sms_configs").whereIn("app_channel_id", smsChannelIds) : [],
+      emailChannelIds.length
+        ? knex("email_configs").whereIn("app_channel_id", emailChannelIds)
+        : [],
+    ]);
+
+    for (const config of discordConfigs) {
+      void sendDiscord({ config, message, details }).catch((err) =>
+        logger.error("[sendNotification] discord failed", err),
       );
     }
+
+    for (const config of smsConfigs) {
+      void sendSms({ config, message, details }).catch((err) =>
+        logger.error("[sendNotification] sms failed", err),
+      );
+    }
+
+    if (emailConfigs.length && user) {
+      for (const config of emailConfigs) {
+        void sendEmail({ config, username: user.username, message, details }).catch((err) =>
+          logger.error("[sendNotification] email failed", err),
+        );
+      }
+    }
+
+    logger.info("[sendNotification] dispatched", { appId });
   }
 
-  logger.info("[sendNotification] dispatched", { appId });
+  return {
+    sendSms,
+    sendEmail,
+    sendDiscord,
+    sendNotification,
+  };
 }

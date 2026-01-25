@@ -1,14 +1,11 @@
-import { Eta } from "eta";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import path from "node:path";
+import type { Knex } from "knex";
 import { Request } from "express";
-import { logger } from "./logger";
-import fsp from "node:fs/promises";
-import nodemailer from "nodemailer";
-import { db } from "./db/db";
-import { appConfig, emailConfig, oauthConfig } from "./config";
+
+import { appConfig, oauthConfig } from "./config";
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from "./types";
+import type { LoggerType } from "./logger";
 
 export function formatDate(date: Date | string | null, userTimezone: string = "UTC"): string {
   if (!date) return "";
@@ -80,7 +77,10 @@ export function extractDomain(req: Request): string {
   return url;
 }
 
-export async function getGithubOauthToken(code: string): Promise<GitHubOauthToken> {
+export async function getGithubOauthToken(
+  code: string,
+  logger: LoggerType,
+): Promise<GitHubOauthToken> {
   const rootUrl = "https://github.com/login/oauth/access_token";
 
   const params = new URLSearchParams({
@@ -107,7 +107,10 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
   }
 }
 
-export async function getGithubUserEmails(access_token: string): Promise<GithubUserEmail[]> {
+export async function getGithubUserEmails(
+  access_token: string,
+  logger: LoggerType,
+): Promise<GithubUserEmail[]> {
   try {
     const response = await fetch("https://api.github.com/user/emails", {
       headers: {
@@ -123,11 +126,15 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
   }
 }
 
-export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null> {
+export async function verifyApiKey(
+  apiKey: string,
+  knex: Knex,
+  logger: LoggerType,
+): Promise<ApiKeyPayload | null> {
   try {
     const decodedApiKeyPayload = jwt.verify(apiKey, appConfig.apiKeySecret) as ApiKeyPayload;
 
-    const app = await db("apps")
+    const app = await knex("apps")
       .where({
         id: decodedApiKeyPayload.appId,
         user_id: decodedApiKeyPayload.userId,
@@ -143,73 +150,5 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
   } catch (error) {
     logger.error("failed to verify api key", error);
     return null;
-  }
-}
-
-export async function sendEmail({
-  to,
-  subject,
-  html,
-}: {
-  to: string;
-  subject: string;
-  html: string;
-}): Promise<void> {
-  try {
-    const transporter = nodemailer.createTransport({
-      host: emailConfig.host,
-      port: emailConfig.port,
-      auth: {
-        user: emailConfig.auth.user,
-        pass: emailConfig.auth.pass,
-      },
-    });
-
-    await new Promise((resolve, reject) => {
-      transporter.sendMail({ from: emailConfig.alias, to, subject, html }, (err, info) => {
-        if (err) {
-          logger.error("Error sending email", err);
-          reject(err);
-        } else {
-          logger.info("Email sent successfully", { to });
-          resolve(info);
-        }
-      });
-    });
-  } catch (error) {
-    logger.error(`Error while sending email:  ${JSON.stringify(error, null, 2)}`);
-    throw error;
-  }
-}
-
-export async function sendGeneralEmail({
-  email,
-  username,
-  subject = "🔔 Notify",
-  message,
-}: {
-  email: string;
-  username: string;
-  subject: string;
-  message: string;
-}) {
-  try {
-    const templateContent = await fsp.readFile(
-      path.resolve(path.join(process.cwd(), "src", "routes", "_emails", "general.html")),
-      "utf-8",
-    );
-
-    const eta = new Eta({ useWith: true });
-    const html = eta.renderString(templateContent, { username, message });
-
-    await sendEmail({
-      to: email,
-      subject,
-      html,
-    });
-
-    logger.info("email sent successfully");
-  } catch (error) {
-    logger.error(`failed to send email:  ${JSON.stringify(error, null, 2)}`);
   }
 }

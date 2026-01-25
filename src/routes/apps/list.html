@@ -28,7 +28,7 @@
   <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
     <% apps.forEach(app => { %>
-      <article style="border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px;">
+      <article style="border: dashed; padding: 20px; border-radius: 5px; display: flex; flex-direction: column; gap: 5px; background-color: var(--background-color);">
         <div style="display: flex; align-items: center; gap: 10px; justify-content: space-between;">
           <h3>
             <a href="/apps/<%= app.id %>"><%= app.name %></a>

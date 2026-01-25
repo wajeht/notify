@@ -5,17 +5,15 @@ import crypto from 'crypto';
 import path from 'node:path';
 import jwt from 'jsonwebtoken';
 import dayjsModule from 'dayjs';
-import { Redis } from 'ioredis';
 import { Request } from 'express';
 import { logger } from './logger';
 import fsp from 'node:fs/promises';
 import utc from 'dayjs/plugin/utc';
 import nodemailer from 'nodemailer';
-import { db, redis } from './db/db';
-import { Queue, Worker, Job } from 'bullmq';
+import { db } from './db/db';
 import timezone from 'dayjs/plugin/timezone';
-import { appConfig, emailConfig, oauthConfig, sessionConfig } from './config';
-import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload, User } from './types';
+import { appConfig, emailConfig, oauthConfig } from './config';
+import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from './types';
 
 export function dayjs(date: string | Date = new Date()) {
 	dayjsModule.extend(utc);
@@ -53,23 +51,6 @@ export function secret(secretSalt: string = appConfig.secretSalt) {
 	}
 
 	return { encrypt, decrypt };
-}
-
-export function setupJob<T extends Record<string, any>>(
-	jobName: string,
-	processJob: (job: Job<T>) => Promise<void>,
-	redisConnection: Redis = redis,
-) {
-	const queue = new Queue(jobName, { connection: redisConnection });
-
-	new Worker(jobName, processJob, { connection: redisConnection });
-
-	return (data: T, repeat?: { cron: string }) => {
-		if (repeat) {
-			return queue.add(jobName, data, { repeat: { pattern: repeat.cron } });
-		}
-		return queue.add(jobName, data);
-	};
 }
 
 export function extractDomain(req: Request): string {
@@ -250,37 +231,5 @@ export async function sendGeneralEmail({
 		logger.info('email sent successfully');
 	} catch (error) {
 		logger.error(`failed to send email:  ${JSON.stringify(error, null, 2)}`);
-		// throw error
 	}
 }
-
-export const modifyUserSessionById = async (
-	userId: string | number,
-	updateFunction: (user: User) => User,
-): Promise<{ sessionKey: string; updatedSessionData: any & User } | null> => {
-	const sessionKeys = await redis.keys(`${sessionConfig.store_prefix}*`);
-
-	for (const sessionKey of sessionKeys) {
-		const sessionData = await redis.get(sessionKey);
-
-		const parsedSessionData: any & User = JSON.parse(sessionData as string);
-
-		if (parsedSessionData.user && parsedSessionData.user.id === userId) {
-			logger.info(`Found session for user: ${JSON.stringify(parsedSessionData.user, null, 2)}`);
-
-			parsedSessionData.user = updateFunction(parsedSessionData.user);
-
-			await redis.set(sessionKey, JSON.stringify(parsedSessionData));
-
-			logger.info(`Updated user data: ${JSON.stringify(parsedSessionData.user, null, 2)}`);
-
-			return {
-				sessionKey,
-				updatedSessionData: parsedSessionData,
-			};
-		}
-	}
-
-	logger.error({ userId }, 'No session found for user ID');
-	return null;
-};

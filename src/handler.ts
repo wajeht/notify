@@ -6,9 +6,9 @@ import axios, { AxiosError } from 'axios';
 import { Request, Response } from 'express';
 import { appConfig, oauthConfig } from './config';
 import { validateRequestMiddleware } from './middleware';
-import { sendNotificationJob } from './jobs/notification.job';
-import { sendGeneralEmailJob } from './jobs/general-email.job';
-import { exportUserDataJob } from './jobs/export-user-data.job';
+import { sendNotification } from './jobs/notification.job';
+import { sendGeneralEmail } from './jobs/general-email.job';
+import { exportUserData } from './jobs/export-user-data.job';
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from './types';
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from './error';
 import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from './utils';
@@ -54,7 +54,7 @@ export async function postNotificationHandler(req: Request, res: Response) {
 	const userId = req.apiKeyPayload?.userId as unknown as number;
 	const appId = req.apiKeyPayload?.appId as unknown as string;
 
-	await sendNotificationJob({ appId, message, details, userId });
+	await sendNotification({ appId, message, details, userId });
 
 	res.status(200).json({
 		message: 'Notification queued successfully',
@@ -196,7 +196,7 @@ export async function postSettingsDataPageHandler(req: Request, res: Response) {
 		return res.redirect('/settings/data?toast=🤷 nothing to export!');
 	}
 
-	await exportUserDataJob({ userId: user.id as unknown as string });
+	await exportUserData({ userId: user.id as unknown as string });
 
 	return res.redirect('/settings/data?toast=🎉 we will send you an email very shortly');
 }
@@ -267,7 +267,7 @@ export async function postDeleteSettingsDangerZoneHandler(req: Request, res: Res
 
 	await db('users').where({ id: user?.id }).delete();
 
-	await sendGeneralEmailJob({
+	await sendGeneralEmail({
 		email: user?.email as string,
 		subject: '🔔 Notify!',
 		username: user?.username as string,
@@ -466,7 +466,7 @@ export async function postDeleteAppHandler(req: Request, res: Response) {
 export async function postAppUpdateHandler(req: Request, res: Response) {
 	const { name, url, description, user_monthly_limit_threshold } = req.body;
 
-	const id = parseInt(req.params.id!);
+	const id = parseInt(req.params.id as string);
 
 	const is_active = req.body.is_active === 'on' ? true : false;
 
@@ -1402,7 +1402,7 @@ export async function getGithubRedirect(req: Request, res: Response) {
 		req.session.user = foundUser;
 		req.session.save();
 
-		await sendGeneralEmailJob({
+		await sendGeneralEmail({
 			email: foundUser.email,
 			subject: 'Welcome to 🔔 Notify!',
 			username: foundUser.username,

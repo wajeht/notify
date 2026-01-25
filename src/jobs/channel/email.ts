@@ -1,7 +1,14 @@
 import nodemailer from 'nodemailer';
 import { secret } from '../../utils';
 import { logger } from '../../logger';
-import { EmailNotificationJobData } from '../email.job';
+import { EmailConfig } from '../../types';
+
+export interface EmailNotificationData {
+	config: EmailConfig;
+	username: string;
+	message: string;
+	details: Record<string, any> | null;
+}
 
 function template(username: string, message: string, details: Record<string, any> | null) {
 	return `
@@ -34,7 +41,7 @@ function template(username: string, message: string, details: Record<string, any
                   ${message}
                 </div>
                 ${
-									details && details.length > 0
+									details && Object.keys(details).length > 0
 										? `
                 <div style="padding:16px 24px 16px 24px">
                   <div style="background-color:#fbfafa;border:1px dashed black;border-radius:5px;font-weight:normal;padding:16px 24px 16px 24px">
@@ -59,7 +66,7 @@ function template(username: string, message: string, details: Record<string, any
 </html>`;
 }
 
-export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
+export async function sendEmail(data: EmailNotificationData): Promise<void> {
 	const config = {
 		host: secret().decrypt(data.config.host),
 		port: secret().decrypt(data.config.port),
@@ -92,8 +99,6 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 				},
 			);
 		});
-
-		logger.info({ to: data.config.auth_email }, '[sendEmail] email sent');
 	} catch (error) {
 		logger.error({ err: error }, '[sendEmail] error while sending email');
 	}

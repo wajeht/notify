@@ -107,7 +107,7 @@ export async function up(knex: Knex): Promise<void> {
 			table.index('webhook_url');
 		})
 		.createTable('notifications', (table) => {
-			table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
+			table.string('id', 36).primary();
 			table.integer('app_id').unsigned().references('id').inTable('apps').onDelete('CASCADE');
 			table.text('message').notNullable();
 			table.text('details').nullable();
@@ -115,6 +115,13 @@ export async function up(knex: Knex): Promise<void> {
 			table.timestamps(true, true);
 
 			table.index(['app_id', 'created_at']);
+		})
+		.createTable('sessions', (table) => {
+			table.string('sid', 255).primary();
+			table.text('sess').notNullable();
+			table.timestamp('expired').notNullable();
+
+			table.index('expired');
 		});
 
 	// Insert default channel types
@@ -123,6 +130,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema
+		.dropTableIfExists('sessions')
 		.dropTableIfExists('notifications')
 		.dropTableIfExists('discord_configs')
 		.dropTableIfExists('sms_configs')

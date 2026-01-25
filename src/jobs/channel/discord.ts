@@ -1,14 +1,20 @@
 import { secret } from '../../utils';
 import { logger } from '../../logger';
-import { DiscordNotificationJobData } from '../discord.job';
+import { DiscordConfig } from '../../types';
+
+export interface DiscordNotificationData {
+	config: DiscordConfig;
+	message: string;
+	details: Record<string, unknown> | null;
+}
 
 type Params = {
 	username: string;
-	content: any;
-	embeds?: any;
+	content: string;
+	embeds?: Array<{ title: string; description: string }>;
 };
 
-export async function sendDiscord(data: DiscordNotificationJobData): Promise<void> {
+export async function sendDiscord(data: DiscordNotificationData): Promise<void> {
 	try {
 		const params: Params = {
 			username: 'notify.jaw.dev',
@@ -31,7 +37,7 @@ export async function sendDiscord(data: DiscordNotificationJobData): Promise<voi
 		});
 
 		if (res.status === 204) {
-			logger.info(`[sendDiscord] discord bot has sent: ${data.message}`);
+			logger.info({ message: data.message }, '[sendDiscord] discord notification sent');
 		}
 	} catch (error) {
 		logger.error({ err: error }, '[sendDiscord] error sending discord notification');

@@ -1,8 +1,14 @@
 import twilio from 'twilio';
 import { logger } from '../../logger';
-import { SmsNotificationJobData } from '../sms.job';
+import { SmsConfig } from '../../types';
 
-export async function sendSms(data: SmsNotificationJobData): Promise<void> {
+export interface SmsNotificationData {
+	config: SmsConfig;
+	message: string;
+	details: Record<string, any> | null;
+}
+
+export async function sendSms(data: SmsNotificationData): Promise<void> {
 	const client = twilio(data.config.account_sid, data.config.auth_token);
 
 	try {
@@ -12,7 +18,7 @@ export async function sendSms(data: SmsNotificationJobData): Promise<void> {
 			to: data.config.phone_number,
 		});
 
-		logger.info(`[sendSms] SMS sent: ${message.sid}`);
+		logger.info({ sid: message.sid }, '[sendSms] SMS sent');
 	} catch (error) {
 		logger.error({ err: error }, '[sendSms] Failed to send SMS');
 	}

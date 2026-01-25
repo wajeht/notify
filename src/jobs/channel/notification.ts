@@ -1,10 +1,11 @@
+import crypto from 'node:crypto';
 import { db } from '../../db/db';
 import { logger } from '../../logger';
-import { sendSmsNotificationJob } from '../sms.job';
-import { sendEmailNotificationJob } from '../email.job';
+import { sendSms } from './sms';
+import { sendEmail } from './email';
+import { sendDiscord } from './discord';
+import { sendGeneralEmail } from '../../utils';
 import { NotificationJobData } from '../notification.job';
-import { sendGeneralEmailJob } from '../general-email.job';
-import { sendDiscordNotificationJob } from '../discord.job';
 
 export async function sendNotification(data: NotificationJobData) {
 	try {
@@ -21,11 +22,9 @@ export async function sendNotification(data: NotificationJobData) {
 
 		if (user.is_admin === false) {
 			if (app.max_monthly_alerts_allowed === app.alerts_sent_this_month) {
-				logger.info(
-					'[sendNotification] You have reached your monthly quota. Please wait until next month!',
-				);
+				logger.info('[sendNotification] Monthly quota reached');
 
-				await sendGeneralEmailJob({
+				await sendGeneralEmail({
 					email: user.email,
 					subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
 					username: user.username,
@@ -36,11 +35,9 @@ export async function sendNotification(data: NotificationJobData) {
 			}
 
 			if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
-				logger.info(
-					'[sendNotification] You have reached your custom alert limit. Notifications will stop until you update your settings.',
-				);
+				logger.info('[sendNotification] Custom alert limit reached');
 
-				await sendGeneralEmailJob({
+				await sendGeneralEmail({
 					email: user.email,
 					subject: `Custom Alert Limit Reached on ${app.name} 🔔 Notify`,
 					username: user.username,
@@ -57,7 +54,7 @@ export async function sendNotification(data: NotificationJobData) {
 			.select('channel_types.name as channel_type', 'app_channels.id as app_channel_id');
 
 		if (!appChannels.length) {
-			logger.info('[sendNotification] no active channels for app', app.id);
+			logger.info({ appId: app.id }, '[sendNotification] no active channels for app');
 			return;
 		}
 
@@ -75,22 +72,20 @@ export async function sendNotification(data: NotificationJobData) {
 					configs = await db('email_configs').where({ app_channel_id: channel.app_channel_id });
 					break;
 				default:
-					logger.info(`[sendNotification] Unknown channel type: ${channel.channel_type}`);
+					logger.info(
+						{ channelType: channel.channel_type },
+						'[sendNotification] Unknown channel type',
+					);
 					continue;
 			}
 
 			for (const config of configs) {
-				await dispatchNotificationJob(
-					channel.channel_type,
-					config,
-					user.username,
-					message,
-					details,
-				);
+				await dispatchNotification(channel.channel_type, config, user.username, message, details);
 			}
 		}
 
 		await db('notifications').insert({
+			id: crypto.randomUUID(),
 			app_id: appId,
 			message: message,
 			details: details,
@@ -100,14 +95,13 @@ export async function sendNotification(data: NotificationJobData) {
 			.update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
 			.where({ id: appId, user_id: userId });
 
-		logger.info(`[sendNotification] notification jobs dispatched for app ${appId}`);
+		logger.info({ appId }, '[sendNotification] notifications dispatched for app');
 	} catch (error) {
 		logger.error({ err: error }, '[sendNotification] error in sendNotification');
-		// throw error
 	}
 }
 
-async function dispatchNotificationJob(
+async function dispatchNotification(
 	channelType: 'discord' | 'email' | 'sms',
 	config: any,
 	username: string,
@@ -117,19 +111,18 @@ async function dispatchNotificationJob(
 	try {
 		switch (channelType) {
 			case 'discord':
-				return await sendDiscordNotificationJob({ config, message, details });
+				await sendDiscord({ config, message, details });
+				break;
 			case 'email':
-				return await sendEmailNotificationJob({ config, username, message, details });
+				await sendEmail({ config, username, message, details });
+				break;
 			case 'sms':
-				return await sendSmsNotificationJob({ config, message, details });
+				await sendSms({ config, message, details });
+				break;
 			default:
-				// Note: dont throw
-				logger.info(`[sendNotification] Unsupported channel type: ${channelType}`);
+				logger.info({ channelType }, '[sendNotification] Unsupported channel type');
 		}
 	} catch (error) {
-		logger.error(
-			{ channelType, config, message, details, err: error },
-			'[sendNotification] Failed to dispatch notification job',
-		);
+		logger.error({ channelType, err: error }, '[sendNotification] Failed to dispatch notification');
 	}
 }

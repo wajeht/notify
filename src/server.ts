@@ -2,13 +2,13 @@ import { app } from './app';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
 import { appConfig } from './config';
-import { db, redis } from './db/db';
+import { db } from './db/db';
 import { runMigrations } from './utils';
 import { logger } from './logger';
-import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
-import { deleteExpiredExportJob } from './jobs/delete-expired-export.job';
+import { createCron, CronType } from './cron';
 
 const server: Server = app.listen(appConfig.port);
+let cron: CronType;
 
 process.title = 'notify';
 
@@ -23,9 +23,9 @@ server.on('listening', async () => {
 		await runMigrations();
 	}
 
-	// crons
-	await resetUserMonthlyAlertLimitJob({}, { cron: '0 0 * * *' }); // daily at midnight
-	await deleteExpiredExportJob({}, { cron: '0 0 * * *' }); // daily at midnight
+	// Start cron jobs
+	cron = createCron(db, logger);
+	cron.start();
 });
 
 server.on('error', (error: NodeJS.ErrnoException) => {
@@ -56,11 +56,9 @@ function gracefulShutdown(signal: string): void {
 	server.close(async () => {
 		logger.info('HTTP server closed.');
 
-		try {
-			redis.quit();
-			logger.info('Redis connection closed.');
-		} catch (error) {
-			logger.error({ err: error }, 'Error closing Redis connection');
+		// Stop cron jobs
+		if (cron) {
+			cron.stop();
 		}
 
 		try {
@@ -92,6 +90,6 @@ process.on('warning', (warning: Error) => {
 	logger.warn({ name: warning.name, message: warning.message }, 'Process warning');
 });
 
-process.on('unhandledRejection', async (reason: unknown, promise: Promise<unknown>) => {
+process.on('unhandledRejection', async (reason: unknown, _promise: Promise<unknown>) => {
 	logger.error({ reason }, 'Unhandled Rejection');
 });

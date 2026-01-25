@@ -1,13 +1,12 @@
 import helmet from 'helmet';
 import { logger } from './logger';
-import { db, redis } from './db/db';
+import { db } from './db/db';
 import { csrfSync } from 'csrf-sync';
 import session from 'express-session';
 import { verifyApiKey } from './utils';
 import { UnauthorizedError } from './error';
 import rateLimit from 'express-rate-limit';
-import { RedisStore } from 'connect-redis';
-import rateLimitRedisStore from 'rate-limit-redis';
+import { ConnectSessionKnexStore } from 'connect-session-knex';
 import { sessionConfig, appConfig } from './config';
 import { validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
@@ -66,10 +65,11 @@ export function sessionMiddleware() {
 		secret: sessionConfig.secret,
 		resave: false,
 		saveUninitialized: false,
-		store: new RedisStore({
-			client: redis,
-			prefix: sessionConfig.store_prefix,
-			disableTouch: true,
+		store: new ConnectSessionKnexStore({
+			knex: db,
+			tableName: 'sessions',
+			createTable: false, // We create it in migrations
+			cleanupInterval: 3600000, // 1 hour cleanup
 		}),
 		proxy: appConfig.env === 'production',
 		cookie: {
@@ -85,14 +85,10 @@ export function sessionMiddleware() {
 
 export function rateLimitMiddleware() {
 	return rateLimit({
-		store: new rateLimitRedisStore({
-			// @ts-expect-error - Known issue: the `call` function is not present in @types/ioredis
-			sendCommand: (...args: string[]) => redis.call(...args),
-		}),
 		windowMs: 15 * 60 * 1000, // 15 minutes
 		max: 100, // Limit each IP to 100 requests per windowMs
-		standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-		legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+		standardHeaders: true,
+		legacyHeaders: false,
 		handler: (req, res) => {
 			if (req.get('Content-Type') === 'application/json') {
 				return res.json({ message: 'Too many requests from this IP, please try again later.' });
@@ -126,8 +122,6 @@ export const validateRequestMiddleware = (schemas: any) => {
 				return acc;
 			}, {});
 
-			// Note: is this a good idea? maybe we jus disable a toast since we already all errors state.input?
-			// req.flash('error', Object.values(reshapedErrors));
 			req.session.errors = reshapedErrors;
 
 			return res.redirect('back');
@@ -236,7 +230,6 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 		};
 
 		if (req.session?.user) {
-			// TODO: potentially cache with redis
 			const { unread_apps_notification_count } = (await db('notifications')
 				.count('* as unread_apps_notification_count')
 				.leftJoin('apps', 'notifications.app_id', 'apps.id')
@@ -246,7 +239,6 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 
 			res.locals.state['unread_apps_notification_count'] = unread_apps_notification_count;
 
-			// adding unread notification counts and channel counts to app id layout
 			const appIdMatch = req.path.match(/^\/apps\/(\d+)/) as any;
 			if (appIdMatch && req.method === 'GET') {
 				const appId = parseInt(appIdMatch[1]);
@@ -272,8 +264,6 @@ export async function appLocalStateMiddleware(req: Request, res: Response, next:
 			}
 		}
 
-		// Clear session input and errors after setting locals
-		// This ensures they're available for the current request only
 		if (req.session) {
 			delete req.session.input;
 			delete req.session.errors;

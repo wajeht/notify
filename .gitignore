@@ -136,3 +136,9 @@ src/scratch.js
 /playwright/.cache/
 .vscode
 .claude
+
+# SQLite
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+src/db/sqlite/

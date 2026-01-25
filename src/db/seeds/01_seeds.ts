@@ -1,8 +1,11 @@
 import type { Knex } from "knex";
 import { randomUUID } from "node:crypto";
-import { appConfig } from "../../config";
+import path from "node:path";
+import dotenv from "dotenv";
 
-const adminEmail = appConfig.adminEmail;
+dotenv.config({ path: path.resolve(path.join(process.cwd(), ".env")) });
+
+const adminEmail = process.env.APP_ADMIN_EMAIL || "admin@example.com";
 
 export async function seed(knex: Knex): Promise<void> {
   await knex("notifications").del();

@@ -44,6 +44,9 @@ import {
   getGithubRedirect,
   getAdminPageHandler,
   getAdminUsersPageHandler,
+  getAdminJobsPageHandler,
+  postRetryJobHandler,
+  postDeleteJobHandler,
   postCreateAppApiKeyHandler,
   getSettingsDataPageHandler,
   postSettingsDataPageHandler,
@@ -103,6 +106,30 @@ router.post(
   adminOnlyMiddleware,
   csrfMiddleware,
   postUpdateAdminUserAppsHandler,
+);
+
+router.get(
+  "/admin/jobs",
+  authenticationMiddleware,
+  adminOnlyMiddleware,
+  csrfMiddleware,
+  getAdminJobsPageHandler,
+);
+
+router.post(
+  "/admin/jobs/:id/retry",
+  authenticationMiddleware,
+  adminOnlyMiddleware,
+  csrfMiddleware,
+  postRetryJobHandler,
+);
+
+router.post(
+  "/admin/jobs/:id/delete",
+  authenticationMiddleware,
+  adminOnlyMiddleware,
+  csrfMiddleware,
+  postDeleteJobHandler,
 );
 
 router.get(

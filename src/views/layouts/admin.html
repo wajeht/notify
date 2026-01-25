@@ -17,6 +17,7 @@
         <aside style="display: inline-block; border-right: dashed; height: 100%; padding-right: 40px;">
           <div style="display: flex; flex-direction: column; gap: 10px">
             <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= (path === '/admin' || path === '/admin/users') ? 'bold' : 'normal' %>; <%= (path === '/admin' || path === '/admin/users') ? 'text-decoration: underline' : null %>" href="/admin/users">👤 Users</a>
+            <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path.startsWith('/admin/jobs') ? 'bold' : 'normal' %>; <%= path.startsWith('/admin/jobs') ? 'text-decoration: underline' : null %>" href="/admin/jobs">📋 Jobs</a>
             <a style="border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= (path === '/settings' || path === '/settings/account') ? 'bold' : 'normal' %>; <%= (path === '/settings' || path === '/settings/account') ? 'text-decoration: underline' : null %>" href="/settings/account">⚙️ Settings</a>
           </div>
         </aside>

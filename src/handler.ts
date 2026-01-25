@@ -138,6 +138,72 @@ export async function getAdminUsersPageHandler(_req: Request, res: Response) {
   });
 }
 
+// GET /admin/jobs
+export async function getAdminJobsPageHandler(req: Request, res: Response) {
+  const filter = req.query.filter as string | undefined;
+  const userTimezone = req.session?.user?.timezone || "UTC";
+
+  let query = db.select("*").from("jobs").orderBy("created_at", "desc").limit(100);
+
+  if (filter) {
+    query = query.where("status", filter);
+  }
+
+  const jobs = await query;
+
+  const stats = {
+    pending: await db("jobs").where("status", "pending").count("* as count").first(),
+    processing: await db("jobs").where("status", "processing").count("* as count").first(),
+    completed: await db("jobs").where("status", "completed").count("* as count").first(),
+    failed: await db("jobs").where("status", "failed").count("* as count").first(),
+  };
+
+  return res.render("admin-jobs.html", {
+    title: "Admin Jobs",
+    jobs: jobs.map((j: any) => ({
+      ...j,
+      run_at: j.run_at ? formatDate(j.run_at, userTimezone) : null,
+      created_at: formatDate(j.created_at, userTimezone),
+      completed_at: j.completed_at ? formatDate(j.completed_at, userTimezone) : null,
+    })),
+    stats: {
+      pending: (stats.pending as any)?.count || 0,
+      processing: (stats.processing as any)?.count || 0,
+      completed: (stats.completed as any)?.count || 0,
+      failed: (stats.failed as any)?.count || 0,
+    },
+    filter,
+    path: "/admin/jobs",
+    layout: "../layouts/admin.html",
+  });
+}
+
+// POST /admin/jobs/:id/retry
+export async function postRetryJobHandler(req: Request, res: Response) {
+  const jobId = parseInt(req.params.id as string);
+
+  await db("jobs").where({ id: jobId }).update({
+    status: "pending",
+    attempts: 0,
+    error: null,
+    run_at: db.fn.now(),
+    updated_at: db.fn.now(),
+  });
+
+  req.flash("info", "🔄 Job queued for retry");
+  return res.redirect("/admin/jobs?filter=pending");
+}
+
+// POST /admin/jobs/:id/delete
+export async function postDeleteJobHandler(req: Request, res: Response) {
+  const jobId = parseInt(req.params.id as string);
+
+  await db("jobs").where({ id: jobId }).delete();
+
+  req.flash("info", "🗑️ Job deleted");
+  return res.redirect((req.headers["referer"] as string) ?? "/admin/jobs");
+}
+
 // GET /settings/account
 export async function getSettingsAccountPageHandler(req: Request, res: Response) {
   return res.render("settings-account.html", {

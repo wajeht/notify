@@ -50,26 +50,16 @@ export function createNotificationsRouter(context: AppContext) {
 
       const notifications = notificationsRaw.map((n: any) => ({
         ...n,
-        read_at: n.read_at ? formatDate(n.read_at, userTimezone) : null,
         created_at: formatDate(n.created_at, userTimezone),
-        updated_at: formatDate(n.updated_at, userTimezone),
       }));
 
-      const basePath = "/notifications";
-
-      const queryParams = new URLSearchParams();
-
-      if (filter) {
-        queryParams.set("filter", filter);
-      }
-
-      const path = `${basePath}?${queryParams.toString()}`;
+      const queryParams = filter ? `?filter=${filter}` : "";
 
       return res.render("notifications/notifications.html", {
         title: "Notifications",
         notifications,
         pagination,
-        path,
+        path: `/notifications${queryParams}`,
         filter,
         layout: "_layouts/auth.html",
       });

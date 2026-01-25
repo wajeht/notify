@@ -10,7 +10,7 @@ import { sendNotification } from "./jobs/notification";
 import { exportUserData } from "./jobs/export-user-data";
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from "./types";
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from "./error";
-import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails, sendGeneralEmail } from "./utils";
+import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails, sendGeneralEmail, formatDate } from "./utils";
 
 // GET /healthz
 export function getHealthzHandler(_req: Request, res: Response) {
@@ -111,47 +111,24 @@ export async function postUpdateAdminUserAppsHandler(req: Request, res: Response
 
 // GET /admin/users
 export async function getAdminUsersPageHandler(_req: Request, res: Response) {
-  const users = await db
-    .select(
-      "users.*",
-      db.raw(`
-        to_char(
-          users.created_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone,
-          'MM/DD/YYYY HH12:MI:SS AM'
-        ) as created_at
-      `),
-      db.raw(`
-        to_char(
-          users.updated_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone,
-          'MM/DD/YYYY HH12:MI:SS AM'
-        ) as updated_at
-      `),
-      db.raw(`
-        COALESCE(
-          (
-            SELECT json_agg(
-              json_build_object(
-                'id', apps.id,
-                'name', apps.name,
-                'url', apps.url,
-                'description', apps.description,
-                'max_monthly_alerts_allowed', apps.max_monthly_alerts_allowed,
-                'user_monthly_limit_threshold', apps.user_monthly_limit_threshold,
-                'alerts_sent_this_month', apps.alerts_sent_this_month,
-                'alerts_reset_date', apps.alerts_reset_date,
-                'is_active', apps.is_active,
-                'created_at', to_char(apps.created_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone, 'MM/DD/YYYY HH12:MI:SS AM'),
-                'updated_at', to_char(apps.updated_at AT TIME ZONE 'UTC' AT TIME ZONE users.timezone, 'MM/DD/YYYY HH12:MI:SS AM')
-              )
-            )
-            FROM apps
-            WHERE apps.user_id = users.id
-          ),
-          '[]'
-        ) as apps
-      `),
-    )
-    .from("users");
+  const usersRaw = await db.select("*").from("users");
+
+  const users = await Promise.all(
+    usersRaw.map(async (user) => {
+      const apps = await db.select("*").from("apps").where("user_id", user.id);
+
+      return {
+        ...user,
+        created_at: formatDate(user.created_at, user.timezone),
+        updated_at: formatDate(user.updated_at, user.timezone),
+        apps: apps.map((app) => ({
+          ...app,
+          created_at: formatDate(app.created_at, user.timezone),
+          updated_at: formatDate(app.updated_at, user.timezone),
+        })),
+      };
+    }),
+  );
 
   return res.render("admin-users.html", {
     title: "Admin Users",
@@ -290,7 +267,7 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
   const filter = req.query.filter as string;
   const perPage = parseInt(req.query.perPage as string) || 10;
   const currentPage = parseInt(req.query.page as string) || 1;
-  const userTimezone = req.session?.user?.timezone;
+  const userTimezone = req.session?.user?.timezone || "UTC";
 
   let query = db
     .select(
@@ -299,33 +276,9 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
       "apps.name as app_name",
       "notifications.message",
       "notifications.details",
-      db.raw(
-        `
-        to_char(
-          notifications.read_at AT TIME ZONE ?,
-          'MM/DD/YYYY HH12:MI:SS AM'
-        ) as read_at
-      `,
-        [userTimezone],
-      ),
-      db.raw(
-        `
-        to_char(
-          notifications.created_at AT TIME ZONE ?,
-          'MM/DD/YYYY HH12:MI:SS AM'
-        ) as created_at
-      `,
-        [userTimezone],
-      ),
-      db.raw(
-        `
-        to_char(
-          notifications.updated_at AT TIME ZONE ?,
-          'MM/DD/YYYY HH12:MI:SS AM'
-        ) as updated_at
-      `,
-        [userTimezone],
-      ),
+      "notifications.read_at",
+      "notifications.created_at",
+      "notifications.updated_at",
     )
     .from("notifications")
     .leftJoin("apps", "apps.id", "notifications.app_id")
@@ -339,11 +292,18 @@ export async function getNotificationsPageHandler(req: Request, res: Response) {
     query = query.whereNotNull("notifications.read_at");
   }
 
-  const { data: notifications, pagination } = await query.paginate({
+  const { data: notificationsRaw, pagination } = await query.paginate({
     perPage,
     currentPage: currentPage,
     isLengthAware: true,
   });
+
+  const notifications = notificationsRaw.map((n: any) => ({
+    ...n,
+    read_at: n.read_at ? formatDate(n.read_at, userTimezone) : null,
+    created_at: formatDate(n.created_at, userTimezone),
+    updated_at: formatDate(n.updated_at, userTimezone),
+  }));
 
   const basePath = "/notifications";
 
@@ -420,21 +380,10 @@ export async function getAppsPageHandler(req: Request, res: Response) {
 // GET /apps/:id
 export async function getAppPageHandler(req: Request, res: Response) {
   const user = req.session?.user;
+  const userTimezone = user?.timezone || "UTC";
 
-  const app = await db
-    .select(
-      "apps.*",
-      db.raw(
-        `to_char(apps.alerts_reset_date AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') as alerts_reset_date`,
-        [user?.timezone],
-      ),
-      db.raw(`to_char(apps.created_at AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') as created_at`, [
-        user?.timezone,
-      ]),
-      db.raw(`to_char(apps.updated_at AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') as updated_at`, [
-        user?.timezone,
-      ]),
-    )
+  const appRaw = await db
+    .select("*")
     .from("apps")
     .where({
       id: req.params.id,
@@ -442,9 +391,16 @@ export async function getAppPageHandler(req: Request, res: Response) {
     })
     .first();
 
-  if (!app) {
+  if (!appRaw) {
     throw NotFoundError();
   }
+
+  const app = {
+    ...appRaw,
+    alerts_reset_date: dayjs(appRaw.alerts_reset_date).tz(userTimezone).format("YYYY-MM-DD HH:mm:ss"),
+    created_at: dayjs(appRaw.created_at).tz(userTimezone).format("YYYY-MM-DD HH:mm:ss"),
+    updated_at: dayjs(appRaw.updated_at).tz(userTimezone).format("YYYY-MM-DD HH:mm:ss"),
+  };
 
   return res.render("apps-id.html", {
     title: "App",
@@ -1009,91 +965,62 @@ export async function postExportAppChannelsHandler(req: Request, res: Response) 
 export async function getAppChannelsPageHandler(req: Request, res: Response) {
   const userTimezone = req.session?.user?.timezone || "UTC";
 
-  const app = await db
-    .select(
-      "apps.*",
-      db.raw(
-        `
-							to_char(apps.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as created_at,
-							to_char(apps.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as updated_at,
-							COALESCE(
-									json_agg(
-											json_build_object(
-													'id', app_channels.id,
-													'app_id', app_channels.app_id,
-													'channel_type', channel_types.name,
-													'created_at', to_char(app_channels.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
-													'updated_at', to_char(app_channels.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
-													'config', CASE
-															WHEN channel_types.name = 'email' THEN
-																	json_build_object(
-																			'id', email_configs.id,
-																			'name', email_configs.name,
-																			'is_active', app_channels.is_active,
-																			'host', email_configs.host,
-																			'port', email_configs.port,
-																			'alias', email_configs.alias,
-																			'auth_email', email_configs.auth_email,
-																			'auth_pass', email_configs.auth_pass,
-																			'created_at', to_char(email_configs.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
-																			'updated_at', to_char(email_configs.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
-																	)
-															WHEN channel_types.name = 'sms' THEN
-																	json_build_object(
-																			'id', sms_configs.id,
-																			'name', sms_configs.name,
-																			'is_active', app_channels.is_active,
-																			'account_sid', sms_configs.account_sid,
-																			'auth_token', sms_configs.auth_token,
-																			'from_phone_number', sms_configs.from_phone_number,
-																			'phone_number', sms_configs.phone_number,
-																			'created_at', to_char(sms_configs.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
-																			'updated_at', to_char(sms_configs.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
-																	)
-															WHEN channel_types.name = 'discord' THEN
-																	json_build_object(
-																			'id', discord_configs.id,
-																			'name', discord_configs.name,
-																			'is_active', app_channels.is_active,
-																			'webhook_url', discord_configs.webhook_url,
-																			'created_at', to_char(discord_configs.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM'),
-																			'updated_at', to_char(discord_configs.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
-																	)
-															ELSE NULL
-													END
-											)
-											ORDER BY app_channels.created_at DESC
-									) FILTER (WHERE app_channels.id IS NOT NULL),
-									'[]'
-							) as channels
-					`,
-        [
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-          userTimezone,
-        ],
-      ),
-    )
+  const appRaw = await db
+    .select("*")
     .from("apps")
-    .leftJoin("app_channels", "apps.id", "app_channels.app_id")
-    .leftJoin("channel_types", "app_channels.channel_type_id", "channel_types.id")
-    .leftJoin("email_configs", "app_channels.id", "email_configs.app_channel_id")
-    .leftJoin("sms_configs", "app_channels.id", "sms_configs.app_channel_id")
-    .leftJoin("discord_configs", "app_channels.id", "discord_configs.app_channel_id")
-    .where({ "apps.id": req.params.id, "apps.user_id": req.session?.user?.id })
-    .groupBy("apps.id")
+    .where({ id: req.params.id, user_id: req.session?.user?.id })
     .first();
 
-  if (!app) {
+  if (!appRaw) {
     throw NotFoundError();
   }
+
+  const channelsRaw = await db
+    .select(
+      "app_channels.*",
+      "channel_types.name as channel_type",
+    )
+    .from("app_channels")
+    .leftJoin("channel_types", "app_channels.channel_type_id", "channel_types.id")
+    .where("app_channels.app_id", appRaw.id)
+    .orderBy("app_channels.created_at", "desc");
+
+  const channels = await Promise.all(
+    channelsRaw.map(async (channel) => {
+      let config = null;
+
+      if (channel.channel_type === "email") {
+        config = await db("email_configs").where("app_channel_id", channel.id).first();
+      } else if (channel.channel_type === "sms") {
+        config = await db("sms_configs").where("app_channel_id", channel.id).first();
+      } else if (channel.channel_type === "discord") {
+        config = await db("discord_configs").where("app_channel_id", channel.id).first();
+      }
+
+      return {
+        id: channel.id,
+        app_id: channel.app_id,
+        channel_type: channel.channel_type,
+        created_at: formatDate(channel.created_at, userTimezone),
+        updated_at: formatDate(channel.updated_at, userTimezone),
+        config: config
+          ? {
+              ...config,
+              is_active: channel.is_active,
+              created_at: formatDate(config.created_at, userTimezone),
+              updated_at: formatDate(config.updated_at, userTimezone),
+            }
+          : null,
+      };
+    }),
+  );
+
+  const app = {
+    ...appRaw,
+    created_at: formatDate(appRaw.created_at, userTimezone),
+    updated_at: formatDate(appRaw.updated_at, userTimezone),
+    channels,
+  };
 
   return res.render("apps-id-channels.html", {
     title: "App Channels",
@@ -1269,34 +1196,26 @@ export async function getAppNotificationsPageHandler(req: Request, res: Response
     throw NotFoundError();
   }
 
+  const userTimezone = req.session?.user?.timezone || "UTC";
+
   const result = await db("notifications")
-    .select(
-      "notifications.*",
-      db.raw(
-        `CASE
-						WHEN notifications.read_at IS NULL THEN NULL
-						ELSE to_char(notifications.read_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM')
-					END as read_at`,
-        [req.session?.user?.timezone],
-      ),
-      db.raw(
-        `to_char(notifications.created_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as created_at`,
-        [req.session?.user?.timezone],
-      ),
-      db.raw(
-        `to_char(notifications.updated_at AT TIME ZONE ?, 'MM/DD/YYYY HH12:MI:SS AM') as updated_at`,
-        [req.session?.user?.timezone],
-      ),
-    )
+    .select("*")
     .where("app_id", appId)
     .orderBy("notifications.created_at", "desc")
     .paginate({ perPage, currentPage, isLengthAware: true });
+
+  const notifications = result.data.map((n: any) => ({
+    ...n,
+    read_at: n.read_at ? formatDate(n.read_at, userTimezone) : null,
+    created_at: formatDate(n.created_at, userTimezone),
+    updated_at: formatDate(n.updated_at, userTimezone),
+  }));
 
   return res.render("apps-id-notifications.html", {
     title: "App Notifications",
     app: {
       ...app,
-      notifications: result.data,
+      notifications,
     },
     pagination: result.pagination,
     layout: "../layouts/app.html",

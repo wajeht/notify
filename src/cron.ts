@@ -1,10 +1,10 @@
 import * as cron from "node-cron";
 import type { Knex } from "knex";
-import type { Logger } from "pino";
 import { DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { backBlaze, s3Client } from "./config";
 import { formatDateLong, startOfNextMonth, sendGeneralEmail } from "./utils";
 import { processPendingJobs, cleanupOldJobs } from "./queue";
+import { logger } from "./logger";
 
 export interface CronType {
   start: () => void;
@@ -18,7 +18,7 @@ export interface CronType {
   };
 }
 
-export function createCron(db: Knex, logger: Logger): CronType {
+export function createCron(db: Knex): CronType {
   const cronJobs: cron.ScheduledTask[] = [];
   let isRunning = false;
 
@@ -44,10 +44,7 @@ export function createCron(db: Knex, logger: Logger): CronType {
         return;
       }
 
-      logger.info(
-        { count: appsToReset.length },
-        "[cron:resetUserMonthlyAlertLimit] Resetting apps",
-      );
+      logger.info("[cron:resetUserMonthlyAlertLimit] Resetting apps", { count: appsToReset.length });
 
       for (const app of appsToReset) {
         const now = new Date();
@@ -70,24 +67,18 @@ export function createCron(db: Knex, logger: Logger): CronType {
                             Your alert count has been set back to 0, and you can now send new alerts for this month.
                             The next reset will occur on ${formatDateLong(nextResetDate, app.timezone)}.`,
           }).catch((err) =>
-            logger.error({ err }, "[cron:resetUserMonthlyAlertLimit] Failed to send email"),
+            logger.error("[cron:resetUserMonthlyAlertLimit] Failed to send email", err),
           );
 
-          logger.info(
-            { appId: app.id },
-            "[cron:resetUserMonthlyAlertLimit] Reset alert count for app",
-          );
+          logger.info("[cron:resetUserMonthlyAlertLimit] Reset alert count for app", { appId: app.id });
         } catch (error) {
-          logger.error(
-            { err: error, appId: app.id },
-            "[cron:resetUserMonthlyAlertLimit] Failed to reset app",
-          );
+          logger.error("[cron:resetUserMonthlyAlertLimit] Failed to reset app", { error, appId: app.id });
         }
       }
 
       logger.info("[cron:resetUserMonthlyAlertLimit] Completed");
     } catch (error) {
-      logger.error({ err: error }, "[cron:resetUserMonthlyAlertLimit] Job failed");
+      logger.error("[cron:resetUserMonthlyAlertLimit] Job failed", error);
     }
   }
 
@@ -95,7 +86,7 @@ export function createCron(db: Knex, logger: Logger): CronType {
     try {
       await processPendingJobs();
     } catch (error) {
-      logger.error({ err: error }, "[cron:processJobQueue] Job failed");
+      logger.error("[cron:processJobQueue] Job failed", error);
     }
   }
 
@@ -103,9 +94,9 @@ export function createCron(db: Knex, logger: Logger): CronType {
     logger.info("[cron:cleanupJobQueue] Starting");
     try {
       const deleted = await cleanupOldJobs(7);
-      logger.info({ deleted }, "[cron:cleanupJobQueue] Completed");
+      logger.info("[cron:cleanupJobQueue] Completed", { deleted });
     } catch (error) {
-      logger.error({ err: error }, "[cron:cleanupJobQueue] Job failed");
+      logger.error("[cron:cleanupJobQueue] Job failed", error);
     }
   }
 
@@ -124,17 +115,16 @@ export function createCron(db: Knex, logger: Logger): CronType {
       const listResponse = await s3Client.send(listCommand);
 
       if (listResponse.Contents) {
-        logger.info(
-          { count: listResponse.Contents.length },
-          "[cron:deleteExpiredExport] Processing objects",
-        );
+        logger.info("[cron:deleteExpiredExport] Processing objects", {
+          count: listResponse.Contents.length,
+        });
 
         for (const object of listResponse.Contents) {
           if (object.Key && object.LastModified) {
             const fileAge = now.getTime() - object.LastModified.getTime();
 
             if (fileAge > expirationTime) {
-              logger.info({ key: object.Key }, "[cron:deleteExpiredExport] Deleting expired file");
+              logger.info("[cron:deleteExpiredExport] Deleting expired file", { key: object.Key });
 
               const deleteCommand = new DeleteObjectCommand({
                 Bucket: backBlaze.bucket,
@@ -151,7 +141,7 @@ export function createCron(db: Knex, logger: Logger): CronType {
                   .where("id", userId)
                   .where("export_count", ">", 0)
                   .decrement("export_count", 1);
-                logger.info({ userId }, "[cron:deleteExpiredExport] Decremented export_count");
+                logger.info("[cron:deleteExpiredExport] Decremented export_count", { userId });
               }
             }
           }
@@ -162,7 +152,7 @@ export function createCron(db: Knex, logger: Logger): CronType {
 
       logger.info("[cron:deleteExpiredExport] Completed");
     } catch (error) {
-      logger.error({ err: error }, "[cron:deleteExpiredExport] Job failed");
+      logger.error("[cron:deleteExpiredExport] Job failed", error);
     }
   }
 
@@ -204,7 +194,7 @@ export function createCron(db: Knex, logger: Logger): CronType {
     );
 
     isRunning = true;
-    logger.info({ jobCount: cronJobs.length }, "[cron] Started");
+    logger.info("[cron] Started", { jobCount: cronJobs.length });
   }
 
   function stop(): void {

@@ -23,10 +23,10 @@ export async function enqueue(type: JobType, payload: JobPayload): Promise<numbe
       attempts: 0,
       max_attempts: 5,
     });
-    logger.info({ jobId: id, type }, "[queue] job enqueued");
+    logger.info(`[queue] job enqueued`, { jobId: id, type });
     return id as number;
   } catch (error) {
-    logger.error({ err: error, type }, "[queue] failed to enqueue job");
+    logger.error(`[queue] failed to enqueue job`, { error, type });
     throw error;
   }
 }
@@ -69,7 +69,7 @@ async function processJob(job: any): Promise<boolean> {
       completed_at: db.fn.now(),
       updated_at: db.fn.now(),
     });
-    logger.info({ jobId: job.id, type: job.type }, "[queue] job completed");
+    logger.info(`[queue] job completed`, { jobId: job.id, type: job.type });
     return true;
   } catch (error: any) {
     const attempts = job.attempts + 1;
@@ -90,16 +90,13 @@ async function processJob(job: any): Promise<boolean> {
         updated_at: db.fn.now(),
       });
 
-    logger.error(
-      {
-        jobId: job.id,
-        type: job.type,
-        attempts,
-        maxAttempts: job.max_attempts,
-        error: error.message,
-      },
-      `[queue] job ${failed ? "failed permanently" : "will retry"}`,
-    );
+    logger.error(`[queue] job ${failed ? "failed permanently" : "will retry"}`, {
+      jobId: job.id,
+      type: job.type,
+      attempts,
+      maxAttempts: job.max_attempts,
+      error: error.message,
+    });
     return false;
   }
 }
@@ -113,7 +110,7 @@ async function recoverStuckJobs(): Promise<number> {
     .update({ status: "pending", updated_at: db.fn.now() });
 
   if (stuck > 0) {
-    logger.warn({ count: stuck }, "[queue] recovered stuck jobs");
+    logger.warn(`[queue] recovered stuck jobs`, { count: stuck });
   }
   return stuck;
 }
@@ -152,7 +149,7 @@ export async function processPendingJobs(): Promise<{
     else failed++;
   }
 
-  logger.info({ processed: jobs.length, succeeded, failed }, "[queue] batch processed");
+  logger.info(`[queue] batch processed`, { processed: jobs.length, succeeded, failed });
 
   return { processed: jobs.length, succeeded, failed };
 }
@@ -166,7 +163,7 @@ export async function cleanupOldJobs(daysOld = 7): Promise<number> {
     .delete();
 
   if (deleted > 0) {
-    logger.info({ deleted, daysOld }, "[queue] cleaned up old jobs");
+    logger.info(`[queue] cleaned up old jobs`, { deleted, daysOld });
   }
   return deleted;
 }

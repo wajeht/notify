@@ -95,16 +95,16 @@ export async function sendEmail(data: EmailNotificationData): Promise<void> {
             errWithCode.code === "ECONNREFUSED" ||
             errWithCode.code === "ETIMEDOUT";
           if (isConnectionError) {
-            logger.warn(
-              { host: config.host, code: errWithCode.code },
-              "[sendEmail] Mail server unavailable, will retry",
-            );
+            logger.warn("[sendEmail] Mail server unavailable, will retry", {
+              host: config.host,
+              code: errWithCode.code,
+            });
           } else {
-            logger.error({ err }, "[sendEmail] Failed to send email");
+            logger.error("[sendEmail] Failed to send email", err);
           }
           reject(err);
         } else {
-          logger.info({ to: config.auth.user }, "[sendEmail] Email sent");
+          logger.info("[sendEmail] Email sent", { to: config.auth.user });
           resolve(info);
         }
       },

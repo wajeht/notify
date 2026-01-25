@@ -11,7 +11,7 @@ export interface ExportUserDataJobData {
 }
 
 async function generateSignedUrl(key: string, filename: string): Promise<string> {
-  logger.info({ key, filename }, "[exportUserData] Generating signed URL");
+  logger.info("[exportUserData] Generating signed URL", { key, filename });
 
   const command = new GetObjectCommand({
     Bucket: backBlaze.bucket,
@@ -24,7 +24,7 @@ async function generateSignedUrl(key: string, filename: string): Promise<string>
 }
 
 export async function exportUserData(data: ExportUserDataJobData): Promise<void> {
-  logger.info({ userId: data.userId }, "[exportUserData] Starting");
+  logger.info("[exportUserData] Starting", { userId: data.userId });
 
   try {
     const user = await db.select("*").from("users").where("id", data.userId).first();
@@ -35,7 +35,7 @@ export async function exportUserData(data: ExportUserDataJobData): Promise<void>
     }
 
     if (user.export_count >= user.max_export_count_allowed) {
-      logger.info({ userId: user.id }, "[exportUserData] User has reached export limit");
+      logger.info("[exportUserData] User has reached export limit", { userId: user.id });
 
       await sendGeneralEmail({
         email: user.email,
@@ -54,7 +54,7 @@ export async function exportUserData(data: ExportUserDataJobData): Promise<void>
       return;
     }
 
-    logger.info({ count: apps.length }, "[exportUserData] Processing apps");
+    logger.info("[exportUserData] Processing apps", { count: apps.length });
 
     const result = [];
 
@@ -126,7 +126,7 @@ export async function exportUserData(data: ExportUserDataJobData): Promise<void>
     });
 
     await s3Client.send(uploadCommand);
-    logger.info({ key }, "[exportUserData] File uploaded");
+    logger.info("[exportUserData] File uploaded", { key });
 
     await db("users").where("id", user.id).increment("export_count", 1);
 
@@ -145,8 +145,8 @@ export async function exportUserData(data: ExportUserDataJobData): Promise<void>
       message: message.trim(),
     });
 
-    logger.info({ email: user.email }, "[exportUserData] Completed");
+    logger.info("[exportUserData] Completed", { email: user.email });
   } catch (error) {
-    logger.error({ err: error }, "[exportUserData] Failed");
+    logger.error("[exportUserData] Failed", error);
   }
 }

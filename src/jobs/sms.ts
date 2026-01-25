@@ -17,5 +17,5 @@ export async function sendSms(data: SmsNotificationData): Promise<void> {
     to: data.config.phone_number,
   });
 
-  logger.info({ sid: message.sid }, "[sendSms] SMS sent");
+  logger.info("[sendSms] SMS sent", { sid: message.sid });
 }

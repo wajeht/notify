@@ -24,7 +24,7 @@ server.on("listening", async () => {
   }
 
   // Start cron jobs
-  cron = createCron(db, logger);
+  cron = createCron(db);
   cron.start();
 });
 
@@ -65,7 +65,7 @@ function gracefulShutdown(signal: string): void {
       await db.destroy();
       logger.info("Database connection closed.");
     } catch (error) {
-      logger.error({ err: error }, "Error closing database connection");
+      logger.error("Error closing database connection");
     }
 
     logger.info("All connections closed successfully.");
@@ -83,13 +83,13 @@ process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 process.on("SIGQUIT", () => gracefulShutdown("SIGQUIT"));
 
 process.on("uncaughtException", async (error: Error, origin: string) => {
-  logger.error({ err: error, origin }, "Uncaught Exception");
+  logger.error("Uncaught Exception");
 });
 
 process.on("warning", (warning: Error) => {
-  logger.warn({ name: warning.name, message: warning.message }, "Process warning");
+  logger.warn("Process warning");
 });
 
 process.on("unhandledRejection", async (reason: unknown, _promise: Promise<unknown>) => {
-  logger.error({ reason }, "Unhandled Rejection");
+  logger.error("Unhandled Rejection");
 });

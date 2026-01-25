@@ -170,7 +170,7 @@ export async function apiKeyAuthenticationMiddleware(
 
     next();
   } catch (error) {
-    logger.error({ err: error }, "failed to auth api key");
+    logger.error("failed to auth api key", error);
     res.status(500).json({ message: "internal server error" });
     return;
   }
@@ -187,7 +187,7 @@ export async function authenticationMiddleware(req: Request, res: Response, next
     if (!user) {
       req.session.destroy((err) => {
         if (err) {
-          logger.error({ err }, "Error destroying session");
+          logger.error("Error destroying session", err);
         }
         return res.redirect("/login");
       });

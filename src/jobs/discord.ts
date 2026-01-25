@@ -36,10 +36,10 @@ export async function sendDiscord(data: DiscordNotificationData): Promise<void> 
   });
 
   if (res.status === 204) {
-    logger.info({ message: data.message }, "[sendDiscord] Discord notification sent");
+    logger.info("[sendDiscord] Discord notification sent", { message: data.message });
   } else {
     const error = new Error(`Discord webhook failed with status ${res.status}`);
-    logger.warn({ status: res.status }, "[sendDiscord] Discord webhook failed, will retry");
+    logger.warn("[sendDiscord] Discord webhook failed, will retry", { status: res.status });
     throw error;
   }
 }

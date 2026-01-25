@@ -97,7 +97,7 @@ router.post("/", apiKeyAuthenticationMiddleware, async (req: Request, res: Respo
 
     return res.status(200).json({ message: "notification queued" });
   } catch (error) {
-    logger.error({ err: error, appId }, "[postNotificationHandler] failed");
+    logger.error("[postNotificationHandler] failed", { error, appId });
     return res.status(500).json({ error: "failed to queue notification" });
   }
 });

@@ -39,7 +39,7 @@ export async function sendNotification(data: NotificationJobData) {
 
   if (!user.is_admin) {
     if (app.alerts_sent_this_month >= app.max_monthly_alerts_allowed) {
-      logger.info({ appId }, "[sendNotification] monthly quota reached");
+      logger.info("[sendNotification] monthly quota reached", { appId });
       quotaReached = true;
 
       sendGeneralEmail({
@@ -47,12 +47,12 @@ export async function sendNotification(data: NotificationJobData) {
         subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
         username: user.username,
         message: `You have reached your monthly notification quota for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels. Please wait until next month to resume channel notifications.`,
-      }).catch((err) => logger.error({ err }, "[sendNotification] failed to send quota email"));
+      }).catch((err) => logger.error("[sendNotification] failed to send quota email", err));
     } else if (
       app.user_monthly_limit_threshold &&
       app.alerts_sent_this_month >= app.user_monthly_limit_threshold
     ) {
-      logger.info({ appId }, "[sendNotification] custom limit reached");
+      logger.info("[sendNotification] custom limit reached", { appId });
       quotaReached = true;
 
       sendGeneralEmail({
@@ -60,7 +60,7 @@ export async function sendNotification(data: NotificationJobData) {
         subject: `Custom Alert Limit Reached on ${app.name} 🔔 Notify`,
         username: user.username,
         message: `You have reached your custom notification limit for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels until you update your limit.`,
-      }).catch((err) => logger.error({ err }, "[sendNotification] failed to send limit email"));
+      }).catch((err) => logger.error("[sendNotification] failed to send limit email", err));
     }
   }
 
@@ -81,7 +81,7 @@ export async function sendNotification(data: NotificationJobData) {
     .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
 
   if (!appChannels.length) {
-    logger.info({ appId }, "[sendNotification] no active channels");
+    logger.info("[sendNotification] no active channels", { appId });
     return;
   }
 
@@ -113,5 +113,5 @@ export async function sendNotification(data: NotificationJobData) {
     }
   }
 
-  logger.info({ appId }, "[sendNotification] queued");
+  logger.info("[sendNotification] queued", { appId });
 }

@@ -136,7 +136,7 @@ export async function runMigrations(force: boolean = false) {
 
     logger.info(`batch ${batchNo} run: ${migrations.length} migrations`);
   } catch (error) {
-    logger.error({ err: error }, "error running migrations");
+    logger.error("error running migrations", error);
     throw error;
   }
 }
@@ -163,7 +163,7 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
 
     return { access_token: parsed.get("access_token") || "" };
   } catch (error: any) {
-    logger.error({ err: error }, "failed to fetch github oauth tokens");
+    logger.error("failed to fetch github oauth tokens", error);
     throw error;
   }
 }
@@ -179,7 +179,7 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
     const data = await response.json();
     return data as GithubUserEmail[];
   } catch (error: any) {
-    logger.error({ err: error }, "failed to fetch github user emails");
+    logger.error("failed to fetch github user emails", error);
     throw error;
   }
 }
@@ -202,7 +202,7 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
 
     return decodedApiKeyPayload;
   } catch (error) {
-    logger.error({ err: error }, "failed to verify api key");
+    logger.error("failed to verify api key", error);
     return null;
   }
 }
@@ -229,10 +229,10 @@ export async function sendEmail({
     await new Promise((resolve, reject) => {
       transporter.sendMail({ from: emailConfig.alias, to, subject, html }, (err, info) => {
         if (err) {
-          logger.error({ err }, "Error sending email");
+          logger.error("Error sending email", err);
           reject(err);
         } else {
-          logger.info({ to }, "Email sent successfully");
+          logger.info("Email sent successfully", { to });
           resolve(info);
         }
       });

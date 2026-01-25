@@ -706,15 +706,13 @@ router.post(
 
     const is_active = req.body.is_active === "on" ? true : false;
 
-    await db("apps")
-      .where({ id, user_id: req.session?.user?.id })
-      .update({
-        is_active,
-        name,
-        url,
-        description,
-        updated_at: db.fn.now(),
-      });
+    await db("apps").where({ id, user_id: req.session?.user?.id }).update({
+      is_active,
+      name,
+      url,
+      description,
+      updated_at: db.fn.now(),
+    });
 
     return res.redirect(`/apps/${id}?toast=🔄 updated`);
   },

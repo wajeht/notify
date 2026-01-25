@@ -3,7 +3,6 @@ import { Knex } from "knex";
 import { db } from "./db/db";
 import jwt from "jsonwebtoken";
 import { body } from "express-validator";
-import axios, { AxiosError } from "axios";
 import { logger } from "./logger";
 import { appConfig, oauthConfig } from "./config";
 import {
@@ -1565,22 +1564,21 @@ router.post(
     }
 
     try {
-      await axios.post(
-        extractDomain(req),
-        {
-          message,
-          details,
+      const response = await fetch(extractDomain(req), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": app.api_key,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": app.api_key,
-          },
-        },
-      );
+        body: JSON.stringify({ message, details }),
+      });
+
+      if (!response.ok) {
+        const data = (await response.json()) as { message?: string; error?: string };
+        return res.redirect(`/apps/${id}?toast=${data.message || data.error}`);
+      }
     } catch (error) {
-      const message = ((error as AxiosError).response as any)?.data.message;
-      return res.redirect(`/apps/${id}?toast=${message}`);
+      return res.redirect(`/apps/${id}?toast=failed to send notification`);
     }
 
     return res.redirect(`/apps/${id}?toast=🎉 notification queued successfully`);

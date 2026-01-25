@@ -1,6 +1,5 @@
 import qs from "qs";
 import ejs from "ejs";
-import axios from "axios";
 import crypto from "crypto";
 import path from "node:path";
 import jwt from "jsonwebtoken";
@@ -114,12 +113,14 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
   const queryString = qs.stringify(options);
 
   try {
-    const { data } = await axios.post(`${rootUrl}?${queryString}`, {
+    const response = await fetch(`${rootUrl}?${queryString}`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
     });
 
+    const data = await response.text();
     const decoded = qs.parse(data) as GitHubOauthToken;
 
     return decoded;
@@ -131,13 +132,14 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
 
 export async function getGithubUserEmails(access_token: string): Promise<GithubUserEmail[]> {
   try {
-    const { data } = await axios.get<GithubUserEmail[]>("https://api.github.com/user/emails", {
+    const response = await fetch("https://api.github.com/user/emails", {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     });
 
-    return data;
+    const data = await response.json();
+    return data as GithubUserEmail[];
   } catch (error: any) {
     logger.error({ err: error }, "failed to fetch github user emails");
     throw error;

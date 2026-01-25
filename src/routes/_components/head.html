@@ -49,4 +49,13 @@
 	<link rel="canonical" href="https://notify.jaw.dev/" />
 	<link rel="stylesheet" href="/style.css?v=<%~ state.version.style %>" />
 	<script defer src="/script.js?v=<%~ state.version.script %>"></script>
+	<script type="speculationrules">
+		{
+			"prerender": [{
+				"source": "document",
+				"where": { "href_matches": "/*" },
+				"eagerness": "moderate"
+			}]
+		}
+	</script>
 </head>

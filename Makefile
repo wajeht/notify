@@ -12,31 +12,31 @@ fix-git:
 	@git commit -m "Untrack files in .gitignore"
 
 test-unit:
-	@docker compose -f docker-compose.dev.yml exec notify npm run test
+	@docker compose -f docker-compose.yml exec notify npm run test
 
 test-browser:
-	@docker compose -f docker-compose.dev.yml exec notify npm run test:browser:headless
+	@docker compose -f docker-compose.yml exec notify npm run test:browser:headless
 
 format:
-	@docker compose -f docker-compose.dev.yml exec notify npm run format
+	@docker compose -f docker-compose.yml exec notify npm run format
 
 lint:
-	@docker compose -f docker-compose.dev.yml exec notify npm run lint
+	@docker compose -f docker-compose.yml exec notify npm run lint
 
 deploy:
 	@./deploy.sh
 
 shell:
-	@docker compose -f docker-compose.dev.yml exec notify sh
+	@docker compose -f docker-compose.yml exec notify sh
 
 db-migrate:
-	@docker compose -f docker-compose.dev.yml exec notify npm run db:migrate:latest
+	@docker compose -f docker-compose.yml exec notify npm run db:migrate:latest
 
 db-rollback:
-	@docker compose -f docker-compose.dev.yml exec notify npm run db:migrate:rollback
+	@docker compose -f docker-compose.yml exec notify npm run db:migrate:rollback
 
 db-seed:
-	@docker compose -f docker-compose.dev.yml exec notify npm run db:seed:run
+	@docker compose -f docker-compose.yml exec notify npm run db:seed:run
 
 db-reset:
 	make db-rollback
@@ -44,20 +44,20 @@ db-reset:
 	make db-seed
 
 up:
-	@docker compose -f docker-compose.dev.yml up
+	@docker compose -f docker-compose.yml up
 
 up-d:
-	@docker compose -f docker-compose.dev.yml up -d
+	@docker compose -f docker-compose.yml up -d
 
 log:
-	@docker compose -f docker-compose.dev.yml logs -f
+	@docker compose -f docker-compose.yml logs -f
 
 down:
-	@docker compose -f docker-compose.dev.yml down
+	@docker compose -f docker-compose.yml down
 
 clean:
 	@rm -rf ./dist
-	@docker compose -f docker-compose.dev.yml down --rmi all --volumes --remove-orphans
+	@docker compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
 	@docker volume rm $$(docker volume ls -q -f name=notify_) 2>/dev/null || true
 	@docker volume prune -f
 	@docker image prune -a -f

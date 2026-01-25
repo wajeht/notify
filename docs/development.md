@@ -53,25 +53,25 @@ $ cp .env.example .env
 Run development server
 
 ```bash
-$ docker compose -f docker-compose.dev.yml up
+$ docker compose -f docker-compose.yml up
 
 ```
 
 Run test
 
 ```bash
-$ docker compose -f docker-compose.dev.yml exec notify npm run test
+$ docker compose -f docker-compose.yml exec notify npm run test
 
 ```
 
 Format code
 
 ```bash
-$ docker compose -f docker-compose.dev.yml exec notify npm run format
+$ docker compose -f docker-compose.yml exec notify npm run format
 ```
 
 Lint code
 
 ```bash
-$ docker compose -f docker-compose.dev.yml exec notify npm run lint
+$ docker compose -f docker-compose.yml exec notify npm run lint
 ```

@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 const envPaths = [path.resolve(process.cwd(), ".env"), path.resolve(process.cwd(), "../../.env")];
 const envPath = envPaths.find((p) => fs.existsSync(p));
-if (envPath) dotenv.config({ path: envPath });
+if (envPath) dotenv.config({ path: envPath, quiet: true });
 
 const adminEmail = process.env.APP_ADMIN_EMAIL || "admin@example.com";
 

@@ -2,7 +2,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { Env } from "./types";
 
-dotenv.config({ path: path.resolve(path.join(process.cwd(), ".env")) });
+dotenv.config({ path: path.resolve(path.join(process.cwd(), ".env")), quiet: true });
 
 export const appConfig = {
   port: parseInt(process.env.APP_PORT || "8080", 10),

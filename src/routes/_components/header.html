@@ -6,8 +6,8 @@
 
   <nav style="display: flex; justify-content: space-between; align-items: center;">
     <div style="display: flex; align-items: center; gap: 20px;">
-      <a style="background-color: var(--background-color); border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/apps?' ? 'bold' : 'normal' %>; <%= path === '/apps?' ? 'text-decoration: underline;' : null %>" href="/apps">📱 Apps</a>
-      <a style="background-color: var(--background-color); border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path === '/notifications?' ? 'bold' : 'normal' %>; <%= path === '/notifications?' ? 'text-decoration: underline;' : null %>" href="/notifications">🔔 Notifications <% if (state.unread_apps_notification_count > 0) { %>(<%= state.unread_apps_notification_count %>) <% } %></a>
+      <a style="background-color: var(--background-color); border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path.startsWith('/apps') ? 'bold' : 'normal' %>; <%= path.startsWith('/apps') ? 'text-decoration: underline;' : null %>" href="/apps">📱 Apps</a>
+      <a style="background-color: var(--background-color); border: dashed; border-radius: 5px; padding: 5px 10px; font-weight: <%= path.startsWith('/notifications') ? 'bold' : 'normal' %>; <%= path.startsWith('/notifications') ? 'text-decoration: underline;' : null %>" href="/notifications">🔔 Notifications <% if (state.unread_apps_notification_count > 0) { %>(<%= state.unread_apps_notification_count %>) <% } %></a>
     </div>
 
     <details style="position: relative;">

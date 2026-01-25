@@ -32,7 +32,8 @@ server.on("error", (error: NodeJS.ErrnoException) => {
     throw error;
   }
 
-  const bind = typeof appConfig.port === "string" ? `Pipe ${appConfig.port}` : `Port ${appConfig.port}`;
+  const bind =
+    typeof appConfig.port === "string" ? `Pipe ${appConfig.port}` : `Port ${appConfig.port}`;
 
   if (error.code === "EACCES") {
     logger.error(`${bind} requires elevated privileges`);
@@ -59,8 +60,8 @@ function gracefulShutdown(signal: string): void {
     try {
       await db.destroy();
       logger.info("Database connection closed.");
-    } catch (error) {
-      logger.error("Error closing database connection");
+    } catch (err) {
+      logger.error("Error closing database connection", err);
     }
 
     logger.info("All connections closed successfully.");
@@ -77,14 +78,14 @@ process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 process.on("SIGQUIT", () => gracefulShutdown("SIGQUIT"));
 
-process.on("uncaughtException", async (error: Error, origin: string) => {
-  logger.error("Uncaught Exception");
+process.on("uncaughtException", (error: Error) => {
+  logger.error("Uncaught Exception", error);
 });
 
 process.on("warning", (warning: Error) => {
-  logger.warn("Process warning");
+  logger.warn("Process warning", warning);
 });
 
-process.on("unhandledRejection", async (reason: unknown, _promise: Promise<unknown>) => {
-  logger.error("Unhandled Rejection");
+process.on("unhandledRejection", (reason: unknown) => {
+  logger.error("Unhandled Rejection", reason);
 });

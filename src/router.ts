@@ -1267,14 +1267,16 @@ router.post(
     }
 
     await db.transaction(async (trx) => {
-      await trx("sms_configs").where({ id: cfid }).update({
-        name,
-        account_sid: secret().encrypt(account_sid),
-        auth_token: secret().encrypt(auth_token),
-        from_phone_number: secret().encrypt(from_phone_number),
-        phone_number: secret().encrypt(phone_number),
-        updated_at: db.fn.now(),
-      });
+      await trx("sms_configs")
+        .where({ id: cfid })
+        .update({
+          name,
+          account_sid: secret().encrypt(account_sid),
+          auth_token: secret().encrypt(auth_token),
+          from_phone_number: secret().encrypt(from_phone_number),
+          phone_number: secret().encrypt(phone_number),
+          updated_at: db.fn.now(),
+        });
 
       await trx("app_channels")
         .where({ id: cid })
@@ -1349,15 +1351,17 @@ router.post(
     }
 
     await db.transaction(async (trx) => {
-      await trx("email_configs").where({ id: cfid }).update({
-        name,
-        host: secret().encrypt(host),
-        port: secret().encrypt(port),
-        alias: secret().encrypt(alias),
-        auth_email: secret().encrypt(auth_email),
-        auth_pass: secret().encrypt(auth_pass),
-        updated_at: db.fn.now(),
-      });
+      await trx("email_configs")
+        .where({ id: cfid })
+        .update({
+          name,
+          host: secret().encrypt(host),
+          port: secret().encrypt(port),
+          alias: secret().encrypt(alias),
+          auth_email: secret().encrypt(auth_email),
+          auth_pass: secret().encrypt(auth_pass),
+          updated_at: db.fn.now(),
+        });
 
       await trx("app_channels")
         .where({ id: cid })
@@ -1555,7 +1559,8 @@ router.post(
         const data = (await response.json()) as { message?: string; error?: string };
         return res.redirect(`/apps/${id}?toast=${data.message || data.error}`);
       }
-    } catch (error) {
+    } catch (err) {
+      logger.error("[testNotification] failed", err);
       return res.redirect(`/apps/${id}?toast=failed to send notification`);
     }
 

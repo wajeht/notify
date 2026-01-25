@@ -44,7 +44,9 @@ export function createCron(db: Knex): CronType {
         return;
       }
 
-      logger.info("[cron:resetUserMonthlyAlertLimit] Resetting apps", { count: appsToReset.length });
+      logger.info("[cron:resetUserMonthlyAlertLimit] Resetting apps", {
+        count: appsToReset.length,
+      });
 
       for (const app of appsToReset) {
         const now = new Date();
@@ -70,9 +72,14 @@ export function createCron(db: Knex): CronType {
             logger.error("[cron:resetUserMonthlyAlertLimit] Failed to send email", err),
           );
 
-          logger.info("[cron:resetUserMonthlyAlertLimit] Reset alert count for app", { appId: app.id });
+          logger.info("[cron:resetUserMonthlyAlertLimit] Reset alert count for app", {
+            appId: app.id,
+          });
         } catch (error) {
-          logger.error("[cron:resetUserMonthlyAlertLimit] Failed to reset app", { error, appId: app.id });
+          logger.error("[cron:resetUserMonthlyAlertLimit] Failed to reset app", {
+            error,
+            appId: app.id,
+          });
         }
       }
 

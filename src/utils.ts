@@ -42,7 +42,9 @@ export function formatDatetime(date: Date, userTimezone: string = "UTC"): string
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
-  }).format(date).replace(",", "");
+  })
+    .format(date)
+    .replace(",", "");
 }
 
 export function startOfNextMonth(date: Date = new Date(), userTimezone: string = "UTC"): Date {
@@ -54,8 +56,8 @@ export function startOfNextMonth(date: Date = new Date(), userTimezone: string =
     day: "2-digit",
   });
   const parts = formatter.formatToParts(date);
-  const year = parseInt(parts.find(p => p.type === "year")!.value);
-  const month = parseInt(parts.find(p => p.type === "month")!.value);
+  const year = parseInt(parts.find((p) => p.type === "year")!.value);
+  const month = parseInt(parts.find((p) => p.type === "month")!.value);
 
   // Next month (handle December -> January)
   const nextMonth = month === 12 ? 1 : month + 1;

@@ -1098,8 +1098,7 @@ router.post(
   async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    // eslint-disable-next-line prefer-const
-    let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+    const { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
 
     await db.transaction(async (trx) => {
       const channel_type = await trx
@@ -1116,20 +1115,14 @@ router.post(
         })
         .returning("*");
 
-      host = secret().encrypt(host);
-      port = secret().encrypt(port);
-      alias = secret().encrypt(alias);
-      auth_email = secret().encrypt(auth_email);
-      auth_pass = secret().encrypt(auth_pass);
-
       await trx("email_configs").insert({
         app_channel_id: app_channel.id,
         name,
-        host,
-        port,
-        alias,
-        auth_email,
-        auth_pass,
+        host: secret().encrypt(host),
+        port: secret().encrypt(port),
+        alias: secret().encrypt(alias),
+        auth_email: secret().encrypt(auth_email),
+        auth_pass: secret().encrypt(auth_pass),
       });
     });
 
@@ -1261,8 +1254,7 @@ router.post(
   async (req: Request, res: Response) => {
     const { id, cfid, cid } = req.params;
 
-    // eslint-disable-next-line prefer-const
-    let { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
+    const { name, is_active, account_sid, auth_token, from_phone_number, phone_number } = req.body;
 
     const app = await db
       .select("*")
@@ -1274,18 +1266,13 @@ router.post(
       throw NotFoundError();
     }
 
-    account_sid = secret().encrypt(account_sid);
-    auth_token = secret().encrypt(auth_token);
-    from_phone_number = secret().encrypt(from_phone_number);
-    phone_number = secret().encrypt(phone_number);
-
     await db.transaction(async (trx) => {
       await trx("sms_configs").where({ id: cfid }).update({
         name,
-        account_sid,
-        auth_token,
-        from_phone_number,
-        phone_number,
+        account_sid: secret().encrypt(account_sid),
+        auth_token: secret().encrypt(auth_token),
+        from_phone_number: secret().encrypt(from_phone_number),
+        phone_number: secret().encrypt(phone_number),
         updated_at: db.fn.now(),
       });
 
@@ -1349,8 +1336,7 @@ router.post(
   async (req: Request, res: Response) => {
     const { id, cfid, cid } = req.params;
 
-    // eslint-disable-next-line prefer-const
-    let { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
+    const { name, is_active, host, port, alias, auth_email, auth_pass } = req.body;
 
     const app = await db
       .select("*")
@@ -1362,20 +1348,14 @@ router.post(
       throw NotFoundError();
     }
 
-    host = secret().encrypt(host);
-    port = secret().encrypt(port);
-    alias = secret().encrypt(alias);
-    auth_email = secret().encrypt(auth_email);
-    auth_pass = secret().encrypt(auth_pass);
-
     await db.transaction(async (trx) => {
       await trx("email_configs").where({ id: cfid }).update({
         name,
-        host,
-        port,
-        alias,
-        auth_email,
-        auth_pass,
+        host: secret().encrypt(host),
+        port: secret().encrypt(port),
+        alias: secret().encrypt(alias),
+        auth_email: secret().encrypt(auth_email),
+        auth_pass: secret().encrypt(auth_pass),
         updated_at: db.fn.now(),
       });
 

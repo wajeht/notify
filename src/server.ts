@@ -13,9 +13,8 @@ let cron: CronType;
 process.title = "notify";
 
 server.on("listening", async () => {
-  const addr: string | AddressInfo | null = server.address();
-  // prettier-ignore
-  const bind: string = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
+  const addr = server.address();
+  const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${(addr as AddressInfo).port}`;
 
   logger.info(`Server is listening on ${bind}`);
 
@@ -33,20 +32,16 @@ server.on("error", (error: NodeJS.ErrnoException) => {
     throw error;
   }
 
-  // prettier-ignore
-  const bind: string = typeof appConfig.port === 'string' ? 'Pipe ' + appConfig.port : 'Port ' + appConfig.port;
+  const bind = typeof appConfig.port === "string" ? `Pipe ${appConfig.port}` : `Port ${appConfig.port}`;
 
-  switch (error.code) {
-    case "EACCES":
-      logger.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-    // eslint-disable-next-line no-fallthrough
-    case "EADDRINUSE":
-      logger.error(`${bind} is already in use`);
-      process.exit(1);
-    // eslint-disable-next-line no-fallthrough
-    default:
-      throw error;
+  if (error.code === "EACCES") {
+    logger.error(`${bind} requires elevated privileges`);
+    process.exit(1);
+  } else if (error.code === "EADDRINUSE") {
+    logger.error(`${bind} is already in use`);
+    process.exit(1);
+  } else {
+    throw error;
   }
 });
 

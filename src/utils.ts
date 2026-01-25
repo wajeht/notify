@@ -236,7 +236,7 @@ export async function sendGeneralEmail({
 }) {
   try {
     const templateContent = await fsp.readFile(
-      path.resolve(path.join(process.cwd(), "src", "views", "emails", "general.html")),
+      path.resolve(path.join(process.cwd(), "src", "routes", "_emails", "general.html")),
       "utf-8",
     );
 

@@ -13,7 +13,7 @@ import { NextFunction, Request, Response } from "express";
 
 export function notFoundMiddleware() {
   return (_req: Request, res: Response, _next: NextFunction) => {
-    return res.status(404).render("error.html", {
+    return res.status(404).render("general/error.html", {
       statusCode: 404,
       message: "not found",
     });
@@ -93,7 +93,7 @@ export function rateLimitMiddleware() {
       if (req.get("Content-Type") === "application/json") {
         return res.json({ message: "Too many requests from this IP, please try again later." });
       }
-      return res.status(429).render("./rate-limit.html");
+      return res.status(429).render("general/rate-limit.html");
     },
     skip: (_req: Request, _res: Response) => appConfig.env !== "production",
   });
@@ -286,7 +286,7 @@ export function errorMiddleware() {
       logger.error(error);
     }
 
-    return res.status(500).render("error.html", {
+    return res.status(500).render("general/error.html", {
       statusCode: 500,
       message: appConfig.env !== "production" ? error.stack : "internal server error",
     });

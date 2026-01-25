@@ -10,7 +10,7 @@ import ejs from "ejs";
 import cors from "cors";
 import express from "express";
 import flash from "connect-flash";
-import { router } from "./router";
+import { router } from "./routes/routes";
 import { appConfig } from "./config";
 import compression from "compression";
 import expressLayouts from "express-ejs-layouts";
@@ -32,15 +32,15 @@ app
   .engine("html", ejs.renderFile)
   .set("view engine", "html")
   .set("view cache", appConfig.env === "production")
-  .set("views", "./src/views/pages")
-  .set("layout", "../layouts/public.html")
+  .set("views", "./src/routes")
+  .set("layout", "_layouts/public.html")
   .use(expressLayouts)
   .use(appLocalStateMiddleware);
 
 if (appConfig.env === "development") {
   reload({
     app,
-    watch: [{ path: "./public/style.css" }, { path: "./src/views", extensions: [".html"] }],
+    watch: [{ path: "./public/style.css" }, { path: "./src/routes", extensions: [".html"] }],
   });
 }
 

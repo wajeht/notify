@@ -4,6 +4,7 @@ import type { Logger } from "pino";
 import { DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { backBlaze, s3Client } from "./config";
 import { dayjs, sendGeneralEmail } from "./utils";
+import { processPendingJobs, cleanupOldJobs } from "./queue";
 
 export interface CronType {
   start: () => void;
@@ -12,6 +13,8 @@ export interface CronType {
   tasks: {
     resetUserMonthlyAlertLimit: () => Promise<void>;
     deleteExpiredExport: () => Promise<void>;
+    processJobQueue: () => Promise<void>;
+    cleanupJobQueue: () => Promise<void>;
   };
 }
 
@@ -85,6 +88,28 @@ export function createCron(db: Knex, logger: Logger): CronType {
       logger.info("[cron:resetUserMonthlyAlertLimit] Completed");
     } catch (error) {
       logger.error({ err: error }, "[cron:resetUserMonthlyAlertLimit] Job failed");
+    }
+  }
+
+  async function processJobQueue(): Promise<void> {
+    logger.info("[cron:processJobQueue] Starting");
+    try {
+      const result = await processPendingJobs();
+      if (result.processed > 0) {
+        logger.info(result, "[cron:processJobQueue] Completed");
+      }
+    } catch (error) {
+      logger.error({ err: error }, "[cron:processJobQueue] Job failed");
+    }
+  }
+
+  async function cleanupJobQueue(): Promise<void> {
+    logger.info("[cron:cleanupJobQueue] Starting");
+    try {
+      const deleted = await cleanupOldJobs(7);
+      logger.info({ deleted }, "[cron:cleanupJobQueue] Completed");
+    } catch (error) {
+      logger.error({ err: error }, "[cron:cleanupJobQueue] Job failed");
     }
   }
 
@@ -167,6 +192,21 @@ export function createCron(db: Knex, logger: Logger): CronType {
       }),
     );
 
+    // Every minute: process pending jobs in queue
+    cronJobs.push(
+      cron.schedule("* * * * *", async () => {
+        await processJobQueue();
+      }),
+    );
+
+    // Daily at 1am: cleanup old completed jobs
+    cronJobs.push(
+      cron.schedule("0 1 * * *", async () => {
+        logger.info("[cron] Running cleanupJobQueue");
+        await cleanupJobQueue();
+      }),
+    );
+
     isRunning = true;
     logger.info({ jobCount: cronJobs.length }, "[cron] Started");
   }
@@ -191,6 +231,8 @@ export function createCron(db: Knex, logger: Logger): CronType {
     tasks: {
       resetUserMonthlyAlertLimit,
       deleteExpiredExport,
+      processJobQueue,
+      cleanupJobQueue,
     },
   };
 }

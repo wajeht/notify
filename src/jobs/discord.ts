@@ -1,6 +1,6 @@
-import { secret } from "../../utils";
-import { logger } from "../../logger";
-import { DiscordConfig } from "../../types";
+import { secret } from "../utils";
+import { logger } from "../logger";
+import { DiscordConfig } from "../types";
 
 export interface DiscordNotificationData {
   config: DiscordConfig;

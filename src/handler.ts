@@ -6,12 +6,11 @@ import axios, { AxiosError } from "axios";
 import { Request, Response } from "express";
 import { appConfig, oauthConfig } from "./config";
 import { validateRequestMiddleware } from "./middleware";
-import { sendNotification } from "./jobs/notification.job";
-import { sendGeneralEmail } from "./jobs/general-email.job";
-import { exportUserData } from "./jobs/export-user-data.job";
+import { sendNotification } from "./jobs/notification";
+import { exportUserData } from "./jobs/export-user-data";
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from "./types";
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from "./error";
-import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails } from "./utils";
+import { dayjs, secret, extractDomain, getGithubOauthToken, getGithubUserEmails, sendGeneralEmail } from "./utils";
 
 // GET /healthz
 export function getHealthzHandler(_req: Request, res: Response) {

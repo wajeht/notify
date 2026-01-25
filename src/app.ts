@@ -44,7 +44,6 @@ if (appConfig.env === "development") {
   });
 }
 
-// prettier-ignore
 app.use(router)
     .use(notFoundMiddleware())
     .use(errorMiddleware());

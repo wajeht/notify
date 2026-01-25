@@ -1,11 +1,17 @@
 import crypto from "node:crypto";
-import { db } from "../../db/db";
-import { logger } from "../../logger";
+import { db } from "../db/db";
+import { logger } from "../logger";
 import { sendSms } from "./sms";
 import { sendEmail } from "./email";
 import { sendDiscord } from "./discord";
-import { sendGeneralEmail } from "../../utils";
-import { NotificationJobData } from "../notification.job";
+import { sendGeneralEmail } from "../utils";
+
+export interface NotificationJobData {
+  userId: number;
+  appId: string;
+  message: string;
+  details: Record<string, unknown>;
+}
 
 export async function sendNotification(data: NotificationJobData) {
   try {

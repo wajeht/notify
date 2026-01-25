@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
-import { secret } from "../../utils";
-import { logger } from "../../logger";
-import { EmailConfig } from "../../types";
+import { secret } from "../utils";
+import { logger } from "../logger";
+import { EmailConfig } from "../types";
 
 export interface EmailNotificationData {
   config: EmailConfig;

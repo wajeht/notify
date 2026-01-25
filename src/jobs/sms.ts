@@ -1,6 +1,6 @@
 import twilio from "twilio";
-import { logger } from "../../logger";
-import { SmsConfig } from "../../types";
+import { logger } from "../logger";
+import { SmsConfig } from "../types";
 
 export interface SmsNotificationData {
   config: SmsConfig;

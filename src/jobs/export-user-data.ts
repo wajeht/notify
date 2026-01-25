@@ -78,8 +78,14 @@ export async function exportUserData(data: ExportUserDataJobData): Promise<void>
               .first();
 
             if (config) {
-              // prettier-ignore
-              const { created_at: _ca, updated_at: _ua, app_channel_id: _aci, id: _id, name, ...cleanedConfig } = config;
+              const {
+                created_at: _ca,
+                updated_at: _ua,
+                app_channel_id: _aci,
+                id: _id,
+                name,
+                ...cleanedConfig
+              } = config;
 
               const decryptedConfig = Object.entries(cleanedConfig).reduce((acc, [key, value]) => {
                 if (typeof value === "string") {

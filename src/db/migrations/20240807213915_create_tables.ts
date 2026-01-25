@@ -117,7 +117,6 @@ export async function up(knex: Knex): Promise<void> {
       table.index("expired");
     });
 
-  // Insert default channel types
   await knex("channel_types").insert([{ name: "email" }, { name: "sms" }, { name: "discord" }]);
 }
 

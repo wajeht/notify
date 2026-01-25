@@ -1,11 +1,12 @@
 import type { Knex } from "knex";
 import { randomUUID } from "node:crypto";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from "node:fs";
 import dotenv from "dotenv";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
+const envPaths = [path.resolve(process.cwd(), ".env"), path.resolve(process.cwd(), "../../.env")];
+const envPath = envPaths.find((p) => fs.existsSync(p));
+if (envPath) dotenv.config({ path: envPath });
 
 const adminEmail = process.env.APP_ADMIN_EMAIL || "admin@example.com";
 

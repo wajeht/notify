@@ -9,9 +9,9 @@ import {
 import cors from "cors";
 import express from "express";
 import flash from "connect-flash";
-import { router } from "./routes/routes";
 import { appConfig } from "./config";
 import compression from "compression";
+import { router } from "./routes/routes";
 import { renderTemplate, layoutMiddleware } from "./utils/template";
 import { expressTemplatesReload as reload } from "@wajeht/express-templates-reload";
 

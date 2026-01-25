@@ -79,27 +79,29 @@ export async function sendEmail(data: EmailNotificationData): Promise<void> {
 
   const transporter = nodemailer.createTransport(config as any);
 
-  try {
-    await new Promise((resolve, reject) => {
-      transporter.sendMail(
-        {
-          from: config.alias,
-          to: config.auth.user,
-          subject: data.message,
-          html: template(data.username, data.message, data.details),
-        },
-        (err, info) => {
-          if (err) {
-            logger.error({ err }, "[sendEmail] Error sending email");
-            reject(err);
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(
+      {
+        from: config.alias,
+        to: config.auth.user,
+        subject: data.message,
+        html: template(data.username, data.message, data.details),
+      },
+      (err, info) => {
+        if (err) {
+          const errWithCode = err as Error & { code?: string };
+          const isConnectionError = errWithCode.code === "EDNS" || errWithCode.code === "ECONNREFUSED" || errWithCode.code === "ETIMEDOUT";
+          if (isConnectionError) {
+            logger.warn({ host: config.host, code: errWithCode.code }, "[sendEmail] Mail server unavailable, will retry");
           } else {
-            logger.info({ to: config.auth.user }, "[sendEmail] Email sent successfully");
-            resolve(info);
+            logger.error({ err }, "[sendEmail] Failed to send email");
           }
-        },
-      );
-    });
-  } catch (error) {
-    logger.error({ err: error }, "[sendEmail] error while sending email");
-  }
+          reject(err);
+        } else {
+          logger.info({ to: config.auth.user }, "[sendEmail] Email sent");
+          resolve(info);
+        }
+      },
+    );
+  });
 }

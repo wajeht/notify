@@ -6,14 +6,13 @@ import {
   rateLimitMiddleware,
   appLocalStateMiddleware,
 } from "./middleware";
-import ejs from "ejs";
 import cors from "cors";
 import express from "express";
 import flash from "connect-flash";
 import { router } from "./routes/routes";
 import { appConfig } from "./config";
 import compression from "compression";
-import expressLayouts from "express-ejs-layouts";
+import { renderTemplate, layoutMiddleware } from "./utils/template";
 import { expressTemplatesReload as reload } from "@wajeht/express-templates-reload";
 
 const app = express();
@@ -29,12 +28,11 @@ app
   .use(express.json({ limit: "100kb" }))
   .use(express.urlencoded({ extended: true, limit: "100kb" }))
   .use(express.static("./public", { maxAge: "30d", etag: true, lastModified: true }))
-  .engine("html", ejs.renderFile)
+  .engine("html", renderTemplate)
   .set("view engine", "html")
   .set("view cache", appConfig.env === "production")
   .set("views", "./src/routes")
-  .set("layout", "_layouts/public.html")
-  .use(expressLayouts)
+  .use(layoutMiddleware)
   .use(appLocalStateMiddleware);
 
 if (appConfig.env === "development") {

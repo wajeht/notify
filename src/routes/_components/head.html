@@ -3,7 +3,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 	<% if (typeof title !== 'undefined') { %>
-		<title>Notify - <%- title %></title>
+		<title>Notify - <%~ title %></title>
 	<% } else { %>
 		<title>Notify</title>
 	<% } %>
@@ -12,7 +12,7 @@
 	<meta name="keywords" content="notify, notifications, alerts, messaging, web service, discord, sms" />
 	<meta name="author" content="wajeht" />
 
-	<link rel="preload" href="/style.css?v=<%- state.version.style %>" as="style" />
+	<link rel="preload" href="/style.css?v=<%~ state.version.style %>" as="style" />
 
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
@@ -47,7 +47,7 @@
 	</script>
 
 	<link rel="canonical" href="https://notify.jaw.dev/" />
-	<link rel="stylesheet" href="/style.css?v=<%- state.version.style %>" />
-    <script defer src="/script.js?v=<%- state.version.script %>"></script>
-	<script defer data-domain="notify.jaw.dev" src="https://plausible.jaw.dev/js/script.js?v=<%- state.version.plausible %>"></script>
+	<link rel="stylesheet" href="/style.css?v=<%~ state.version.style %>" />
+    <script defer src="/script.js?v=<%~ state.version.script %>"></script>
+	<script defer data-domain="notify.jaw.dev" src="https://plausible.jaw.dev/js/script.js?v=<%~ state.version.plausible %>"></script>
 </head>

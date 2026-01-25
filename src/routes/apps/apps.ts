@@ -865,17 +865,12 @@ export function createAppsRouter(context: AppContext) {
 
       const notifications = notificationsRaw.map((n: any) => ({
         ...n,
-        read_at: n.read_at ? formatDate(n.read_at, userTimezone) : null,
         created_at: formatDate(n.created_at, userTimezone),
-        updated_at: formatDate(n.updated_at, userTimezone),
       }));
 
       return res.render("apps/notifications.html", {
         title: "App Notifications",
-        app: {
-          ...app,
-          notifications,
-        },
+        app: { ...app, notifications },
         pagination,
         layout: "_layouts/app.html",
         path: `/apps/${appId}/notifications`,

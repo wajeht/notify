@@ -41,15 +41,15 @@
   </div>
 
   <% app.notifications.forEach(n => { %>
-    <div style="border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px; <%= n.read_at === null ? 'border: 2px dashed;' : 'border: 1px dashed;' %> ">
+    <div style="border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px; <%= !n.read_at ? 'border: 2px dashed;' : 'border: 1px dashed;' %> ">
 
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
         <div style="display: flex; align-items: baseline; gap: 20px;">
-          <p style="font-weight: bold;">🗓️ <%= new Date(n.created_at).toLocaleString() %></p>
+          <p style="font-weight: bold;">🗓️ <%= n.created_at %></p>
           <p>💬 <%= n.message %></p>
         </div>
 
-        <% if (n.read_at === null) { %>
+        <% if (!n.read_at) { %>
           <form method="post" action="/apps/<%= n.app_id %>/notifications/<%= n.id %>/read">
             <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
             <button class="no-style-btn">Mark as read</button>

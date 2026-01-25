@@ -1,97 +1,80 @@
-import { app } from './app';
-import { Server } from 'http';
-import { AddressInfo } from 'net';
-import { appConfig } from './config';
-import { db, redis } from './db/db';
-import { runMigrations } from './utils';
-import { logger } from './logger';
-import { resetUserMonthlyAlertLimitJob } from './jobs/reset-user-monthly-alert-limit.job';
-import { deleteExpiredExportJob } from './jobs/delete-expired-export.job';
+import { app } from "./app";
+import { Server } from "http";
+import { AddressInfo } from "net";
+import { appConfig } from "./config";
+import { db } from "./db/db";
+import { runMigrations } from "./utils";
+import { logger } from "./logger";
 
 const server: Server = app.listen(appConfig.port);
 
-process.title = 'notify';
+process.title = "notify";
 
-server.on('listening', async () => {
-	const addr: string | AddressInfo | null = server.address();
-	// prettier-ignore
-	const bind: string = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
+server.on("listening", async () => {
+  const addr = server.address();
+  const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${(addr as AddressInfo).port}`;
 
-	logger.info(`Server is listening on ${bind}`);
+  logger.info(`Server is listening on ${bind}`);
 
-	if (appConfig.env === 'production') {
-		await runMigrations();
-	}
-
-	// crons
-	await resetUserMonthlyAlertLimitJob({}, { cron: '0 0 * * *' }); // daily at midnight
-	await deleteExpiredExportJob({}, { cron: '0 0 * * *' }); // daily at midnight
+  if (appConfig.env === "production") {
+    await runMigrations();
+  }
 });
 
-server.on('error', (error: NodeJS.ErrnoException) => {
-	if (error.syscall !== 'listen') {
-		throw error;
-	}
+server.on("error", (error: NodeJS.ErrnoException) => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
 
-	// prettier-ignore
-	const bind: string = typeof appConfig.port === 'string' ? 'Pipe ' + appConfig.port : 'Port ' + appConfig.port;
+  const bind =
+    typeof appConfig.port === "string" ? `Pipe ${appConfig.port}` : `Port ${appConfig.port}`;
 
-	switch (error.code) {
-		case 'EACCES':
-			logger.error(`${bind} requires elevated privileges`);
-			process.exit(1);
-		// eslint-disable-next-line no-fallthrough
-		case 'EADDRINUSE':
-			logger.error(`${bind} is already in use`);
-			process.exit(1);
-		// eslint-disable-next-line no-fallthrough
-		default:
-			throw error;
-	}
+  if (error.code === "EACCES") {
+    logger.error(`${bind} requires elevated privileges`);
+    process.exit(1);
+  } else if (error.code === "EADDRINUSE") {
+    logger.error(`${bind} is already in use`);
+    process.exit(1);
+  } else {
+    throw error;
+  }
 });
 
 function gracefulShutdown(signal: string): void {
-	logger.info(`Received ${signal}, shutting down gracefully.`);
+  logger.info(`Received ${signal}, shutting down gracefully.`);
 
-	server.close(async () => {
-		logger.info('HTTP server closed.');
+  server.close(async () => {
+    logger.info("HTTP server closed.");
 
-		try {
-			redis.quit();
-			logger.info('Redis connection closed.');
-		} catch (error) {
-			logger.error({ err: error }, 'Error closing Redis connection');
-		}
+    try {
+      await db.destroy();
+      logger.info("Database connection closed.");
+    } catch (err) {
+      logger.error("Error closing database connection", err);
+    }
 
-		try {
-			await db.destroy();
-			logger.info('Database connection closed.');
-		} catch (error) {
-			logger.error({ err: error }, 'Error closing database connection');
-		}
+    logger.info("All connections closed successfully.");
+    process.exit(0);
+  });
 
-		logger.info('All connections closed successfully.');
-		process.exit(0);
-	});
-
-	setTimeout(() => {
-		logger.error('Could not close connections in time, forcefully shutting down');
-		process.exit(1);
-	}, 10000);
+  setTimeout(() => {
+    logger.error("Could not close connections in time, forcefully shutting down");
+    process.exit(1);
+  }, 10000);
 }
 
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGQUIT", () => gracefulShutdown("SIGQUIT"));
 
-process.on('uncaughtException', async (error: Error, origin: string) => {
-	logger.error({ err: error, origin }, 'Uncaught Exception');
+process.on("uncaughtException", (error: Error) => {
+  logger.error("Uncaught Exception", error);
 });
 
-process.on('warning', (warning: Error) => {
-	logger.warn({ name: warning.name, message: warning.message }, 'Process warning');
+process.on("warning", (warning: Error) => {
+  logger.warn("Process warning", warning);
 });
 
-process.on('unhandledRejection', async (reason: unknown, promise: Promise<unknown>) => {
-	logger.error({ reason }, 'Unhandled Rejection');
+process.on("unhandledRejection", (reason: unknown) => {
+  logger.error("Unhandled Rejection", reason);
 });

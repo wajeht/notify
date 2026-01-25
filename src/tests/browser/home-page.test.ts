@@ -1,22 +1,22 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('can get / page', async ({ page }) => {
-	await page.goto('/');
-	await expect(page).toHaveTitle(/Notify/);
+test("can get / page", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveTitle(/Notify/);
 });
 
-test('can login and redirect to GitHub', async ({ page }) => {
-	await page.goto('/');
+test("can login and redirect to GitHub", async ({ page }) => {
+  await page.goto("/");
 
-	await page.getByRole('button', { name: '🚀 Get Started' }).click();
+  await page.getByRole("button", { name: "🚀 Get Started" }).click();
 
-	await expect(page.getByText('Login to get started with Notify.')).toBeVisible();
+  await expect(page.getByText("Login to get started with Notify.")).toBeVisible();
 
-	const githubPromise = page.waitForURL('https://github.com/**');
+  const githubPromise = page.waitForURL("https://github.com/**");
 
-	await page.getByRole('button', { name: '🐙 Login with GitHub' }).click();
+  await page.getByRole("button", { name: "🐙 Login with GitHub" }).click();
 
-	await githubPromise;
+  await githubPromise;
 
-	expect(page.url()).toContain('github.com');
+  expect(page.url()).toContain("github.com");
 });

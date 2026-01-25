@@ -1,0 +1,38 @@
+services:
+  notify:
+    container_name: notify
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - notify-network
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  mailpit:
+    container_name: mailpit
+    restart: unless-stopped
+    image: axllent/mailpit
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP server
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - notify-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8025/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  notify-network:
+    driver: bridge

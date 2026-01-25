@@ -1,0 +1,121 @@
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h2>🔔 Notifications (<%= pagination.total %>)</h2>
+      <p>All notifications</p>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 40px; justify-content: center;">
+
+      <% if (pagination.total > 10) { %>
+        <div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+          <% if (pagination.currentPage > 1) { %>
+            <a href="<%= path %>&page=1&perPage=<%= pagination.perPage %>">⏮️ First</a>
+            <a href="<%= path %>&page=<%= pagination.currentPage - 1 %>&perPage=<%= pagination.perPage %>">⬅️ Previous</a>
+          <% } %>
+
+          <details style="position: relative;">
+            <summary>📄 Page <%= pagination.currentPage %></summary>
+            <div style="position: absolute; padding: 10px; width: max-content; display: flex; flex-direction: column;  background-color: var(--background-color); border: dashed; border-radius: 5px;">
+              <% for (let i = 1; i <= pagination.lastPage; i++) { %>
+                <% if (i !== pagination.currentPage) { %>
+                  <a href="<%= path %>&page=<%= i %>&perPage=<%= pagination.perPage %>">Page <%= i %></a>
+                <% } %>
+              <% } %>
+            </div>
+          </details>
+
+          <% if (pagination.currentPage < pagination.lastPage) { %>
+            <a href="<%= path %>&page=<%= pagination.currentPage + 1 %>&perPage=<%= pagination.perPage %>">Next ➡️</a>
+            <a href="<%= path %>&page=<%= pagination.lastPage %>&perPage=<%= pagination.perPage %>">Last ⏭️</a>
+          <% } %>
+        </div>
+      <% } %>
+
+      <% if (pagination.total > 0 || filter) { %>
+        <div style="display: flex; gap: 20px; align-items: center;">
+          <% if (filter) { %>
+            <a href="/notifications">📱 All</a>
+          <% } %>
+          <% if (filter !== 'unread') { %>
+            <a href="/notifications?filter=unread">🔴 unread</a>
+          <% } %>
+          <% if (filter !== 'read') { %>
+            <a href="/notifications?filter=read">🟢 read</a>
+          <% } %>
+        </div>
+      <% } %>
+
+      <% if (state.unread_apps_notification_count > 0) { %>
+        <form method="post" action="/notifications/read">
+          <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+          <button class="no-style-btn">✅ Mark all as read</button>
+        </form>
+      <% } %>
+    </div>
+
+  </div>
+
+  <% notifications.forEach(n => { %>
+    <div style="border-radius: 5px; padding: 20px; display: flex; flex-direction: column; gap: 10px; <%= n.read_at === null ? 'border: 2px dashed;' : 'border: 1px dashed;' %> ">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="/apps/<%= n.app_id %>">📱 <%= n.app_name %></a>
+
+        <% if (n.read_at === null) { %>
+          <form method="post" action="/apps/<%= n.app_id %>/notifications/<%= n.id %>/read">
+            <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+            <button class="no-style-btn">Mark as read</button>
+          </form>
+        <% } %>
+      </div>
+
+      <div style="display: flex; align-items: baseline; gap: 20px;">
+        <p style="font-weight: bold;">
+          📅 <%= n.created_at %>
+        </p>
+
+        <p>💬 <%= n.message %></p>
+      </div>
+
+      <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+        <% if (n.details.length) { %>
+          <button class="no-style-btn" onclick="this.parentElement.nextElementSibling.querySelector('.details-content').toggleAttribute('hidden'); this.textContent = this.textContent.includes('▶') ? '▼ 🔍 Details' : '▶ 🔍 Details'">▶ 🔍 Details</button>
+        <% } %>
+        <button class="no-style-btn" onclick="this.parentElement.nextElementSibling.querySelector('.json-content').toggleAttribute('hidden'); this.textContent = this.textContent.includes('▶') ? '▼ 📄 JSON' : '▶ 📄 JSON'">▶ 📄 JSON</button>
+        <button class="no-style-btn" onclick="document.getElementById(`delete-notifications-<%= n.id %>-modal`).showModal()">🗑️ Delete</button>
+      </div>
+
+      <div>
+        <% if (n.details.length) { %>
+          <pre class="details-content" hidden style="margin-top: 10px; padding: 10px; border: 1px dashed; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;"><%= n.details %></pre>
+        <% } %>
+        <pre class="json-content" hidden style="margin-top: 10px; padding: 10px; border: 1px dashed; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;"><%= JSON.stringify(n, null, 2) %></pre>
+      </div>
+        <dialog id="delete-notifications-<%= n.id %>-modal">
+          <h2>⚠️ Confirm Deletion</h2>
+          <p>Are you sure you want to delete this notification?</p>
+          <form method="POST" action="/apps/<%= n.app_id %>/notifications/<%= n.id %>/delete">
+            <input type="hidden" id="csrfToken" name="csrfToken" value="<%= csrfToken %>" />
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+              <button type="button" onclick="this.closest('dialog').close()">❌ Cancel</button>
+              <button type="submit">🗑️ Delete</button>
+            </div>
+          </form>
+        </dialog>
+    </div>
+  <% }) %>
+
+  <% if (!notifications.length) { %>
+    <div style="border-radius: 5px; border: dashed; padding: 20px; width: 32.5%;">
+      <% if (!filter) { %>
+        <p>🚫 There are no notifications currently</p>
+      <% } else if (filter === 'unread') { %>
+        <p>🚫 There are no unread notifications currently</p>
+      <% } else if (filter === 'read') { %>
+        <p>🚫 There are no read notifications currently</p>
+      <% } %>
+    </div>
+  <% } %>
+</div>

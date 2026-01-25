@@ -1,9 +1,7 @@
-import dotenv from "dotenv";
-import { Knex } from "knex";
-import path from "node:path";
+import type { Knex } from "knex";
 import { randomUUID } from "node:crypto";
 
-const env = dotenv.config({ path: path.resolve(path.join(process.cwd(), "..", "..", ".env")) });
+const adminEmail = process.env.APP_ADMIN_EMAIL || "admin@example.com";
 
 export async function seed(knex: Knex): Promise<void> {
   await knex("notifications").del();
@@ -18,8 +16,8 @@ export async function seed(knex: Knex): Promise<void> {
   // Seed users
   const users = [
     {
-      username: env.parsed?.APP_ADMIN_EMAIL?.split("@")[0],
-      email: env.parsed?.APP_ADMIN_EMAIL,
+      username: adminEmail.split("@")[0],
+      email: adminEmail,
       is_admin: true,
       max_apps_allowed: 999999,
       created_at: new Date(),

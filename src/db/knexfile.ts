@@ -1,6 +1,5 @@
 import path from "node:path";
 import type { Knex } from "knex";
-import { appConfig } from "../config";
 
 const knexConfig: Knex.Config = {
   client: "better-sqlite3",
@@ -35,7 +34,9 @@ const knexConfig: Knex.Config = {
   },
 };
 
-if (appConfig.env === "testing") {
+const isTesting = process.env.NODE_ENV === "testing" || process.env.APP_ENV === "testing";
+
+if (isTesting) {
   knexConfig.connection = {
     filename: ":memory:",
   };

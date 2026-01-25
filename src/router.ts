@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { Knex } from "knex";
+import type { Knex } from "knex";
 import { db } from "./db/db";
 import jwt from "jsonwebtoken";
 import { body } from "express-validator";

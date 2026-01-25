@@ -12,102 +12,104 @@ export interface NotificationJobData {
 }
 
 export async function sendNotification(data: NotificationJobData) {
-  try {
-    const { appId, userId, message, details } = data;
+  const { appId, userId, message, details } = data;
 
-    const app = await db("apps").where({ id: appId, is_active: true, user_id: userId }).first();
+  const app = await db("apps").where({ id: appId, is_active: true, user_id: userId }).first();
 
-    if (!app) {
-      logger.info("[sendNotification] Cannot find active app. Quitting notification job");
-      return;
-    }
-
-    const user = await db.select("*").from("users").where({ id: userId }).first();
-
-    if (user.is_admin === false) {
-      if (app.max_monthly_alerts_allowed === app.alerts_sent_this_month) {
-        logger.info("[sendNotification] Monthly quota reached");
-
-        await sendGeneralEmail({
-          email: user.email,
-          subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
-          username: user.username,
-          message: `You have reached your monthly notification quota for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels. Please wait until next month to resume channel notifications. Thank you for using Notify!`,
-        });
-
-        return;
-      }
-
-      if (app.user_monthly_limit_threshold === app.alerts_sent_this_month) {
-        logger.info("[sendNotification] Custom alert limit reached");
-
-        await sendGeneralEmail({
-          email: user.email,
-          subject: `Custom Alert Limit Reached on ${app.name} 🔔 Notify`,
-          username: user.username,
-          message: `You have reached your custom notification limit for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels until you update your limit in your settings. Thank you for using Notify!`,
-        });
-
-        return;
-      }
-    }
-
-    const appChannels = await db("app_channels")
-      .join("channel_types", "app_channels.channel_type_id", "channel_types.id")
-      .where({ "app_channels.app_id": appId, "app_channels.is_active": true })
-      .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
-
-    if (!appChannels.length) {
-      logger.info({ appId: app.id }, "[sendNotification] no active channels for app");
-      return;
-    }
-
-    // Queue all channel notifications
-    for (const channel of appChannels) {
-      let configs;
-
-      switch (channel.channel_type) {
-        case "discord":
-          configs = await db("discord_configs").where({ app_channel_id: channel.app_channel_id });
-          break;
-        case "sms":
-          configs = await db("sms_configs").where({ app_channel_id: channel.app_channel_id });
-          break;
-        case "email":
-          configs = await db("email_configs").where({ app_channel_id: channel.app_channel_id });
-          break;
-        default:
-          logger.info(
-            { channelType: channel.channel_type },
-            "[sendNotification] Unknown channel type",
-          );
-          continue;
-      }
-
-      for (const config of configs) {
-        await enqueue(channel.channel_type as JobType, {
-          config,
-          username: user.username,
-          message,
-          details,
-        });
-      }
-    }
-
-    await db("notifications").insert({
-      id: crypto.randomUUID(),
-      app_id: appId,
-      message,
-      details: details ? JSON.stringify(details) : null,
-    });
-
-    await db("apps")
-      .update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
-      .where({ id: appId, user_id: userId });
-
-    logger.info({ appId }, "[sendNotification] notifications dispatched for app");
-  } catch (error) {
-    logger.error({ err: error }, "[sendNotification] error in sendNotification");
+  if (!app) {
+    throw new Error(`App ${appId} not found or inactive`);
   }
+
+  const user = await db.select("*").from("users").where({ id: userId }).first();
+
+  if (!user) {
+    throw new Error(`User ${userId} not found`);
+  }
+
+  // Always save the notification to the database
+  await db("notifications").insert({
+    id: crypto.randomUUID(),
+    app_id: appId,
+    message,
+    details: details ? JSON.stringify(details) : null,
+  });
+
+  // Check quotas for non-admin users
+  let quotaReached = false;
+
+  if (!user.is_admin) {
+    if (app.alerts_sent_this_month >= app.max_monthly_alerts_allowed) {
+      logger.info({ appId }, "[sendNotification] monthly quota reached");
+      quotaReached = true;
+
+      sendGeneralEmail({
+        email: user.email,
+        subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
+        username: user.username,
+        message: `You have reached your monthly notification quota for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels. Please wait until next month to resume channel notifications.`,
+      }).catch((err) => logger.error({ err }, "[sendNotification] failed to send quota email"));
+    } else if (app.user_monthly_limit_threshold && app.alerts_sent_this_month >= app.user_monthly_limit_threshold) {
+      logger.info({ appId }, "[sendNotification] custom limit reached");
+      quotaReached = true;
+
+      sendGeneralEmail({
+        email: user.email,
+        subject: `Custom Alert Limit Reached on ${app.name} 🔔 Notify`,
+        username: user.username,
+        message: `You have reached your custom notification limit for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels until you update your limit.`,
+      }).catch((err) => logger.error({ err }, "[sendNotification] failed to send limit email"));
+    }
+  }
+
+  // Update alert count
+  await db("apps")
+    .update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
+    .where({ id: appId, user_id: userId });
+
+  // If quota reached, don't send to channels but notification is saved
+  if (quotaReached) {
+    return;
+  }
+
+  // Get active channels
+  const appChannels = await db("app_channels")
+    .join("channel_types", "app_channels.channel_type_id", "channel_types.id")
+    .where({ "app_channels.app_id": appId, "app_channels.is_active": true })
+    .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
+
+  if (!appChannels.length) {
+    logger.info({ appId }, "[sendNotification] no active channels");
+    return;
+  }
+
+  // Queue jobs for each channel config
+  for (const channel of appChannels) {
+    let configs;
+
+    switch (channel.channel_type) {
+      case "discord":
+        configs = await db("discord_configs").where({ app_channel_id: channel.app_channel_id });
+        break;
+      case "sms":
+        configs = await db("sms_configs").where({ app_channel_id: channel.app_channel_id });
+        break;
+      case "email":
+        configs = await db("email_configs").where({ app_channel_id: channel.app_channel_id });
+        break;
+      default:
+        continue;
+    }
+
+    for (const config of configs) {
+      await enqueue(channel.channel_type as JobType, {
+        config,
+        username: user.username,
+        message,
+        details,
+      });
+    }
+  }
+
+  logger.info({ appId }, "[sendNotification] queued");
 }
 

@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "src/views/",
+    "public/",
+    "dist/",
+    "node_modules/",
+    "*.sqlite",
+    "*.sqlite-wal",
+    "*.sqlite-shm",
+    "package-lock.json"
+  ]
+}

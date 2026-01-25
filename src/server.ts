@@ -1,95 +1,95 @@
-import { app } from './app';
-import { Server } from 'http';
-import { AddressInfo } from 'net';
-import { appConfig } from './config';
-import { db } from './db/db';
-import { runMigrations } from './utils';
-import { logger } from './logger';
-import { createCron, CronType } from './cron';
+import { app } from "./app";
+import { Server } from "http";
+import { AddressInfo } from "net";
+import { appConfig } from "./config";
+import { db } from "./db/db";
+import { runMigrations } from "./utils";
+import { logger } from "./logger";
+import { createCron, CronType } from "./cron";
 
 const server: Server = app.listen(appConfig.port);
 let cron: CronType;
 
-process.title = 'notify';
+process.title = "notify";
 
-server.on('listening', async () => {
-	const addr: string | AddressInfo | null = server.address();
-	// prettier-ignore
-	const bind: string = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
+server.on("listening", async () => {
+  const addr: string | AddressInfo | null = server.address();
+  // prettier-ignore
+  const bind: string = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + (addr as AddressInfo).port;
 
-	logger.info(`Server is listening on ${bind}`);
+  logger.info(`Server is listening on ${bind}`);
 
-	if (appConfig.env === 'production') {
-		await runMigrations();
-	}
+  if (appConfig.env === "production") {
+    await runMigrations();
+  }
 
-	// Start cron jobs
-	cron = createCron(db, logger);
-	cron.start();
+  // Start cron jobs
+  cron = createCron(db, logger);
+  cron.start();
 });
 
-server.on('error', (error: NodeJS.ErrnoException) => {
-	if (error.syscall !== 'listen') {
-		throw error;
-	}
+server.on("error", (error: NodeJS.ErrnoException) => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
 
-	// prettier-ignore
-	const bind: string = typeof appConfig.port === 'string' ? 'Pipe ' + appConfig.port : 'Port ' + appConfig.port;
+  // prettier-ignore
+  const bind: string = typeof appConfig.port === 'string' ? 'Pipe ' + appConfig.port : 'Port ' + appConfig.port;
 
-	switch (error.code) {
-		case 'EACCES':
-			logger.error(`${bind} requires elevated privileges`);
-			process.exit(1);
-		// eslint-disable-next-line no-fallthrough
-		case 'EADDRINUSE':
-			logger.error(`${bind} is already in use`);
-			process.exit(1);
-		// eslint-disable-next-line no-fallthrough
-		default:
-			throw error;
-	}
+  switch (error.code) {
+    case "EACCES":
+      logger.error(`${bind} requires elevated privileges`);
+      process.exit(1);
+    // eslint-disable-next-line no-fallthrough
+    case "EADDRINUSE":
+      logger.error(`${bind} is already in use`);
+      process.exit(1);
+    // eslint-disable-next-line no-fallthrough
+    default:
+      throw error;
+  }
 });
 
 function gracefulShutdown(signal: string): void {
-	logger.info(`Received ${signal}, shutting down gracefully.`);
+  logger.info(`Received ${signal}, shutting down gracefully.`);
 
-	server.close(async () => {
-		logger.info('HTTP server closed.');
+  server.close(async () => {
+    logger.info("HTTP server closed.");
 
-		// Stop cron jobs
-		if (cron) {
-			cron.stop();
-		}
+    // Stop cron jobs
+    if (cron) {
+      cron.stop();
+    }
 
-		try {
-			await db.destroy();
-			logger.info('Database connection closed.');
-		} catch (error) {
-			logger.error({ err: error }, 'Error closing database connection');
-		}
+    try {
+      await db.destroy();
+      logger.info("Database connection closed.");
+    } catch (error) {
+      logger.error({ err: error }, "Error closing database connection");
+    }
 
-		logger.info('All connections closed successfully.');
-		process.exit(0);
-	});
+    logger.info("All connections closed successfully.");
+    process.exit(0);
+  });
 
-	setTimeout(() => {
-		logger.error('Could not close connections in time, forcefully shutting down');
-		process.exit(1);
-	}, 10000);
+  setTimeout(() => {
+    logger.error("Could not close connections in time, forcefully shutting down");
+    process.exit(1);
+  }, 10000);
 }
 
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGQUIT', () => gracefulShutdown('SIGQUIT'));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGQUIT", () => gracefulShutdown("SIGQUIT"));
 
-process.on('uncaughtException', async (error: Error, origin: string) => {
-	logger.error({ err: error, origin }, 'Uncaught Exception');
+process.on("uncaughtException", async (error: Error, origin: string) => {
+  logger.error({ err: error, origin }, "Uncaught Exception");
 });
 
-process.on('warning', (warning: Error) => {
-	logger.warn({ name: warning.name, message: warning.message }, 'Process warning');
+process.on("warning", (warning: Error) => {
+  logger.warn({ name: warning.name, message: warning.message }, "Process warning");
 });
 
-process.on('unhandledRejection', async (reason: unknown, _promise: Promise<unknown>) => {
-	logger.error({ reason }, 'Unhandled Rejection');
+process.on("unhandledRejection", async (reason: unknown, _promise: Promise<unknown>) => {
+  logger.error({ reason }, "Unhandled Rejection");
 });

@@ -1,9 +1,9 @@
-import { SmsConfig } from '../types';
+import { SmsConfig } from "../types";
 
 export interface SmsNotificationJobData {
-	config: SmsConfig;
-	message: string;
-	details: Record<string, any> | null;
+  config: SmsConfig;
+  message: string;
+  details: Record<string, any> | null;
 }
 
-export { sendSms } from './channel/sms';
+export { sendSms } from "./channel/sms";

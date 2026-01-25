@@ -1,6 +1,6 @@
-import knex from 'knex';
-import knexConfig from './knexfile';
-import { attachPaginate } from 'knex-paginate';
+import knex from "knex";
+import knexConfig from "./knexfile";
+import { attachPaginate } from "knex-paginate";
 
 attachPaginate();
 

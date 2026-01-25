@@ -1,17 +1,17 @@
-import nodemailer from 'nodemailer';
-import { secret } from '../../utils';
-import { logger } from '../../logger';
-import { EmailConfig } from '../../types';
+import nodemailer from "nodemailer";
+import { secret } from "../../utils";
+import { logger } from "../../logger";
+import { EmailConfig } from "../../types";
 
 export interface EmailNotificationData {
-	config: EmailConfig;
-	username: string;
-	message: string;
-	details: Record<string, any> | null;
+  config: EmailConfig;
+  username: string;
+  message: string;
+  details: Record<string, any> | null;
 }
 
 function template(username: string, message: string, details: Record<string, any> | null) {
-	return `
+  return `
 <!doctype html>
 <html>
   <body>
@@ -41,16 +41,16 @@ function template(username: string, message: string, details: Record<string, any
                   ${message}
                 </div>
                 ${
-									details && Object.keys(details).length > 0
-										? `
+                  details && Object.keys(details).length > 0
+                    ? `
                 <div style="padding:16px 24px 16px 24px">
                   <div style="background-color:#fbfafa;border:1px dashed black;border-radius:5px;font-weight:normal;padding:16px 24px 16px 24px">
                     ${JSON.stringify(details, null, 2)}
                   </div>
                 </div>
                 `
-										: ''
-								}
+                    : ""
+                }
               </div>
               <div style="background-color:#fbfafa;padding:16px 24px 16px 24px">
                 <div style="font-weight:normal;text-align:center;padding:16px 24px 16px 24px">
@@ -67,39 +67,39 @@ function template(username: string, message: string, details: Record<string, any
 }
 
 export async function sendEmail(data: EmailNotificationData): Promise<void> {
-	const config = {
-		host: secret().decrypt(data.config.host),
-		port: secret().decrypt(data.config.port),
-		alias: secret().decrypt(data.config.alias),
-		auth: {
-			user: secret().decrypt(data.config.auth_email),
-			pass: secret().decrypt(data.config.auth_pass),
-		},
-	};
+  const config = {
+    host: secret().decrypt(data.config.host),
+    port: secret().decrypt(data.config.port),
+    alias: secret().decrypt(data.config.alias),
+    auth: {
+      user: secret().decrypt(data.config.auth_email),
+      pass: secret().decrypt(data.config.auth_pass),
+    },
+  };
 
-	const transporter = nodemailer.createTransport(config as any);
+  const transporter = nodemailer.createTransport(config as any);
 
-	try {
-		await new Promise((resolve, reject) => {
-			transporter.sendMail(
-				{
-					from: config.alias,
-					to: config.auth.user,
-					subject: data.message,
-					html: template(data.username, data.message, data.details),
-				},
-				(err, info) => {
-					if (err) {
-						logger.error({ err }, '[sendEmail] Error sending email');
-						reject(err);
-					} else {
-						logger.info({ to: config.auth.user }, '[sendEmail] Email sent successfully');
-						resolve(info);
-					}
-				},
-			);
-		});
-	} catch (error) {
-		logger.error({ err: error }, '[sendEmail] error while sending email');
-	}
+  try {
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(
+        {
+          from: config.alias,
+          to: config.auth.user,
+          subject: data.message,
+          html: template(data.username, data.message, data.details),
+        },
+        (err, info) => {
+          if (err) {
+            logger.error({ err }, "[sendEmail] Error sending email");
+            reject(err);
+          } else {
+            logger.info({ to: config.auth.user }, "[sendEmail] Email sent successfully");
+            resolve(info);
+          }
+        },
+      );
+    });
+  } catch (error) {
+    logger.error({ err: error }, "[sendEmail] error while sending email");
+  }
 }

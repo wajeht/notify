@@ -10,6 +10,7 @@ import { validationResult } from "express-validator";
 import { NextFunction, Request, Response } from "express";
 import type { Knex } from "knex";
 import type { LoggerType } from "../utils/logger";
+import { asset } from "../utils/assets";
 
 export interface MiddlewareType {
   helmetMiddleware: ReturnType<typeof helmet>;
@@ -208,7 +209,8 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
   async function appLocalStateMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
       const isProd = appConfig.env === "production";
-      const randomNumber = Math.random();
+      const randomVersion = () => String(Math.random()).slice(2, 10);
+      const assetVersions = isProd ? asset.getAssetVersions() : null;
 
       res.locals.state = {
         user: req.session?.user
@@ -218,9 +220,9 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
         input: req.session?.input || {},
         errors: req.session?.errors || {},
         version: {
-          style: isProd ? "0.2" : randomNumber,
-          script: isProd ? "0.1" : randomNumber,
-          plausible: isProd ? "0.1" : randomNumber,
+          style: assetVersions?.style ?? randomVersion(),
+          script: assetVersions?.script ?? randomVersion(),
+          plausible: assetVersions?.script ?? randomVersion(),
         },
         flash: {
           success: req.flash("success"),

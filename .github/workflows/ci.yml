@@ -7,7 +7,7 @@ on:
 
 env:
   APP_PORT: 8080
-  APP_ENV: testing
+  APP_ENV: development
   APP_URL: localhost
   APP_ADMIN_EMAIL: test@example.com
   APP_API_KEY_SECRET: ${{ secrets.APP_API_KEY_SECRET || 'test-secret' }}

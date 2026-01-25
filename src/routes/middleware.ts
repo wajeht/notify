@@ -62,7 +62,7 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
         knex,
         tableName: "sessions",
         createTable: false,
-        cleanupInterval: 3600000,
+        cleanupInterval: 600000, // 10 minutes
       }),
       proxy: appConfig.env === "production",
       cookie: {
@@ -204,11 +204,10 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
       const isProd = appConfig.env === "production";
       const randomVersion = () => String(Math.random()).slice(2, 10);
       const assetVersions = isProd ? asset.getAssetVersions() : null;
+      const user = req.session?.user || null;
 
       res.locals.state = {
-        user: req.session?.user
-          ? await knex.select("*").from("users").where("id", req.session.user.id).first()
-          : null,
+        user,
         copyRightYear: new Date().getFullYear(),
         input: req.session?.input || {},
         errors: req.session?.errors || {},
@@ -222,41 +221,34 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
           info: req.flash("info"),
           warning: req.flash("warning"),
         },
+        unread_apps_notification_count: 0,
+        unread_app_notification_count: 0,
+        active_channel_count: 0,
       };
 
-      if (req.session?.user) {
-        const { unread_apps_notification_count } = (await knex("notifications")
-          .count("* as unread_apps_notification_count")
-          .leftJoin("apps", "notifications.app_id", "apps.id")
-          .where("apps.user_id", req.session?.user.id)
-          .whereNull("notifications.read_at")
-          .first()) as any;
+      if (user) {
+        const appIdMatch = req.path.match(/^\/apps\/(\d+)/);
+        const appId = appIdMatch?.[1] ? parseInt(appIdMatch[1]) : null;
 
-        res.locals.state["unread_apps_notification_count"] = unread_apps_notification_count;
+        const counts = (await knex.raw(
+          `
+          SELECT
+            (SELECT COUNT(*) FROM notifications n
+             JOIN apps a ON n.app_id = a.id
+             WHERE a.user_id = ? AND n.read_at IS NULL) as unread_apps_notification_count,
+            (SELECT COUNT(*) FROM notifications n
+             JOIN apps a ON n.app_id = a.id
+             WHERE a.user_id = ? AND a.id = ? AND n.read_at IS NULL) as unread_app_notification_count,
+            (SELECT COUNT(*) FROM app_channels
+             WHERE app_id = ? AND is_active = 1) as active_channel_count
+        `,
+          [user.id, user.id, appId, appId],
+        )) as any;
 
-        const appIdMatch = req.path.match(/^\/apps\/(\d+)/) as any;
-        if (appIdMatch && req.method === "GET") {
-          const appId = parseInt(appIdMatch[1]);
-
-          const { unread_app_notification_count } = (await knex("notifications")
-            .count("* as unread_app_notification_count")
-            .leftJoin("apps", "notifications.app_id", "apps.id")
-            .where("apps.user_id", req.session?.user?.id)
-            .andWhere({ "apps.id": appId })
-            .whereNull("notifications.read_at")
-            .first()) as any;
-
-          const { active_channel_count } = (await knex("app_channels")
-            .where({
-              app_id: appId,
-              is_active: true,
-            })
-            .count("* as active_channel_count")
-            .first()) as any;
-
-          res.locals.state["unread_app_notification_count"] = unread_app_notification_count;
-          res.locals.state["active_channel_count"] = active_channel_count;
-        }
+        const row = Array.isArray(counts) ? counts[0] : counts;
+        res.locals.state.unread_apps_notification_count = row?.unread_apps_notification_count || 0;
+        res.locals.state.unread_app_notification_count = row?.unread_app_notification_count || 0;
+        res.locals.state.active_channel_count = row?.active_channel_count || 0;
       }
 
       if (req.session) {

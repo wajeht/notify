@@ -24,28 +24,57 @@ export function createAdminRouter(context: AppContext) {
     middleware.adminOnlyMiddleware,
     middleware.csrfMiddleware,
     async (_req: Request, res: Response) => {
-      const usersRaw = await knex.select("*").from("users");
+      const rows = await knex
+        .select(
+          "users.id",
+          "users.username",
+          "users.email",
+          "users.timezone",
+          "users.is_admin",
+          "users.max_apps_allowed",
+          "users.created_at",
+          "users.updated_at",
+          "apps.id as app_id",
+          "apps.name as app_name",
+          "apps.url as app_url",
+          "apps.description as app_description",
+          "apps.created_at as app_created_at",
+          "apps.updated_at as app_updated_at",
+        )
+        .from("users")
+        .leftJoin("apps", "apps.user_id", "users.id")
+        .orderBy("users.id");
 
-      const users = await Promise.all(
-        usersRaw.map(async (user) => {
-          const apps = await knex.select("*").from("apps").where("user_id", user.id);
-
-          return {
-            ...user,
-            created_at: formatDate(user.created_at, user.timezone),
-            updated_at: formatDate(user.updated_at, user.timezone),
-            apps: apps.map((app) => ({
-              ...app,
-              created_at: formatDate(app.created_at, user.timezone),
-              updated_at: formatDate(app.updated_at, user.timezone),
-            })),
-          };
-        }),
-      );
+      const usersMap = new Map<number, any>();
+      for (const row of rows) {
+        if (!usersMap.has(row.id)) {
+          usersMap.set(row.id, {
+            id: row.id,
+            username: row.username,
+            email: row.email,
+            timezone: row.timezone,
+            is_admin: row.is_admin,
+            max_apps_allowed: row.max_apps_allowed,
+            created_at: formatDate(row.created_at, row.timezone),
+            updated_at: formatDate(row.updated_at, row.timezone),
+            apps: [],
+          });
+        }
+        if (row.app_id) {
+          usersMap.get(row.id).apps.push({
+            id: row.app_id,
+            name: row.app_name,
+            url: row.app_url,
+            description: row.app_description,
+            created_at: formatDate(row.app_created_at, row.timezone),
+            updated_at: formatDate(row.app_updated_at, row.timezone),
+          });
+        }
+      }
 
       return res.render("admin/users.html", {
         title: "Admin Users",
-        users,
+        users: Array.from(usersMap.values()),
         path: "/admin/users",
         layout: "_layouts/admin.html",
       });

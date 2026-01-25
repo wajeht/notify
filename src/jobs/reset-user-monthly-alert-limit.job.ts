@@ -51,14 +51,17 @@ export const resetUserMonthlyAlertLimitJob = setupJob<any>(
 
 					logger.info(`[resetUserMonthlyAlertLimitJob] Reset alert count for app ${app.id}`);
 				} catch (error) {
-					logger.error(`[resetUserMonthlyAlertLimitJob] Failed to reset app ${app.id}:`, error);
+					logger.error(
+						{ err: error, appId: app.id },
+						'[resetUserMonthlyAlertLimitJob] Failed to reset app',
+					);
 				}
 			});
 
 			await Promise.all(resetPromises);
 			logger.info('[resetUserMonthlyAlertLimitJob] Job completed successfully');
 		} catch (error) {
-			logger.error('[resetUserMonthlyAlertLimitJob] Job failed:', error);
+			logger.error({ err: error }, '[resetUserMonthlyAlertLimitJob] Job failed');
 		}
 	},
 );

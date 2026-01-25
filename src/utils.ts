@@ -116,7 +116,7 @@ export async function runMigrations(force: boolean = false) {
 
 		logger.info(`batch ${batchNo} run: ${migrations.length} migrations`);
 	} catch (error) {
-		logger.error('error running migrations', error);
+		logger.error({ err: error }, 'error running migrations');
 		throw error;
 	}
 }
@@ -143,7 +143,7 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
 
 		return decoded;
 	} catch (error: any) {
-		logger.error('failed to fetch github oauth tokens', error);
+		logger.error({ err: error }, 'failed to fetch github oauth tokens');
 		throw error;
 	}
 }
@@ -158,7 +158,7 @@ export async function getGithubUserEmails(access_token: string): Promise<GithubU
 
 		return data;
 	} catch (error: any) {
-		logger.error('failed to fetch github user emails', error);
+		logger.error({ err: error }, 'failed to fetch github user emails');
 		throw error;
 	}
 }
@@ -181,7 +181,7 @@ export async function verifyApiKey(apiKey: string): Promise<ApiKeyPayload | null
 
 		return decodedApiKeyPayload;
 	} catch (error) {
-		logger.error('failed to verify api key ', error);
+		logger.error({ err: error }, 'failed to verify api key');
 		return null;
 	}
 }
@@ -208,10 +208,10 @@ export async function sendEmail({
 		await new Promise((resolve, reject) => {
 			transporter.sendMail({ from: emailConfig.alias, to, subject, html }, (err, info) => {
 				if (err) {
-					logger.error('Error sending email:', err);
+					logger.error({ err }, 'Error sending email');
 					reject(err);
 				} else {
-					logger.info(`Email sent successfully to: ${to}`);
+					logger.info({ to }, 'Email sent successfully');
 					resolve(info);
 				}
 			});
@@ -281,6 +281,6 @@ export const modifyUserSessionById = async (
 		}
 	}
 
-	logger.error('No session found for user ID:', userId);
+	logger.error({ userId }, 'No session found for user ID');
 	return null;
 };

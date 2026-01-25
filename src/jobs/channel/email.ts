@@ -83,18 +83,18 @@ export async function sendEmail(data: EmailNotificationJobData): Promise<void> {
 				},
 				(err, info) => {
 					if (err) {
-						logger.error('[sendEmail] Error sending email:', err);
+						logger.error({ err }, '[sendEmail] Error sending email');
 						reject(err);
 					} else {
-						logger.info('[sendEmail] Email sent successfully to:', config.auth.user);
+						logger.info({ to: config.auth.user }, '[sendEmail] Email sent successfully');
 						resolve(info);
 					}
 				},
 			);
 		});
 
-		logger.info('[sendEmail] email sent to:', data.config.auth_email);
+		logger.info({ to: data.config.auth_email }, '[sendEmail] email sent');
 	} catch (error) {
-		logger.error('[sendEmail] error while sending email:', error);
+		logger.error({ err: error }, '[sendEmail] error while sending email');
 	}
 }

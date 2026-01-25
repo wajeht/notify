@@ -102,7 +102,7 @@ export async function sendNotification(data: NotificationJobData) {
 
 		logger.info(`[sendNotification] notification jobs dispatched for app ${appId}`);
 	} catch (error) {
-		logger.error('[sendNotification] error in sendNotification:', error);
+		logger.error({ err: error }, '[sendNotification] error in sendNotification');
 		// throw error
 	}
 }
@@ -127,12 +127,9 @@ async function dispatchNotificationJob(
 				logger.info(`[sendNotification] Unsupported channel type: ${channelType}`);
 		}
 	} catch (error) {
-		logger.error('[sendNotification] Failed to dispatch notification job:', {
-			channelType,
-			config,
-			message,
-			details,
-			error,
-		});
+		logger.error(
+			{ channelType, config, message, details, err: error },
+			'[sendNotification] Failed to dispatch notification job',
+		);
 	}
 }

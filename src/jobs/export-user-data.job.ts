@@ -167,7 +167,7 @@ export const exportUserDataJob = setupJob<ExportUserDataJobData>(
 
 			logger.info(`[exportUserDataJob] Sent email notification to user: ${user.email}`);
 		} catch (error) {
-			logger.error('[exportUserDataJob] Failed to process exportUserDataJob job:', error);
+			logger.error({ err: error }, '[exportUserDataJob] Failed to process exportUserDataJob job');
 		}
 	},
 );

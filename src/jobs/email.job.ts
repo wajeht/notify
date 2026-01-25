@@ -18,7 +18,7 @@ export const sendEmailNotificationJob = setupJob<EmailNotificationJobData>(
 			await sendEmail(job.data);
 			logger.info('[sendEmailNotificationJob] Email sent successfully');
 		} catch (error) {
-			logger.error('[sendEmailNotificationJob] Failed to send email:', error);
+			logger.error({ err: error }, '[sendEmailNotificationJob] Failed to send email');
 		}
 	},
 );

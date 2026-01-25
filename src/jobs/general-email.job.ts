@@ -21,7 +21,7 @@ export const sendGeneralEmailJob = setupJob<GeneralEmailJobData>(
 			});
 			logger.info('[sendGeneralEmailJob] General email sent successfully');
 		} catch (error) {
-			logger.error('[sendGeneralEmailJob] Failed to send general email:', error);
+			logger.error({ err: error }, '[sendGeneralEmailJob] Failed to send general email');
 		}
 	},
 );

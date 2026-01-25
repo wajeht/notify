@@ -34,6 +34,6 @@ export async function sendDiscord(data: DiscordNotificationJobData): Promise<voi
 			logger.info(`[sendDiscord] discord bot has sent: ${data.message}`);
 		}
 	} catch (error) {
-		logger.error('[sendDiscord] error sending discord notification:', error);
+		logger.error({ err: error }, '[sendDiscord] error sending discord notification');
 	}
 }

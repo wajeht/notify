@@ -4,6 +4,7 @@ import { setupJob } from '../utils';
 import { backBlaze, s3Client } from '../config';
 import { DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DeleteExpiredExportJobData {}
 
 export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
@@ -63,7 +64,10 @@ export const deleteExpiredExportJob = setupJob<DeleteExpiredExportJobData>(
 
 			logger.info('[deleteExpiredExportJob] Completed deleteExpiredExportJob');
 		} catch (error) {
-			logger.error('[deleteExpiredExportJob] Failed to process deleteExpiredExportJob:', error);
+			logger.error(
+				{ err: error },
+				'[deleteExpiredExportJob] Failed to process deleteExpiredExportJob',
+			);
 		}
 	},
 );

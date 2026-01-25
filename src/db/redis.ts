@@ -25,7 +25,7 @@ redis.on('ready', () => {
 });
 
 redis.on('error', (error) => {
-	logger.error('Error initializing Redis:', error);
+	logger.error({ err: error }, 'Error initializing Redis');
 	process.exit(1);
 });
 

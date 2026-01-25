@@ -24,7 +24,6 @@ import {
   sendGeneralEmail,
   formatDate,
   formatDatetime,
-  startOfNextMonth,
 } from "./utils";
 
 const router = express.Router();
@@ -206,9 +205,6 @@ router.post(
         name: req.body.name,
         url: req.body.url,
         description: req.body.description,
-        user_monthly_limit_threshold: parseInt(req.body.user_monthly_limit_threshold),
-        max_monthly_alerts_allowed: parseInt(req.body.max_monthly_alerts_allowed),
-        alerts_sent_this_month: parseInt(req.body.alerts_sent_this_month),
       })
       .where({ id: parseInt(req.body.appId) });
 
@@ -611,8 +607,6 @@ router.post(
     const { name, is_active, description, url } = req.body;
     const user = req.session?.user;
 
-    const alertsResetDate = startOfNextMonth(new Date(), user?.timezone || "UTC");
-
     const [app] = await db("apps")
       .insert({
         user_id: user?.id,
@@ -620,8 +614,6 @@ router.post(
         url,
         description,
         is_active: is_active === "on",
-        alerts_sent_this_month: 0,
-        alerts_reset_date: alertsResetDate,
       })
       .returning("*");
 
@@ -708,7 +700,7 @@ router.post(
   authenticationMiddleware,
   csrfMiddleware,
   async (req: Request, res: Response) => {
-    const { name, url, description, user_monthly_limit_threshold } = req.body;
+    const { name, url, description } = req.body;
 
     const id = parseInt(req.params.id as string);
 
@@ -719,7 +711,6 @@ router.post(
       .update({
         is_active,
         name,
-        user_monthly_limit_threshold: parseInt(user_monthly_limit_threshold) || null,
         url,
         description,
         updated_at: db.fn.now(),

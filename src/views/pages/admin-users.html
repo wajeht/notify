@@ -150,7 +150,6 @@
                           <tr style="border-bottom: 1px dashed #ddd;">
                             <th style="text-align: left; padding: 8px;">🏷️ ID</th>
                             <th style="text-align: left; padding: 8px;">📱 App</th>
-                            <th style="text-align: left; padding: 8px;">🔔 Alert Info</th>
                             <th style="text-align: left; padding: 8px;">🗓️ Created At</th>
                             <th style="text-align: left; padding: 8px;">🚦 Status</th>
                             <th style="text-align: left; padding: 8px;">️️⚡️ Actions</th>
@@ -170,18 +169,6 @@
                                 <% if (app.description) { %>
                                   <span>📝 <%= app.description %></span>
                                 <% } %>
-                              </td>
-
-                              <td style="padding: 8px;">
-                                <div style="display: flex; flex-direction: column; gap: 5px;">
-                                  <span><strong>Allowed:</strong> <%= app.max_monthly_alerts_allowed %></span>
-                                  <div style="display: flex; gap: 5px;">
-                                    <span><strong>Threshold:</strong> <%= app.user_monthly_limit_threshold || 'N/A' %></span>
-                                    <span>/</span>
-                                    <span><strong>Sent:</strong> <%= app.alerts_sent_this_month %></span>
-                                  </div>
-                                  <span><strong>Reset Date:</strong> <%= app.alerts_reset_date %></span>
-                                </div>
                               </td>
 
                               <td style="padding: 8px;"><%= app.created_at %></td>
@@ -217,22 +204,6 @@
                                     <div style="display: flex; flex-direction: column; gap: 5px;">
                                       <label for="description-<%= user.id %>-<%= app.id %>">📝 Description</label>
                                       <textarea name="description" id="description-<%= user.id %>-<%= app.id %>"><%= app.description %></textarea>
-                                    </div>
-
-                                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                                      <label for="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>">🔢 Alert Threshold</label>
-                                      <input type="number" id="user-monthly-limit-threshold-<%= user.id %>-<%= app.id %>" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>">
-                                      <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
-                                    </div>
-
-                                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                                      <label for="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>">🔔 Max Monthly Alerts Allowed</label>
-                                      <input type="number" id="max-monthly-alerts-allowed-<%= user.id %>-<%= app.id %>" name="max_monthly_alerts_allowed" value="<%= app.max_monthly_alerts_allowed %>" required>
-                                    </div>
-
-                                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                                      <label for="alerts-sent-this-month-<%= user.id %>-<%= app.id %>">📣 Alerts Sent This Month</label>
-                                      <input type="number" id="alerts-sent-this-month-<%= user.id %>-<%= app.id %>" name="alerts_sent_this_month" value="<%= app.alerts_sent_this_month %>" required>
                                     </div>
 
                                     <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">

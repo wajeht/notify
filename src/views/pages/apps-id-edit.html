@@ -31,12 +31,6 @@
       <textarea name="description" id="description"><%= app.description %></textarea>
     </div>
 
-    <div style="display: flex; flex-direction: column; gap: 5px;">
-      <label for="user_monthly_limit_threshold">🔢 Alert Threshold</label>
-      <input type="number" id="user_monthly_limit_threshold" name="user_monthly_limit_threshold" value="<%= app.user_monthly_limit_threshold %>" min="1" max="<%= app.max_monthly_alerts_allowed %>" <%= state.user.is_admin === true ? 'disabled' : null %>>
-      <small style="color: #666;">Set a threshold to receive notifications when your alert count reaches this number. Leave blank for no threshold.</small>
-    </div>
-
     <button type="submit">🔄 Update</button>
   </form>
 

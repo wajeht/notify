@@ -26,18 +26,6 @@ export function formatDate(date: Date | string | null, userTimezone: string = "U
   }).format(d);
 }
 
-export function formatDateLong(date: Date | string | null, userTimezone: string = "UTC"): string {
-  if (!date) return "";
-  const d = date instanceof Date ? date : new Date(date);
-  if (isNaN(d.getTime())) return "";
-  return new Intl.DateTimeFormat("en-US", {
-    timeZone: userTimezone,
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(d);
-}
-
 export function formatDatetime(date: Date | string | null, userTimezone: string = "UTC"): string {
   if (!date) return "";
   const d = date instanceof Date ? date : new Date(date);
@@ -54,25 +42,6 @@ export function formatDatetime(date: Date | string | null, userTimezone: string 
   })
     .format(d)
     .replace(",", "");
-}
-
-export function startOfNextMonth(date: Date = new Date(), userTimezone: string = "UTC"): Date {
-  // Convert to timezone, get next month's first day
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: userTimezone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const parts = formatter.formatToParts(date);
-  const year = parseInt(parts.find((p) => p.type === "year")!.value);
-  const month = parseInt(parts.find((p) => p.type === "month")!.value);
-
-  // Next month (handle December -> January)
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const nextYear = month === 12 ? year + 1 : year;
-
-  return new Date(`${nextYear}-${String(nextMonth).padStart(2, "0")}-01T00:00:00`);
 }
 
 export function secret(secretSalt: string = appConfig.secretSalt) {

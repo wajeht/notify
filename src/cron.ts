@@ -2,7 +2,6 @@ import * as cron from "node-cron";
 import type { Knex } from "knex";
 import { DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { backBlaze, s3Client } from "./config";
-import { formatDateLong, startOfNextMonth, sendGeneralEmail } from "./utils";
 import { processPendingJobs, cleanupOldJobs } from "./queue";
 import { logger } from "./logger";
 
@@ -11,7 +10,6 @@ export interface CronType {
   stop: () => void;
   getStatus: () => { isRunning: boolean; jobCount: number };
   tasks: {
-    resetUserMonthlyAlertLimit: () => Promise<void>;
     deleteExpiredExport: () => Promise<void>;
     processJobQueue: () => Promise<void>;
     cleanupJobQueue: () => Promise<void>;
@@ -21,73 +19,6 @@ export interface CronType {
 export function createCron(db: Knex): CronType {
   const cronJobs: cron.ScheduledTask[] = [];
   let isRunning = false;
-
-  async function resetUserMonthlyAlertLimit(): Promise<void> {
-    logger.info("[cron:resetUserMonthlyAlertLimit] Starting");
-
-    try {
-      const appsToReset = await db
-        .select(
-          "apps.id",
-          "apps.name",
-          "apps.alerts_reset_date",
-          "users.timezone",
-          "users.email",
-          "users.username",
-        )
-        .from("apps")
-        .innerJoin("users", "users.id", "apps.user_id")
-        .where("apps.alerts_reset_date", "<=", new Date());
-
-      if (appsToReset.length === 0) {
-        logger.info("[cron:resetUserMonthlyAlertLimit] No apps to reset today");
-        return;
-      }
-
-      logger.info("[cron:resetUserMonthlyAlertLimit] Resetting apps", {
-        count: appsToReset.length,
-      });
-
-      for (const app of appsToReset) {
-        const now = new Date();
-        const nextResetDate = startOfNextMonth(now, app.timezone);
-
-        try {
-          await db.transaction(async (trx) => {
-            await trx("apps").where("id", app.id).update({
-              alerts_sent_this_month: 0,
-              alerts_reset_date: nextResetDate,
-            });
-          });
-
-          // Send email outside transaction (fire-and-forget)
-          sendGeneralEmail({
-            email: app.email,
-            subject: "Monthly Alert Limit Reset",
-            username: app.username,
-            message: `Your monthly alert limit for the app "${app.name}" has been reset on ${formatDateLong(now, app.timezone)}.
-                            Your alert count has been set back to 0, and you can now send new alerts for this month.
-                            The next reset will occur on ${formatDateLong(nextResetDate, app.timezone)}.`,
-          }).catch((err) =>
-            logger.error("[cron:resetUserMonthlyAlertLimit] Failed to send email", err),
-          );
-
-          logger.info("[cron:resetUserMonthlyAlertLimit] Reset alert count for app", {
-            appId: app.id,
-          });
-        } catch (error) {
-          logger.error("[cron:resetUserMonthlyAlertLimit] Failed to reset app", {
-            error,
-            appId: app.id,
-          });
-        }
-      }
-
-      logger.info("[cron:resetUserMonthlyAlertLimit] Completed");
-    } catch (error) {
-      logger.error("[cron:resetUserMonthlyAlertLimit] Job failed", error);
-    }
-  }
 
   async function processJobQueue(): Promise<void> {
     try {
@@ -169,14 +100,6 @@ export function createCron(db: Knex): CronType {
       return;
     }
 
-    // Daily at midnight: reset user monthly alert limits
-    cronJobs.push(
-      cron.schedule("0 0 * * *", async () => {
-        logger.info("[cron] Running resetUserMonthlyAlertLimit");
-        await resetUserMonthlyAlertLimit();
-      }),
-    );
-
     // Daily at midnight: delete expired exports
     cronJobs.push(
       cron.schedule("0 0 * * *", async () => {
@@ -222,7 +145,6 @@ export function createCron(db: Knex): CronType {
     stop,
     getStatus,
     tasks: {
-      resetUserMonthlyAlertLimit,
       deleteExpiredExport,
       processJobQueue,
       cleanupJobQueue,

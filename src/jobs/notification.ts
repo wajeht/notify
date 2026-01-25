@@ -1,7 +1,6 @@
 import crypto from "node:crypto";
 import { db } from "../db/db";
 import { logger } from "../logger";
-import { sendGeneralEmail } from "../utils";
 import { enqueue, type JobType } from "../queue";
 
 export interface NotificationJobData {
@@ -26,53 +25,13 @@ export async function sendNotification(data: NotificationJobData) {
     throw new Error(`User ${userId} not found`);
   }
 
-  // Always save the notification to the database
+  // Save the notification to the database
   await db("notifications").insert({
     id: crypto.randomUUID(),
     app_id: appId,
     message,
     details: details ? JSON.stringify(details) : null,
   });
-
-  // Check quotas for non-admin users
-  let quotaReached = false;
-
-  if (!user.is_admin) {
-    if (app.alerts_sent_this_month >= app.max_monthly_alerts_allowed) {
-      logger.info("[sendNotification] monthly quota reached", { appId });
-      quotaReached = true;
-
-      sendGeneralEmail({
-        email: user.email,
-        subject: `Monthly Quota Reached on ${app.name} 🔔 Notify`,
-        username: user.username,
-        message: `You have reached your monthly notification quota for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels. Please wait until next month to resume channel notifications.`,
-      }).catch((err) => logger.error("[sendNotification] failed to send quota email", err));
-    } else if (
-      app.user_monthly_limit_threshold &&
-      app.alerts_sent_this_month >= app.user_monthly_limit_threshold
-    ) {
-      logger.info("[sendNotification] custom limit reached", { appId });
-      quotaReached = true;
-
-      sendGeneralEmail({
-        email: user.email,
-        subject: `Custom Alert Limit Reached on ${app.name} 🔔 Notify`,
-        username: user.username,
-        message: `You have reached your custom notification limit for the app "${app.name}". Notifications will continue to be available in the app, but we will stop sending them to your channels until you update your limit.`,
-      }).catch((err) => logger.error("[sendNotification] failed to send limit email", err));
-    }
-  }
-
-  // Update alert count
-  await db("apps")
-    .update({ alerts_sent_this_month: app.alerts_sent_this_month + 1 })
-    .where({ id: appId, user_id: userId });
-
-  // If quota reached, don't send to channels but notification is saved
-  if (quotaReached) {
-    return;
-  }
 
   // Get active channels
   const appChannels = await db("app_channels")

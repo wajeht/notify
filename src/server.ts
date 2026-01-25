@@ -2,9 +2,10 @@ import { app } from "./app";
 import { Server } from "http";
 import { AddressInfo } from "net";
 import { appConfig } from "./config";
-import { db } from "./db/db";
-import { runMigrations } from "./utils";
+import { createDatabase } from "./db/db";
 import { logger } from "./logger";
+
+const database = createDatabase(logger);
 
 const server: Server = app.listen(appConfig.port);
 
@@ -15,10 +16,7 @@ server.on("listening", async () => {
   const bind = typeof addr === "string" ? `pipe ${addr}` : `port ${(addr as AddressInfo).port}`;
 
   logger.info(`Server is listening on ${bind}`);
-
-  if (appConfig.env === "production") {
-    await runMigrations();
-  }
+  await database.init();
 });
 
 server.on("error", (error: NodeJS.ErrnoException) => {
@@ -47,8 +45,7 @@ function gracefulShutdown(signal: string): void {
     logger.info("HTTP server closed.");
 
     try {
-      await db.destroy();
-      logger.info("Database connection closed.");
+      await database.stop();
     } catch (err) {
       logger.error("Error closing database connection", err);
     }

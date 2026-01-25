@@ -1,16 +1,17 @@
 import path from "node:path";
 import type { Knex } from "knex";
+import { CustomMigrationSource } from "./migration-source";
+
+const isTesting = process.env.NODE_ENV === "testing" || process.env.APP_ENV === "testing";
+const migrationsPath = path.resolve(__dirname, "migrations");
 
 const knexConfig: Knex.Config = {
   client: "better-sqlite3",
-  connection: {
-    filename: path.resolve(__dirname, "sqlite", "db.sqlite"),
-  },
   useNullAsDefault: true,
+  connection: path.resolve(__dirname, "sqlite", "db.sqlite"),
   migrations: {
-    extension: "ts",
     tableName: "knex_migrations",
-    directory: path.resolve(__dirname, "./migrations"),
+    migrationSource: new CustomMigrationSource(migrationsPath),
   },
   seeds: { directory: path.resolve(__dirname, "./seeds") },
   pool: {
@@ -34,11 +35,15 @@ const knexConfig: Knex.Config = {
   },
 };
 
-const isTesting = process.env.NODE_ENV === "testing" || process.env.APP_ENV === "testing";
-
 if (isTesting) {
   knexConfig.connection = {
     filename: ":memory:",
+  };
+  knexConfig.log = {
+    warn: () => {},
+    error: () => {},
+    debug: () => {},
+    deprecate: () => {},
   };
 }
 

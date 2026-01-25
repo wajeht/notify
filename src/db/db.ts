@@ -1,7 +1,52 @@
-import knex from "knex";
-import knexConfig from "./knexfile";
 import { attachPaginate } from "knex-paginate";
+import knex, { Knex } from "knex";
+import knexConfig from "./knexfile";
+import type { LoggerType } from "../logger";
 
-attachPaginate();
+let _db: Knex | null = null;
 
-export const db = knex(knexConfig);
+function createKnexInstance(): Knex {
+  if (_db) {
+    return _db;
+  }
+  attachPaginate();
+  _db = knex(knexConfig);
+  return _db;
+}
+
+export interface DatabaseType {
+  instance: Knex;
+  init: () => Promise<void>;
+  stop: () => Promise<void>;
+}
+
+export function createDatabase(logger: LoggerType): DatabaseType {
+  const knexInstance = createKnexInstance();
+
+  async function init(): Promise<void> {
+    try {
+      await knexInstance.migrate.latest();
+      logger.info("Database connection established and migrations applied!");
+    } catch (error) {
+      logger.error("Database initialization failed!");
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async function stop(): Promise<void> {
+    if (_db) {
+      await _db.destroy();
+      _db = null;
+      logger.info("Database connection closed!");
+    }
+  }
+
+  return {
+    instance: knexInstance,
+    init,
+    stop,
+  };
+}
+
+export const db = createKnexInstance();

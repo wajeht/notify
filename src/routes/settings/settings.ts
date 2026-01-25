@@ -8,7 +8,6 @@ import { User } from "../../types";
 
 const router = express.Router();
 
-// GET /settings
 router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, res: Response) => {
   return res.render("settings/account.html", {
     title: "Settings",
@@ -18,7 +17,6 @@ router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, r
   });
 });
 
-// GET /settings/account
 router.get(
   "/account",
   authenticationMiddleware,
@@ -33,7 +31,6 @@ router.get(
   },
 );
 
-// POST /settings/account
 router.post(
   "/account",
   authenticationMiddleware,
@@ -86,7 +83,6 @@ router.post(
   },
 );
 
-// GET /settings/data
 router.get(
   "/data",
   authenticationMiddleware,
@@ -101,7 +97,6 @@ router.get(
   },
 );
 
-// POST /settings/data
 router.post(
   "/data",
   authenticationMiddleware,
@@ -185,7 +180,6 @@ router.post(
   },
 );
 
-// POST /settings/data/import
 router.post(
   "/data/import",
   authenticationMiddleware,
@@ -275,7 +269,6 @@ router.post(
   },
 );
 
-// GET /settings/danger-zone
 router.get(
   "/danger-zone",
   authenticationMiddleware,
@@ -290,7 +283,6 @@ router.get(
   },
 );
 
-// POST /settings/danger-zone/delete
 router.post(
   "/danger-zone/delete",
   authenticationMiddleware,

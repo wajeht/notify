@@ -187,15 +187,22 @@ export async function sendDiscord(data: DiscordNotificationData): Promise<void> 
 export async function sendNotification(data: NotificationJobData) {
   const { appId, userId, message, details } = data;
 
-  const app = await db("apps").where({ id: appId, is_active: true, user_id: userId }).first();
+  const appQuery = db("apps").where({ id: appId, is_active: true, user_id: userId }).first();
+  const channelsQuery = db("app_channels")
+    .join("channel_types", "app_channels.channel_type_id", "channel_types.id")
+    .where({ "app_channels.app_id": appId, "app_channels.is_active": true })
+    .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
+
+  const [app, appChannels] = await Promise.all([appQuery, channelsQuery]);
 
   if (!app) {
     throw new Error(`App ${appId} not found or inactive`);
   }
 
-  const user = await db.select("*").from("users").where({ id: userId }).first();
+  const needsEmail = appChannels.some((channel) => channel.channel_type === "email");
+  const user = needsEmail ? await db.select("*").from("users").where({ id: userId }).first() : null;
 
-  if (!user) {
+  if (needsEmail && !user) {
     throw new Error(`User ${userId} not found`);
   }
 
@@ -207,46 +214,54 @@ export async function sendNotification(data: NotificationJobData) {
     details: details ? JSON.stringify(details) : null,
   });
 
-  // Get active channels
-  const appChannels = await db("app_channels")
-    .join("channel_types", "app_channels.channel_type_id", "channel_types.id")
-    .where({ "app_channels.app_id": appId, "app_channels.is_active": true })
-    .select("channel_types.name as channel_type", "app_channels.id as app_channel_id");
-
   if (!appChannels.length) {
     logger.info("[sendNotification] no active channels", { appId });
     return;
   }
 
-  // Send to each channel (fire-and-forget)
-  for (const channel of appChannels) {
-    let configs;
+  const discordChannelIds: number[] = [];
+  const smsChannelIds: number[] = [];
+  const emailChannelIds: number[] = [];
 
+  for (const channel of appChannels) {
     switch (channel.channel_type) {
       case "discord":
-        configs = await db("discord_configs").where({ app_channel_id: channel.app_channel_id });
-        for (const config of configs) {
-          sendDiscord({ config, message, details }).catch((err) =>
-            logger.error("[sendNotification] discord failed", err),
-          );
-        }
+        discordChannelIds.push(channel.app_channel_id);
         break;
       case "sms":
-        configs = await db("sms_configs").where({ app_channel_id: channel.app_channel_id });
-        for (const config of configs) {
-          sendSms({ config, message, details }).catch((err) =>
-            logger.error("[sendNotification] sms failed", err),
-          );
-        }
+        smsChannelIds.push(channel.app_channel_id);
         break;
       case "email":
-        configs = await db("email_configs").where({ app_channel_id: channel.app_channel_id });
-        for (const config of configs) {
-          sendEmail({ config, username: user.username, message, details }).catch((err) =>
-            logger.error("[sendNotification] email failed", err),
-          );
-        }
+        emailChannelIds.push(channel.app_channel_id);
         break;
+    }
+  }
+
+  const [discordConfigs, smsConfigs, emailConfigs] = await Promise.all([
+    discordChannelIds.length
+      ? db("discord_configs").whereIn("app_channel_id", discordChannelIds)
+      : [],
+    smsChannelIds.length ? db("sms_configs").whereIn("app_channel_id", smsChannelIds) : [],
+    emailChannelIds.length ? db("email_configs").whereIn("app_channel_id", emailChannelIds) : [],
+  ]);
+
+  for (const config of discordConfigs) {
+    void sendDiscord({ config, message, details }).catch((err) =>
+      logger.error("[sendNotification] discord failed", err),
+    );
+  }
+
+  for (const config of smsConfigs) {
+    void sendSms({ config, message, details }).catch((err) =>
+      logger.error("[sendNotification] sms failed", err),
+    );
+  }
+
+  if (emailConfigs.length && user) {
+    for (const config of emailConfigs) {
+      void sendEmail({ config, username: user.username, message, details }).catch((err) =>
+        logger.error("[sendNotification] email failed", err),
+      );
     }
   }
 

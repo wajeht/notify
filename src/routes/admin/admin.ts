@@ -5,7 +5,6 @@ import { formatDate } from "../../utils";
 
 const router = express.Router();
 
-// GET /admin
 router.get(
   "/",
   authenticationMiddleware,
@@ -16,7 +15,6 @@ router.get(
   },
 );
 
-// GET /admin/users
 router.get(
   "/users",
   authenticationMiddleware,
@@ -51,7 +49,6 @@ router.get(
   },
 );
 
-// POST /admin/users/:id
 router.post(
   "/users/:id",
   authenticationMiddleware,
@@ -73,7 +70,6 @@ router.post(
   },
 );
 
-// POST /admin/users/:uid/apps/:aid
 router.post(
   "/users/:uid/apps/:aid",
   authenticationMiddleware,

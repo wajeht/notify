@@ -4,13 +4,11 @@
     }
 
     function createToast(message) {
-        // Remove any existing toast
         const existingToast = document.getElementById('toast');
         if (existingToast) {
             existingToast.remove();
         }
 
-        // Create new toast element
         const toast = document.createElement('div');
         toast.id = 'toast';
         toast.style.cssText = `
@@ -34,20 +32,16 @@
         `;
         toast.textContent = decodeURIComponent(message);
 
-        // Add click event to dismiss toast
         toast.onclick = function () {
             dismissToast(toast);
         };
 
-        // Add toast to body
         document.body.appendChild(toast);
 
-        // Animate toast
         setTimeout(() => {
             toast.style.right = '20px';
         }, 100);
 
-        // Set timeout to hide toast
         setTimeout(() => {
             dismissToast(toast);
         }, 5000); // 5 sec
@@ -70,7 +64,6 @@
             history.replaceState({}, document.title, newUrl);
         }
 
-        // flash message from session
         const messages = parseFlashMessage("<%= JSON.stringify(state.flash) %>");
         for (const msg in messages) {
             if (messages[msg].length) {

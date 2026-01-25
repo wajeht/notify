@@ -141,4 +141,4 @@ src/scratch.js
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
-src/db/sqlite/
+!src/db/sqlite/sqlite.ts

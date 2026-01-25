@@ -5,7 +5,6 @@ import { logger } from "../../logger";
 
 const router = express.Router();
 
-// POST /
 router.post(
   "/",
   apiKeyAuthenticationMiddleware,
@@ -29,19 +28,20 @@ router.post(
       return;
     }
 
-    try {
-      await sendNotification({
-        appId: String(appId),
-        userId: Number(userId),
-        message: message.trim(),
-        details: details && typeof details === "object" ? details : {},
-      });
+    res.status(200).json({ message: "notification queued" });
 
-      res.status(200).json({ message: "notification queued" });
-    } catch (error) {
-      logger.error("[postNotificationHandler] failed", { error, appId });
-      res.status(500).json({ error: "failed to queue notification" });
-    }
+    const payload = {
+      appId: String(appId),
+      userId: Number(userId),
+      message: message.trim(),
+      details: details && typeof details === "object" ? details : {},
+    };
+
+    setImmediate(() => {
+      void sendNotification(payload).catch((error) => {
+        logger.error("[postNotificationHandler] failed", { error, appId });
+      });
+    });
   },
 );
 

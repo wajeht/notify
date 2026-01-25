@@ -6,7 +6,6 @@ import { formatDate } from "../../utils";
 
 const router = express.Router();
 
-// GET /notifications
 router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, res: Response) => {
   const filter = req.query.filter as string;
   const perPage = parseInt(req.query.perPage as string) || 10;
@@ -69,7 +68,6 @@ router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, r
   });
 });
 
-// POST /notifications/read
 router.post(
   "/read",
   authenticationMiddleware,

@@ -3,7 +3,6 @@ import { HttpError } from "../../error";
 
 const router = express.Router();
 
-// GET /
 router.get("/", (req: Request, res: Response) => {
   if (req.session?.user) {
     res.redirect("/apps");
@@ -16,12 +15,10 @@ router.get("/", (req: Request, res: Response) => {
   });
 });
 
-// GET /healthz
 router.get("/healthz", (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "text/html").status(200).send("<p>ok</p>");
 });
 
-// GET /terms-of-service
 router.get("/terms-of-service", (_req: Request, res: Response) => {
   res.render("general/terms-of-service.html", {
     path: "/terms-of-service",
@@ -29,7 +26,6 @@ router.get("/terms-of-service", (_req: Request, res: Response) => {
   });
 });
 
-// GET /logout
 router.get("/logout", (req: Request, res: Response) => {
   if (req.session && req.session?.user) {
     req.session.user = undefined;

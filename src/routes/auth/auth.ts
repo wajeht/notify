@@ -6,7 +6,6 @@ import { UnauthorizedError } from "../../error";
 
 const router = express.Router();
 
-// GET /login
 router.get("/login", (req: Request, res: Response) => {
   if (req.session?.user) {
     return res.redirect("/apps");
@@ -15,7 +14,6 @@ router.get("/login", (req: Request, res: Response) => {
   return res.redirect("/oauth/github");
 });
 
-// GET /oauth/github
 router.get("/oauth/github", async (req: Request, res: Response) => {
   if (req.session?.user) {
     return res.redirect("/apps");
@@ -32,7 +30,6 @@ router.get("/oauth/github", async (req: Request, res: Response) => {
   return res.redirect(`${rootUrl}?${qs.toString()}`);
 });
 
-// GET /oauth/github/redirect
 router.get("/oauth/github/redirect", async (req: Request, res: Response) => {
   const code = req.query.code as string;
 

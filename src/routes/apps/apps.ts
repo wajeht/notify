@@ -12,7 +12,6 @@ import { logger } from "../../logger";
 
 const router = express.Router();
 
-// GET /apps
 router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, res: Response) => {
   const filter = req.query.filter as string;
   const page = parseInt(req.query.page as string) || 1;
@@ -64,7 +63,6 @@ router.get("/", authenticationMiddleware, csrfMiddleware, async (req: Request, r
   });
 });
 
-// POST /apps
 router.post(
   "/",
   authenticationMiddleware,
@@ -88,7 +86,6 @@ router.post(
   },
 );
 
-// GET /apps/create
 router.get(
   "/create",
   authenticationMiddleware,
@@ -102,7 +99,6 @@ router.get(
   },
 );
 
-// GET /apps/:id
 router.get(
   "/:id",
   authenticationMiddleware,
@@ -139,7 +135,6 @@ router.get(
   },
 );
 
-// GET /apps/:id/edit
 router.get(
   "/:id/edit",
   authenticationMiddleware,
@@ -160,7 +155,6 @@ router.get(
   },
 );
 
-// POST /apps/:id
 router.post(
   "/:id",
   authenticationMiddleware,
@@ -184,7 +178,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/delete
 router.post(
   "/:id/delete",
   authenticationMiddleware,
@@ -196,7 +189,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/create-api-key
 router.post(
   "/:id/create-api-key",
   authenticationMiddleware,
@@ -230,7 +222,6 @@ router.post(
   },
 );
 
-// GET /apps/:id/channels
 router.get(
   "/:id/channels",
   authenticationMiddleware,
@@ -301,7 +292,6 @@ router.get(
   },
 );
 
-// GET /apps/:id/channels/create
 router.get(
   "/:id/channels/create",
   authenticationMiddleware,
@@ -326,7 +316,6 @@ router.get(
   },
 );
 
-// GET /apps/:id/channels/import
 router.get(
   "/:id/channels/import",
   authenticationMiddleware,
@@ -351,7 +340,6 @@ router.get(
   },
 );
 
-// POST /apps/:id/channels/import
 router.post(
   "/:id/channels/import",
   authenticationMiddleware,
@@ -407,7 +395,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/channels/export
 router.post(
   "/:id/channels/export",
   authenticationMiddleware,
@@ -477,7 +464,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/channels/discord
 router.post(
   "/:id/channels/discord",
   authenticationMiddleware,
@@ -514,7 +500,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/channels/sms
 router.post(
   "/:id/channels/sms",
   authenticationMiddleware,
@@ -552,7 +537,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/channels/email
 router.post(
   "/:id/channels/email",
   authenticationMiddleware,
@@ -592,7 +576,6 @@ router.post(
   },
 );
 
-// POST /apps/:aid/channels/:cid/delete
 router.post(
   "/:aid/channels/:cid/delete",
   authenticationMiddleware,
@@ -616,7 +599,6 @@ router.post(
   },
 );
 
-// GET /apps/:id/channels/:cid/configs/:cfid/edit
 router.get(
   "/:id/channels/:cid/configs/:cfid/edit",
   authenticationMiddleware,
@@ -708,7 +690,6 @@ router.get(
   },
 );
 
-// POST /apps/:id/channels/:cid/configs/:cfid/sms
 router.post(
   "/:id/channels/:cid/configs/:cfid/sms",
   authenticationMiddleware,
@@ -752,7 +733,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/channels/:cid/configs/:cfid/discord
 router.post(
   "/:id/channels/:cid/configs/:cfid/discord",
   authenticationMiddleware,
@@ -792,7 +772,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/channels/:cid/configs/:cfid/email
 router.post(
   "/:id/channels/:cid/configs/:cfid/email",
   authenticationMiddleware,
@@ -837,7 +816,6 @@ router.post(
   },
 );
 
-// GET /apps/:id/notifications
 router.get(
   "/:id/notifications",
   authenticationMiddleware,
@@ -888,7 +866,6 @@ router.get(
   },
 );
 
-// GET /apps/:id/settings
 router.get(
   "/:id/settings",
   authenticationMiddleware,
@@ -913,7 +890,6 @@ router.get(
   },
 );
 
-// POST /apps/:id/notifications/:nid/delete
 router.post(
   "/:id/notifications/:nid/delete",
   authenticationMiddleware,
@@ -939,7 +915,6 @@ router.post(
   },
 );
 
-// POST /apps/:aid/notifications/:nid/read
 router.post(
   "/:aid/notifications/:nid/read",
   authenticationMiddleware,
@@ -959,7 +934,6 @@ router.post(
   },
 );
 
-// POST /apps/:aid/notifications/read
 router.post(
   "/:aid/notifications/read",
   authenticationMiddleware,
@@ -980,7 +954,6 @@ router.post(
   },
 );
 
-// POST /apps/:id/notifications/test
 router.post(
   "/:id/notifications/test",
   authenticationMiddleware,

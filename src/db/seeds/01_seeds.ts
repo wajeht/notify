@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 import dotenv from "dotenv";
 
-dotenv.config({ path: path.resolve(path.join(process.cwd(), ".env")) });
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 const adminEmail = process.env.APP_ADMIN_EMAIL || "admin@example.com";
 

@@ -1,27 +1,67 @@
-import qs from "qs";
 import ejs from "ejs";
 import crypto from "crypto";
 import path from "node:path";
 import jwt from "jsonwebtoken";
-import dayjsModule from "dayjs";
 import { Request } from "express";
 import { logger } from "./logger";
 import fsp from "node:fs/promises";
-import utc from "dayjs/plugin/utc";
 import nodemailer from "nodemailer";
 import { db } from "./db/db";
-import timezone from "dayjs/plugin/timezone";
 import { appConfig, emailConfig, oauthConfig } from "./config";
 import { GithubUserEmail, GitHubOauthToken, ApiKeyPayload } from "./types";
 
-export function dayjs(date: string | Date = new Date()) {
-  dayjsModule.extend(utc);
-  dayjsModule.extend(timezone);
-  return dayjsModule(date);
+export function formatDate(date: Date, userTimezone: string = "UTC"): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: userTimezone,
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  }).format(date);
 }
 
-export function formatDate(date: Date, userTimezone: string = "UTC"): string {
-  return dayjs(date).tz(userTimezone).format("MM/DD/YYYY hh:mm:ss A");
+export function formatDateLong(date: Date, userTimezone: string = "UTC"): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: userTimezone,
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+export function formatDatetime(date: Date, userTimezone: string = "UTC"): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: userTimezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(date).replace(",", "");
+}
+
+export function startOfNextMonth(date: Date = new Date(), userTimezone: string = "UTC"): Date {
+  // Convert to timezone, get next month's first day
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: userTimezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const parts = formatter.formatToParts(date);
+  const year = parseInt(parts.find(p => p.type === "year")!.value);
+  const month = parseInt(parts.find(p => p.type === "month")!.value);
+
+  // Next month (handle December -> January)
+  const nextMonth = month === 12 ? 1 : month + 1;
+  const nextYear = month === 12 ? year + 1 : year;
+
+  return new Date(`${nextYear}-${String(nextMonth).padStart(2, "0")}-01T00:00:00`);
 }
 
 export function secret(secretSalt: string = appConfig.secretSalt) {
@@ -104,16 +144,14 @@ export async function runMigrations(force: boolean = false) {
 export async function getGithubOauthToken(code: string): Promise<GitHubOauthToken> {
   const rootUrl = "https://github.com/login/oauth/access_token";
 
-  const options = {
+  const params = new URLSearchParams({
     client_id: oauthConfig.github.client_id,
     client_secret: oauthConfig.github.client_secret,
     code,
-  };
-
-  const queryString = qs.stringify(options);
+  });
 
   try {
-    const response = await fetch(`${rootUrl}?${queryString}`, {
+    const response = await fetch(`${rootUrl}?${params.toString()}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -121,9 +159,9 @@ export async function getGithubOauthToken(code: string): Promise<GitHubOauthToke
     });
 
     const data = await response.text();
-    const decoded = qs.parse(data) as GitHubOauthToken;
+    const parsed = new URLSearchParams(data);
 
-    return decoded;
+    return { access_token: parsed.get("access_token") || "" };
   } catch (error: any) {
     logger.error({ err: error }, "failed to fetch github oauth tokens");
     throw error;

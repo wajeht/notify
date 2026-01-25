@@ -17,13 +17,14 @@ import { exportUserData } from "./jobs/export-user-data";
 import { ApiKeyPayload, DiscordConfig, EmailConfig, SmsConfig, User } from "./types";
 import { HttpError, NotFoundError, UnauthorizedError, ValidationError } from "./error";
 import {
-  dayjs,
   secret,
   extractDomain,
   getGithubOauthToken,
   getGithubUserEmails,
   sendGeneralEmail,
   formatDate,
+  formatDatetime,
+  startOfNextMonth,
 } from "./utils";
 
 const router = express.Router();
@@ -603,8 +604,7 @@ router.post(
     const { name, is_active, description, url } = req.body;
     const user = req.session?.user;
 
-    const now = dayjs().tz(user?.timezone);
-    const alertsResetDate = now.add(1, "month").startOf("month").toDate();
+    const alertsResetDate = startOfNextMonth(new Date(), user?.timezone || "UTC");
 
     const [app] = await db("apps")
       .insert({
@@ -660,11 +660,9 @@ router.get(
 
     const app = {
       ...appRaw,
-      alerts_reset_date: dayjs(appRaw.alerts_reset_date)
-        .tz(userTimezone)
-        .format("YYYY-MM-DD HH:mm:ss"),
-      created_at: dayjs(appRaw.created_at).tz(userTimezone).format("YYYY-MM-DD HH:mm:ss"),
-      updated_at: dayjs(appRaw.updated_at).tz(userTimezone).format("YYYY-MM-DD HH:mm:ss"),
+      alerts_reset_date: formatDatetime(new Date(appRaw.alerts_reset_date), userTimezone),
+      created_at: formatDatetime(new Date(appRaw.created_at), userTimezone),
+      updated_at: formatDatetime(new Date(appRaw.updated_at), userTimezone),
     };
 
     return res.render("apps-id.html", {

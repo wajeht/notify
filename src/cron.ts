@@ -3,7 +3,7 @@ import type { Knex } from "knex";
 import type { Logger } from "pino";
 import { DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { backBlaze, s3Client } from "./config";
-import { dayjs, sendGeneralEmail } from "./utils";
+import { formatDateLong, startOfNextMonth, sendGeneralEmail } from "./utils";
 import { processPendingJobs, cleanupOldJobs } from "./queue";
 
 export interface CronType {
@@ -37,7 +37,7 @@ export function createCron(db: Knex, logger: Logger): CronType {
         )
         .from("apps")
         .innerJoin("users", "users.id", "apps.user_id")
-        .where("apps.alerts_reset_date", "<=", dayjs().toDate());
+        .where("apps.alerts_reset_date", "<=", new Date());
 
       if (appsToReset.length === 0) {
         logger.info("[cron:resetUserMonthlyAlertLimit] No apps to reset today");
@@ -50,8 +50,8 @@ export function createCron(db: Knex, logger: Logger): CronType {
       );
 
       for (const app of appsToReset) {
-        const now = dayjs().tz(app.timezone);
-        const nextResetDate = now.add(1, "month").startOf("month").toDate();
+        const now = new Date();
+        const nextResetDate = startOfNextMonth(now, app.timezone);
 
         try {
           await db.transaction(async (trx) => {
@@ -66,9 +66,9 @@ export function createCron(db: Knex, logger: Logger): CronType {
             email: app.email,
             subject: "Monthly Alert Limit Reset",
             username: app.username,
-            message: `Your monthly alert limit for the app "${app.name}" has been reset on ${now.format("MMMM D, YYYY")}.
+            message: `Your monthly alert limit for the app "${app.name}" has been reset on ${formatDateLong(now, app.timezone)}.
                             Your alert count has been set back to 0, and you can now send new alerts for this month.
-                            The next reset will occur on ${dayjs(nextResetDate).format("MMMM D, YYYY")}.`,
+                            The next reset will occur on ${formatDateLong(nextResetDate, app.timezone)}.`,
           }).catch((err) =>
             logger.error({ err }, "[cron:resetUserMonthlyAlertLimit] Failed to send email"),
           );

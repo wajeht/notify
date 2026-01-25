@@ -5,6 +5,7 @@ import { sendSms } from "./sms";
 import { sendEmail } from "./email";
 import { sendDiscord } from "./discord";
 import { sendGeneralEmail } from "../utils";
+import { enqueue, type JobType } from "../queue";
 
 export interface NotificationJobData {
   userId: number;
@@ -64,6 +65,9 @@ export async function sendNotification(data: NotificationJobData) {
       return;
     }
 
+    // Collect all channel configs
+    const channelJobs: { type: JobType; config: any; username: string }[] = [];
+
     for (const channel of appChannels) {
       let configs;
 
@@ -86,7 +90,21 @@ export async function sendNotification(data: NotificationJobData) {
       }
 
       for (const config of configs) {
-        await dispatchNotification(channel.channel_type, config, user.username, message, details);
+        channelJobs.push({ type: channel.channel_type as JobType, config, username: user.username });
+      }
+    }
+
+    // Try to send immediately, queue failures for retry
+    for (const job of channelJobs) {
+      const success = await tryDispatch(job.type, job.config, job.username, message, details);
+      if (!success) {
+        // Queue for retry
+        await enqueue(job.type, {
+          config: job.config,
+          username: job.username,
+          message,
+          details,
+        });
       }
     }
 
@@ -107,13 +125,14 @@ export async function sendNotification(data: NotificationJobData) {
   }
 }
 
-async function dispatchNotification(
-  channelType: "discord" | "email" | "sms",
+// Try to send immediately, return success status
+async function tryDispatch(
+  channelType: JobType,
   config: any,
   username: string,
   message: string,
   details: any,
-) {
+): Promise<boolean> {
   try {
     switch (channelType) {
       case "discord":
@@ -127,8 +146,11 @@ async function dispatchNotification(
         break;
       default:
         logger.info({ channelType }, "[sendNotification] Unsupported channel type");
+        return false;
     }
+    return true;
   } catch (error) {
-    logger.error({ channelType, err: error }, "[sendNotification] Failed to dispatch notification");
+    logger.error({ channelType, err: error }, "[sendNotification] Failed, will queue for retry");
+    return false;
   }
 }

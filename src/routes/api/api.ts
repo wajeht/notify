@@ -15,7 +15,7 @@ export function createApiRouter(context: AppContext) {
         return;
       }
 
-      const { message, details } = req.body;
+      const { message, details, embeds } = req.body;
 
       if (!message || typeof message !== "string" || !message.trim()) {
         res.status(400).json({ error: "message is required" });
@@ -36,6 +36,7 @@ export function createApiRouter(context: AppContext) {
         userId: Number(userId),
         message: message.trim(),
         details: details && typeof details === "object" ? details : {},
+        embeds: Array.isArray(embeds) ? embeds : undefined,
       };
 
       setImmediate(() => {

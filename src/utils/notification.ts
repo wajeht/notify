@@ -12,6 +12,7 @@ export interface NotificationJobData {
   appId: string;
   message: string;
   details: Record<string, unknown>;
+  embeds?: Array<Record<string, unknown>>;
 }
 
 export interface SmsNotificationData {
@@ -31,6 +32,7 @@ export interface DiscordNotificationData {
   config: DiscordConfig;
   message: string;
   details: Record<string, unknown> | null;
+  embeds?: Array<Record<string, unknown>>;
 }
 
 export interface NotificationType {
@@ -159,7 +161,7 @@ export function createNotification(knex: Knex, logger: LoggerType): Notification
     type Params = {
       username: string;
       content: string;
-      embeds?: Array<{ title: string; description: string }>;
+      embeds?: Array<Record<string, unknown>>;
     };
 
     const params: Params = {
@@ -167,7 +169,9 @@ export function createNotification(knex: Knex, logger: LoggerType): Notification
       content: data.message,
     };
 
-    if (data.details) {
+    if (data.embeds?.length) {
+      params.embeds = data.embeds;
+    } else if (data.details) {
       params.embeds = [
         {
           title: data.message,
@@ -192,7 +196,7 @@ export function createNotification(knex: Knex, logger: LoggerType): Notification
   }
 
   async function sendNotification(data: NotificationJobData): Promise<void> {
-    const { appId, userId, message, details } = data;
+    const { appId, userId, message, details, embeds } = data;
 
     const appQuery = knex("apps").where({ id: appId, is_active: true, user_id: userId }).first();
     const channelsQuery = knex("app_channels")
@@ -256,7 +260,7 @@ export function createNotification(knex: Knex, logger: LoggerType): Notification
     ]);
 
     for (const config of discordConfigs) {
-      void sendDiscord({ config, message, details }).catch((err) =>
+      void sendDiscord({ config, message, details, embeds }).catch((err) =>
         logger.error("[sendNotification] discord failed", err),
       );
     }

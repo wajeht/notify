@@ -14,13 +14,11 @@ FROM node:25-alpine
 
 RUN apk update && apk add --no-cache curl
 
-RUN addgroup -g 1000 -S nodejs && adduser -S nodejs -u 1000
-
 WORKDIR /usr/src/app
 
-COPY --chown=nodejs:nodejs --from=build /usr/src/app ./
+COPY --chown=node:node --from=build /usr/src/app ./
 
-USER nodejs
+USER node
 
 EXPOSE 80
 

@@ -61,7 +61,7 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
       store: new ConnectSessionKnexStore({
         knex,
         tableName: "sessions",
-        createTable: false,
+        createTable: true, // auto-create sessions table if not exists
         cleanupInterval: 600000, // 10 minutes
       }),
       proxy: appConfig.env === "production",

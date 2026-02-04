@@ -14,7 +14,7 @@ FROM node:25-alpine
 
 RUN apk update && apk add --no-cache curl
 
-RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
+RUN addgroup -g 1000 -S nodejs && adduser -S nodejs -u 1000
 
 WORKDIR /usr/src/app
 

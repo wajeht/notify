@@ -195,6 +195,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
+    if: github.event_name == 'push'
     needs: [lint, format, unit-test, browser-test, build]
     name: Deploy
     uses: wajeht/docker-cd-deploy-workflow/.github/workflows/deploy.yaml@main

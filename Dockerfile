@@ -1,4 +1,4 @@
-FROM node:25-alpine AS build
+FROM node:25-alpine@sha256:b9b5737eabd423ba73b21fe2e82332c0656d571daf1ebf19b0f89d0dd0d3ca93 AS build
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ COPY ./ ./
 
 RUN npm run build
 
-FROM node:25-alpine
+FROM node:25-alpine@sha256:b9b5737eabd423ba73b21fe2e82332c0656d571daf1ebf19b0f89d0dd0d3ca93
 
 RUN apk update && apk add --no-cache curl
 

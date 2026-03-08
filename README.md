@@ -1,4 +1,4 @@
-# 🔔 Notify
+# Notify
 
 [![Node.js CI](https://github.com/wajeht/notify/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wajeht/notify/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/wajeht/notify/blob/main/LICENSE)
@@ -6,7 +6,7 @@
 
 web 2.0 style notification systems for discord, email, and sms
 
-# 🏞️ Screenshots
+# Screenshots
 
 | app                                                                                                                       | apps                                                                                                                             | channels                                                                                                                         |
 | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
@@ -16,13 +16,13 @@ web 2.0 style notification systems for discord, email, and sms
 | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | <img width="350" alt="Component Library" src="https://github.com/user-attachments/assets/1cd7ea63-e860-4b02-ace7-5b6454968333"> | <img width="350" alt="Settings Panel" src="https://github.com/user-attachments/assets/d3ed2bab-9875-4a8b-8739-19d3c99e5054"> | <img width="350" alt="Chart Interface" src="https://github.com/user-attachments/assets/08b1f616-5899-43d6-b954-e13971879d6a"> |
 
-# 📑 Docs
+# Docs
 
 - See [INSTALLATION](./docs/installation.md) for `self hosted` doc.
 - See [ROADMAP](./docs/roadmap.md) for `roadmap` guide.
 - See [DEVELOPMENT](./docs/development.md) for `development` guide.
 - See [CONTRIBUTION](./docs/contribution.md) for `contribution` guide.
 
-# 📜 License
+# License
 
 Distributed under the MIT License © [wajeht](https://github.com/wajeht). See [LICENSE](./LICENSE) for more information.

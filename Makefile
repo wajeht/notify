@@ -23,9 +23,6 @@ format:
 lint:
 	@docker compose -f docker-compose.yml exec notify npm run lint
 
-deploy:
-	@./deploy.sh
-
 shell:
 	@docker compose -f docker-compose.yml exec notify sh
 

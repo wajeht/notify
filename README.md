@@ -6,6 +6,9 @@
 
 web 2.0 style notification systems for discord, email, and sms
 
+> [!WARNING]
+> **This codebase is no longer actively maintained.** The package will continue working, but support and changes are no longer provided.
+
 # Screenshots
 
 | app                                                                                                                       | apps                                                                                                                             | channels                                                                                                                         |

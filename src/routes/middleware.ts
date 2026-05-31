@@ -44,7 +44,13 @@ export function createMiddleware(knex: Knex, logger: LoggerType): MiddlewareType
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
         "default-src": ["'self'", "notify.jaw.dev"],
-        "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "notify.jaw.dev", "umami.jaw.dev"],
+        "script-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "notify.jaw.dev",
+          "umami.jaw.dev",
+        ],
         "script-src-attr": ["'unsafe-inline'"],
         "connect-src": ["'self'", "umami.jaw.dev"],
       },

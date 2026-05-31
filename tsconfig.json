@@ -17,7 +17,6 @@
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
     "outDir": "dist",
-    "baseUrl": "./src",
     "rootDir": "./",
     "sourceMap": true,
 

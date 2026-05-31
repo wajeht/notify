@@ -38,48 +38,57 @@
     "db:migrate:rollback:prod": "knex migrate:rollback --knexfile=./dist/src/db/knexfile.js",
     "db:seed:make": "tsx ./node_modules/knex/bin/cli.js seed:make --knexfile=./src/db/knexfile.ts",
     "db:seed:run": "tsx ./node_modules/knex/bin/cli.js seed:run --knexfile=./src/db/knexfile.ts",
-    "db:seed:run:prod": "knex seed:run --knexfile=./dist/src/db/knexfile.js"
+    "db:seed:run:prod": "knex seed:run --knexfile=./dist/src/db/knexfile.js",
+    "rebuild:native": "npm rebuild better-sqlite3 esbuild --ignore-scripts=false"
   },
   "dependencies": {
-    "better-sqlite3": "^12.6.2",
-    "compression": "^1.8.1",
-    "connect-flash": "^0.1.1",
-    "connect-session-knex": "^5.0.0",
-    "cors": "^2.8.6",
-    "csrf-sync": "^4.2.1",
-    "dotenv": "^17.2.3",
-    "eta": "^4.5.0",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.2.1",
-    "express-session": "^1.19.0",
-    "express-validator": "^7.3.1",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.3",
-    "knex": "^3.1.0",
-    "nodemailer": "^8.0.0",
-    "twilio": "^5.12.0"
+    "better-sqlite3": "12.10.0",
+    "compression": "1.8.1",
+    "connect-flash": "0.1.1",
+    "connect-session-knex": "5.0.0",
+    "cors": "2.8.6",
+    "csrf-sync": "4.2.1",
+    "dotenv": "17.4.2",
+    "eta": "4.6.0",
+    "express": "5.2.1",
+    "express-rate-limit": "8.5.2",
+    "express-session": "1.19.0",
+    "express-validator": "7.3.2",
+    "helmet": "8.2.0",
+    "jsonwebtoken": "9.0.3",
+    "knex": "3.2.10",
+    "nodemailer": "8.0.10",
+    "twilio": "6.0.2"
   },
   "devDependencies": {
-    "@playwright/test": "1.58.2",
+    "@playwright/test": "1.60.0",
     "@tailwindcss/typography": "0.5.19",
     "@types/better-sqlite3": "7.6.13",
     "@types/compression": "1.8.1",
     "@types/connect-flash": "0.0.40",
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
-    "@types/express-session": "1.18.2",
+    "@types/express-session": "1.19.0",
     "@types/jsonwebtoken": "9.0.10",
-    "@types/node": "25.2.3",
-    "@types/nodemailer": "7.0.9",
-    "@vitest/coverage-v8": "4.0.18",
-    "@wajeht/express-templates-reload": "2.0.5",
-    "oxfmt": "0.35.0",
-    "oxlint": "1.41.0",
-    "tsx": "4.21.0",
-    "typescript": "5.9.3",
-    "vitest": "4.0.18"
+    "@types/node": "25.9.1",
+    "@types/nodemailer": "8.0.0",
+    "@vitest/coverage-v8": "4.1.7",
+    "@wajeht/express-templates-reload": "3.0.0",
+    "oxfmt": "0.52.0",
+    "oxlint": "1.67.0",
+    "tsx": "4.22.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.7"
+  },
+  "overrides": {
+    "axios": "1.16.1",
+    "follow-redirects": "1.16.0",
+    "path-to-regexp": "8.4.2",
+    "qs": "6.15.2"
   },
   "engines": {
-    "node": ">=25.0.0"
-  }
+    "node": ">=25.0.0",
+    "npm": ">=11.0.0"
+  },
+  "packageManager": "npm@11.13.0"
 }

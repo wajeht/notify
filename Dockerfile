@@ -2,9 +2,10 @@ FROM node:25-alpine@sha256:bdf2cca6fe3dabd014ea60163eca3f0f7015fbd5c7ee1b0e9ccb4
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package*.json .npmrc ./
 
-RUN npm ci
+RUN npm ci && \
+    npm rebuild better-sqlite3 esbuild --ignore-scripts=false
 
 COPY ./ ./
 

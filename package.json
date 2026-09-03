@@ -74,7 +74,7 @@
     "@types/nodemailer": "8.0.1",
     "@vitest/coverage-v8": "4.1.11",
     "@wajeht/express-templates-reload": "3.0.0",
-    "oxfmt": "0.65.0",
+    "oxfmt": "0.66.0",
     "oxlint": "1.80.0",
     "tsx": "4.23.13",
     "typescript": "6.0.3",

@@ -63,7 +63,7 @@
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@tailwindcss/typography": "0.5.20",
-    "@types/better-sqlite3": "7.6.13",
+    "@types/better-sqlite3": "9.6.0",
     "@types/compression": "1.8.1",
     "@types/connect-flash": "0.0.40",
     "@types/cors": "2.8.19",

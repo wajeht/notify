@@ -72,7 +72,7 @@
     "@types/jsonwebtoken": "9.0.10",
     "@types/node": "25.9.6",
     "@types/nodemailer": "8.0.1",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "5.0.0",
     "@wajeht/express-templates-reload": "3.0.0",
     "oxfmt": "0.67.0",
     "oxlint": "1.82.0",

@@ -75,7 +75,7 @@
     "@vitest/coverage-v8": "4.1.11",
     "@wajeht/express-templates-reload": "3.0.0",
     "oxfmt": "0.72.0",
-    "oxlint": "1.86.0",
+    "oxlint": "1.87.0",
     "tsx": "4.23.15",
     "typescript": "6.0.3",
     "vitest": "4.1.11"

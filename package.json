@@ -84,7 +84,7 @@
     "axios": "1.20.0",
     "follow-redirects": "1.16.1",
     "path-to-regexp": "8.4.2",
-    "qs": "6.16.0"
+    "qs": "6.16.1"
   },
   "engines": {
     "node": ">=25.0.0",

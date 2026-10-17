@@ -61,7 +61,7 @@
     "twilio": "6.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.0",
+    "@playwright/test": "1.64.1",
     "@tailwindcss/typography": "0.5.20",
     "@types/better-sqlite3": "7.6.13",
     "@types/compression": "1.8.1",
@@ -72,13 +72,13 @@
     "@types/jsonwebtoken": "9.0.10",
     "@types/node": "25.9.9",
     "@types/nodemailer": "8.0.2",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/coverage-v8": "4.1.12",
     "@wajeht/express-templates-reload": "3.0.0",
     "oxfmt": "0.72.0",
     "oxlint": "1.87.0",
     "tsx": "4.23.15",
     "typescript": "6.0.3",
-    "vitest": "4.1.11"
+    "vitest": "4.1.12"
   },
   "overrides": {
     "axios": "1.20.0",
